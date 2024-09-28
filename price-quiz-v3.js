@@ -8,7 +8,19 @@ document.addEventListener("DOMContentLoaded", () => {
   addPriceFormListeners();
   trackSurveyStartToSimplifi();
   initializeBraze();
-  handleChoosePriceClick();
+
+  const choosePriceElement = document.querySelector('[data-id="choose-price"]');
+  if (choosePriceElement) {
+    choosePriceElement.addEventListener("click", handleChoosePriceClick);
+  }
+
+  // Add event listeners to all radio buttons
+  const priceRadios = document.querySelectorAll(
+    'input[type="radio"][data-price]',
+  );
+  for (const radio of priceRadios) {
+    radio.addEventListener("change", updateHighlightPrice);
+  }
 
   if (window.location.href.includes("#plan")) {
     displayPaymentForm();
@@ -1025,22 +1037,6 @@ function handleChoosePriceClick() {
     }
   }
 }
-
-// Add event listeners
-document.addEventListener("DOMContentLoaded", () => {
-  const choosePriceElement = document.querySelector('[data-id="choose-price"]');
-  if (choosePriceElement) {
-    choosePriceElement.addEventListener("click", handleChoosePriceClick);
-  }
-
-  // Add event listeners to all radio buttons
-  const priceRadios = document.querySelectorAll(
-    'input[type="radio"][data-price]',
-  );
-  for (const radio of priceRadios) {
-    radio.addEventListener("change", updateHighlightPrice);
-  }
-});
 
 // Function to update highlight_price when radio selection changes
 function updateHighlightPrice(event) {
