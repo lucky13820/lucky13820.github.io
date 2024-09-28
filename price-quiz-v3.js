@@ -1027,9 +1027,10 @@ function handleChoosePriceClick() {
 
   if (paymentEmbed && priceValue && selectedRadio) {
     // Hide the payment embed
+    console.log("hiding payment embed");
     paymentEmbed.style.display = "none";
     priceValue.style.display = "block";
-
+    console.log("showing price value");
     // Update the highlight price
     if (highlightPrice) {
       const selectedPrice = selectedRadio.getAttribute("data-price");
