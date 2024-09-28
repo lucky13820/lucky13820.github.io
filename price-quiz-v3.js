@@ -942,6 +942,10 @@ function addPriceFormListeners() {
       continueToCheckout.href = `/checkout?promo=${promo}`;
       continueToCheckout.rel = "prefetch";
 
+      const highlightPrice = document.querySelector(
+        '[data-id="highlight_price"]',
+      );
+      highlightPrice.textContent = promo;
       console.log("radio changed to", promo);
 
       window.dataLayer.push({
@@ -1015,6 +1019,7 @@ function toggleSlide(swiper, shouldRemove, slideEventValue) {
   }
 }
 
+// Function to handle the click event on choose-price
 function handleChoosePriceClick() {
   const paymentEmbed = document.querySelector('[data-id="payment-embed"]');
   const priceValue = document.querySelector('[data-id="price-value"]');
@@ -1025,19 +1030,50 @@ function handleChoosePriceClick() {
     'input[type="radio"][data-price]:checked',
   );
 
-  if (paymentEmbed && priceValue && selectedRadio) {
-    // Hide the payment embed
-    console.log("hiding payment embed");
-    paymentEmbed.style.display = "none";
-    priceValue.style.display = "block";
-    console.log("showing price value");
-    // Update the highlight price
+  if (selectedRadio) {
+    // Store the selected price for later use
+    const selectedPrice = selectedRadio.getAttribute("data-price");
+    localStorage.setItem("selectedPrice", selectedPrice);
+
+    // Trigger the next step in the quiz flow
+    // This might involve submitting a form or calling another function
+    // For example:
+    // document.querySelector('form').submit()
+    // or
+    // goToNextStep()
+  }
+}
+
+// Function to show the price value (to be called when appropriate)
+function showPriceValue() {
+  const paymentEmbed = document.querySelector('[data-id="payment-embed"]');
+  const priceValue = document.querySelector('[data-id="price-value"]');
+  const highlightPrice = document.querySelector('[data-id="highlight_price"]');
+
+  if (paymentEmbed && priceValue) {
+    paymentEmbed.classList.add("hide");
+    priceValue.classList.remove("hide");
+
+    // Set the highlight price
     if (highlightPrice) {
-      const selectedPrice = selectedRadio.getAttribute("data-price");
-      highlightPrice.textContent = selectedPrice;
+      const selectedPrice = localStorage.getItem("selectedPrice");
+      if (selectedPrice) {
+        highlightPrice.textContent = selectedPrice;
+      }
     }
   }
 }
+
+// Add event listener to the choose-price element
+document.addEventListener("DOMContentLoaded", () => {
+  const choosePriceElement = document.querySelector('[data-id="choose-price"]');
+  if (choosePriceElement) {
+    choosePriceElement.addEventListener("click", handleChoosePriceClick);
+  }
+
+  // You might need to add additional event listeners or observers
+  // to determine when to call showPriceValue()
+});
 
 // Function to update highlight_price when radio selection changes
 function updateHighlightPrice(event) {
