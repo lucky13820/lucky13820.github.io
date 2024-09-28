@@ -1013,12 +1013,13 @@ function handleChoosePriceClick() {
     'input[type="radio"][data-price]:checked',
   );
 
-  if (paymentEmbed && priceValue) {
-    paymentEmbed.classList.add("hide");
-    priceValue.classList.remove("hide");
+  if (paymentEmbed && priceValue && selectedRadio) {
+    // Hide the payment embed
+    paymentEmbed.style.display = "none";
+    priceValue.style.display = "block";
 
-    // If a radio button is selected, update the highlight_price
-    if (selectedRadio && highlightPrice) {
+    // Update the highlight price
+    if (highlightPrice) {
       const selectedPrice = selectedRadio.getAttribute("data-price");
       highlightPrice.textContent = selectedPrice;
     }
