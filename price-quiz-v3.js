@@ -14,14 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
     choosePriceElement.addEventListener("click", handleChoosePriceClick);
   }
 
-  // Add event listeners to all radio buttons
-  const priceRadios = document.querySelectorAll(
-    'input[type="radio"][data-price]',
-  );
-  for (const radio of priceRadios) {
-    radio.addEventListener("change", updateHighlightPrice);
-  }
-
   if (window.location.href.includes("#plan")) {
     displayPaymentForm();
     const prediction = localStorage.getItem("quiz_prediction");
@@ -33,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       const quizAnswers = JSON.parse(
-        localStorage.getItem("quizAnswers") || "{}",
+        localStorage.getItem("quizAnswers") || "{}"
       );
       if (quizAnswers.Insurance === "Government") {
         toggleGovtPriceAvailability();
@@ -41,6 +33,10 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (error) {
       console.error("Error parsing quiz answers from localStorage:", error);
     }
+  }
+
+  if (window.location.href.includes("#value")) {
+    displayPriceValue();
   }
 
   // try pre-populate email and phone
@@ -169,8 +165,8 @@ const validateSlide = (swiper, report = false) => {
   const currentSlide = swiper.slides[swiper.activeIndex];
   const inputs = Array.from(
     currentSlide.querySelectorAll(
-      "input[required], select[required], textarea[required]",
-    ),
+      "input[required], select[required], textarea[required]"
+    )
   );
   const allValid = inputs.every((input) => {
     const isValid = input.checkValidity();
@@ -203,10 +199,10 @@ const attachInputChangeListeners = (swiper) => {
 
         if (range) {
           const minWeightRequirement = document.querySelector(
-            '[data-id="minimum-weight-range"]',
+            '[data-id="minimum-weight-range"]'
           );
           const minRecommendedWeight = document.querySelector(
-            '[data-id="minimum-recommended-weight"]',
+            '[data-id="minimum-recommended-weight"]'
           );
 
           if (minWeightRequirement && minRecommendedWeight) {
@@ -227,7 +223,7 @@ const attachInputChangeListeners = (swiper) => {
 
       // Check if the input id is "weight" and the input length is more than 2
       const weightProgressNote = document.querySelector(
-        '[data-id="weight-progress-note"]',
+        '[data-id="weight-progress-note"]'
       );
 
       if (targetElement.id === "weight" && targetElement.value.length > 1) {
@@ -239,7 +235,7 @@ const attachInputChangeListeners = (swiper) => {
       // Check if the input id is "ideal-weight" and the input length is more than 2 then fade in note
 
       const idealWeightNote = document.querySelector(
-        '[data-id="ideal-weight-note"]',
+        '[data-id="ideal-weight-note"]'
       );
 
       if (
@@ -352,7 +348,7 @@ const animatePredictionValue = (prediction) => {
   };
 
   const predictionDisplays = document.querySelectorAll(
-    '[data-id="prediction"]',
+    '[data-id="prediction"]'
   );
   for (const display of predictionDisplays) {
     const numAnim = new countUp.CountUp(display, prediction, options);
@@ -397,7 +393,7 @@ function displayPaymentForm() {
 
       // Update the href for the 'direct checkout' button
       const checkoutButton = document.querySelector(
-        '[data-id="direct-checkout-button"]',
+        '[data-id="direct-checkout-button"]'
       );
       if (checkoutButton) {
         checkoutButton.href = `/checkout?promo=${promo}`;
@@ -481,11 +477,11 @@ quizForm.addEventListener("submit", (e) => {
   window.location.hash = "plans";
 
   const formDataInstance = new FormData(
-    document.getElementById("prediction-form"),
+    document.getElementById("prediction-form")
   );
 
   const optInCheckbox = document.querySelector(
-    'input[type="checkbox"][name="Opt-In"]',
+    'input[type="checkbox"][name="Opt-In"]'
   );
 
   const phoneInput = document.getElementById("phone");
@@ -503,7 +499,7 @@ quizForm.addEventListener("submit", (e) => {
       obj[key] = value === "true" ? true : value === "false" ? false : value;
       return obj;
     },
-    {},
+    {}
   );
 
   // add more keys
@@ -619,8 +615,9 @@ function createBrazeUser(data) {
 async function updatePrice(promo) {
   try {
     console.log("updating price");
-    const { originalPrice, priceOff, finalPrice } =
-      await fetchPriceWithPromo(promo);
+    const { originalPrice, priceOff, finalPrice } = await fetchPriceWithPromo(
+      promo
+    );
 
     console.log(`Original Price: ${originalPrice}`);
     console.log(`Price Off: ${priceOff}`);
@@ -632,7 +629,7 @@ async function updatePrice(promo) {
 
     // new element for 2 week trial
     const checkoutPrices = document.querySelectorAll(
-      '[data-id="checkout-price"]',
+      '[data-id="checkout-price"]'
     );
     for (const priceElement of checkoutPrices) {
       priceElement.textContent = PRICE;
@@ -741,7 +738,7 @@ function getWeight(height, weight) {
   const result = Math.floor(0.85 * weight);
   const finalValue = Math.max(
     0,
-    weight - (result < minValues[height] ? minValues[height] : result),
+    weight - (result < minValues[height] ? minValues[height] : result)
   );
   return Math.min(finalValue, weight);
 }
@@ -808,7 +805,7 @@ function formatAsYouType(event) {
   if (
     (phoneInput.value.length <= 5 &&
       ["deleteContentBackward", "deleteContentForward"].includes(
-        event.inputType,
+        event.inputType
       )) ||
     phoneInput.value.length === 0
   ) {
@@ -938,14 +935,18 @@ function addPriceFormListeners() {
       // Log 'changed' with the value of the changed radio button
       const promo = event.target.parentNode.dataset.price;
 
-      const continueToCheckout = document.getElementById("continueToCheckout");
-      continueToCheckout.href = `/checkout?promo=${promo}`;
-      continueToCheckout.rel = "prefetch";
+      const continueToCheckoutElements = document.querySelectorAll(
+        "#continueToCheckout"
+      );
+      continueToCheckoutElements.forEach((element) => {
+        element.href = `/checkout?promo=${promo}`;
+        element.rel = "prefetch";
+      });
 
       const highlightPrice = document.querySelector(
-        '[data-id="highlight_price"]',
+        '[data-id="highlight_price"]'
       );
-      highlightPrice.textContent = promo;
+      highlightPrice.textContent = `$${promo}`;
       console.log("radio changed to", promo);
 
       window.dataLayer.push({
@@ -994,14 +995,14 @@ function toggleSlide(swiper, shouldRemove, slideEventValue) {
             index: index,
           }; // Store the removed slide and its original index
           console.log(
-            `Slide with data-slide-event '${slideEventValue}' removed.`,
+            `Slide with data-slide-event '${slideEventValue}' removed.`
           );
           return; // Exit the loop once the slide is found and removed
         }
       });
     } else {
       console.log(
-        `Slide with data-slide-event '${slideEventValue}' already removed.`,
+        `Slide with data-slide-event '${slideEventValue}' already removed.`
       );
     }
   } else {
@@ -1013,7 +1014,7 @@ function toggleSlide(swiper, shouldRemove, slideEventValue) {
       delete removedSlides[slideEventValue]; // Remove the entry from the object after re-adding
     } else {
       console.log(
-        `Slide with data-slide-event '${slideEventValue}' was not previously removed.`,
+        `Slide with data-slide-event '${slideEventValue}' was not previously removed.`
       );
     }
   }
@@ -1021,64 +1022,24 @@ function toggleSlide(swiper, shouldRemove, slideEventValue) {
 
 // Function to handle the click event on choose-price
 function handleChoosePriceClick() {
-  const paymentEmbed = document.querySelector('[data-id="payment-embed"]');
-  const priceValue = document.querySelector('[data-id="price-value"]');
-  const highlightPrice = document.querySelector('[data-id="highlight_price"]');
-
-  // Find the selected radio button
-  const selectedRadio = document.querySelector(
-    'input[type="radio"][data-price]:checked',
-  );
-
-  if (selectedRadio) {
-    // Store the selected price for later use
-    const selectedPrice = selectedRadio.getAttribute("data-price");
-    localStorage.setItem("selectedPrice", selectedPrice);
-
-    // Trigger the next step in the quiz flow
-    // This might involve submitting a form or calling another function
-    // For example:
-    // document.querySelector('form').submit()
-    // or
-    // goToNextStep()
-  }
+  console.log("choose price clicked");
+      // Call displayPriceValue
+      displayPriceValue();
 }
 
-// Function to show the price value (to be called when appropriate)
-function showPriceValue() {
-  const paymentEmbed = document.querySelector('[data-id="payment-embed"]');
-  const priceValue = document.querySelector('[data-id="price-value"]');
-  const highlightPrice = document.querySelector('[data-id="highlight_price"]');
-
-  if (paymentEmbed && priceValue) {
-    paymentEmbed.classList.add("hide");
-    priceValue.classList.remove("hide");
-
-    // Set the highlight price
-    if (highlightPrice) {
-      const selectedPrice = localStorage.getItem("selectedPrice");
-      if (selectedPrice) {
-        highlightPrice.textContent = selectedPrice;
-      }
-    }
-  }
-}
-
-// Add event listener to the choose-price element
-document.addEventListener("DOMContentLoaded", () => {
-  const choosePriceElement = document.querySelector('[data-id="choose-price"]');
-  if (choosePriceElement) {
-    choosePriceElement.addEventListener("click", handleChoosePriceClick);
-  }
-
-  // You might need to add additional event listeners or observers
-  // to determine when to call showPriceValue()
-});
-
-// Function to update highlight_price when radio selection changes
-function updateHighlightPrice(event) {
-  const highlightPrice = document.querySelector('[data-id="highlight_price"]');
-  if (highlightPrice) {
-    highlightPrice.textContent = event.target.getAttribute("data-price");
-  }
+function displayPriceValue() {
+  console.log("price value displayed");
+  setTimeout(() => {
+    $(`[data-id="payment-embed"]`).fadeOut("fast", () => {
+      $("#quiz-form-wrapper").fadeOut("fast", () => {
+        $(`[data-id="price-value"]`).fadeIn("fast");
+        if (Webflow) {
+          Webflow.resize.up();
+        }
+      });
+    });
+  }, 250);
+  window.dataLayer.push({
+    event: "price_value_shown",
+  });
 }
