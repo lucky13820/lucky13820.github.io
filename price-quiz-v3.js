@@ -9,8 +9,9 @@ document.addEventListener("DOMContentLoaded", () => {
   trackSurveyStartToSimplifi();
   initializeBraze();
 
-  const choosePriceElement = document.querySelector('[data-id="choose-price"]');
+  const choosePriceElement = document.getElementById('continueToValue');
   if (choosePriceElement) {
+    console.log("choose price clicked");
     choosePriceElement.addEventListener("click", handleChoosePriceClick);
   }
 
@@ -930,13 +931,15 @@ function addPriceFormListeners() {
   if (form) {
     // Get all radio buttons within the form with the name 'Price'
     const radios = form.querySelectorAll('input[name="Price"]');
+
     // Define the event listener function
     const radioChangeListener = (event) => {
       // Log 'changed' with the value of the changed radio button
       const promo = event.target.parentNode.dataset.price;
-
+      const price = event.target.value;
+      
       const continueToCheckoutElements = document.querySelectorAll(
-        "#continueToCheckout"
+        '[data-id="checkout"], [data-id="direct-checkout-button"]'
       );
       continueToCheckoutElements.forEach((element) => {
         element.href = `/checkout?promo=${promo}`;
@@ -946,7 +949,7 @@ function addPriceFormListeners() {
       const highlightPrice = document.querySelector(
         '[data-id="highlight_price"]'
       );
-      highlightPrice.textContent = `$${promo}`;
+      highlightPrice.textContent = `$${price}`;
       console.log("radio changed to", promo);
 
       window.dataLayer.push({
@@ -1022,7 +1025,6 @@ function toggleSlide(swiper, shouldRemove, slideEventValue) {
 
 // Function to handle the click event on choose-price
 function handleChoosePriceClick() {
-  console.log("choose price clicked");
       // Call displayPriceValue
       displayPriceValue();
 }
