@@ -34,8 +34,7 @@ function addPriceFormListeners() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  addPriceFormListeners();
-  initializeBraze();
+  // addPriceFormListeners();
 });
 
 /* --------------------- QUIZ MULTI STEP FORM SWIPER JS --------------------- */
@@ -412,6 +411,7 @@ if (optInCheckbox) {
   });
 }
 
+
 quizForm.addEventListener("submit", (e) => {
   const weight = WEIGHT_INPUT.value;
   const height = HEIGHT_INPUT.value;
@@ -429,15 +429,14 @@ quizForm.addEventListener("submit", (e) => {
   animatePredictionValue(prediction);
 
   displayPaymentForm();
-  window.location.hash = "plans";
-
+  //window.location.hash = "plans";
 
   const formDataInstance = new FormData(
     document.getElementById("wf-form-Compounded-Semaglutide")
   );
 
   const optInCheckbox = document.querySelector(
-    'input[type="checkbox"][name="Opt-In"]'
+    'input[type="checkbox"][name="Opt-in"]'
   );
 
   const phoneInput = document.getElementById("phone");
@@ -474,9 +473,8 @@ quizForm.addEventListener("submit", (e) => {
 
   try {
     trackToGTM(formData);
-    createBrazeUser(formData);
+    trackAbandonedPurchase(email, formData);
     trackToShareASale();
-    console.log({formData})
   } catch (error) {
     console.error("Error in checkout tracking:", error);
   }
@@ -864,113 +862,4 @@ function trackToShareASale() {
     script.defer = "defer";
     img.insertAdjacentElement("afterend", script);
   }, 500);
-}
-
-function initializeBraze() {
-  if (!braze) {
-    console.error("Braze unavailable for initialization");
-    return;
-  }
-
-  const isStaging = window.location.hostname.includes("webflow.io");
-  const config = {
-    apiKey: isStaging
-      ? "eb6e2c94-2401-40ea-b4ee-bc75de73d716"
-      : "3e61333b-f1e0-444b-870c-6d0314d8b892",
-    sdkEndpoint: "sdk.iad-02.braze.com",
-  };
-  braze.initialize(config.apiKey, {
-    baseUrl: config.sdkEndpoint,
-    enableLogging: true,
-  });
-}
-
-function createBrazeUser(data) {
-  if (!braze) {
-    console.error("Braze unavailable for user");
-    return;
-  }
-
-  const user = braze.getUser();
-  if (!user) {
-    console.error("Braze user object not available");
-    return;
-  }
-
-  console.log("Full data object received:", data);
-
-  const isStaging = window.location.hostname.includes("webflow.io");
-  const subscriptions = isStaging
-    ? {
-        emailMktg: "dc158ade-c631-4b8f-a0c9-e5a4d20584bd",
-        smsTxn: "4a0c8815-454f-447e-9985-4f96644b2c81",
-        smsMktg: "6f899036-f31f-489e-a616-024bd8ee8f7f",
-      }
-    : {
-        emailMktg: "dd1169fb-6838-452f-a6de-79e350927e81",
-        smsTxn: "0e2326af-5ab4-4fea-a916-e7a37e09b069",
-        smsMktg: "033501a5-3110-4d95-90c8-b453c3123308",
-      };
-
-  const { phone, Phone, email, sms_mktg_opt_in: smsOptIn = false, ...rest } = data;
-  const phoneNumber = phone || Phone; // Check for both 'phone' and 'Phone'
-
-  console.log("Extracted phone number:", phoneNumber);
-  console.log("Extracted email:", email);
-  console.log("SMS opt-in status:", smsOptIn);
-
-  if (email) {
-    const sanitizedEmail = email.trim().toLowerCase();
-    user.setEmail(sanitizedEmail);
-    user.addAlias(sanitizedEmail, "email");
-    user.addToSubscriptionGroup(subscriptions.emailMktg);
-    console.log("Email set and subscribed to marketing");
-  }
-
-  if (phoneNumber) {
-    user.setPhoneNumber(phoneNumber);
-    console.log("Phone number set:", phoneNumber);
-
-    user.addToSubscriptionGroup(subscriptions.smsTxn);
-    console.log("User added to transactional SMS group");
-
-    if (smsOptIn) {
-      user.addToSubscriptionGroup(subscriptions.smsMktg);
-      console.log("User added to marketing SMS group");
-    }
-  } else {
-    console.log("No phone number found in data");
-  }
-
-  // Handle height separately
-  if (height) {
-    const heightInInches = convertHeightToInches(height);
-    user.setCustomUserAttribute("height_inches", heightInInches);
-    console.log(`Height set as inches: ${heightInInches}`);
-  }
-
-  Object.entries(rest).forEach(([key, value]) => {
-    user.setCustomUserAttribute(key, value);
-    console.log(`Custom attribute set: ${key} = ${value}`);
-  });
-
-  user.setCustomUserAttribute("intake", "compounded");
-  
-  braze.logCustomEvent("Quiz_Flow_Complete", {
-    ...data,
-    questionnaire_id: "compounded",
-    intake: "compounded"
-  });
-  console.log("Quiz_Flow_Complete event logged");
-}
-
-// Helper function to convert height to inches
-function convertHeightToInches(heightString) {
-  const match = heightString.match(/(\d+)'\s*(\d+)"/);
-  if (match) {
-    const feet = parseInt(match[1]);
-    const inches = parseInt(match[2]);
-    return feet * 12 + inches;
-  }
-  return null; // Return null if the format is not recognized
 }
