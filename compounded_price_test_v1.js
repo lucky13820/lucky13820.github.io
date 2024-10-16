@@ -467,6 +467,12 @@ quizForm.addEventListener("submit", (e) => {
   });
 
   try {
+    localStorage.setItem("quizAnswers", JSON.stringify(formData));
+  } catch (error) {
+    console.log(error);
+  }
+
+  try {
     trackToGTM(formData);
     createBrazeUser(formData);
     trackToShareASale();
