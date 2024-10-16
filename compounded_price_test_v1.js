@@ -437,7 +437,7 @@ quizForm.addEventListener("submit", (e) => {
   );
 
   const optInCheckbox = document.querySelector(
-    'input[type="checkbox"][name="Opt-in"]'
+    'input[type="checkbox"][name="Opt-In"]'
   );
 
   const phoneInput = document.getElementById("phone");
