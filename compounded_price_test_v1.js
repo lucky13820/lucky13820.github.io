@@ -942,17 +942,9 @@ function createBrazeUser(data) {
     console.log("No phone number found in data");
   }
 
-  // Handle height separately
-  if (height) {
-    const heightInInches = convertHeightToInches(height);
-    user.setCustomUserAttribute("height_inches", heightInInches);
-    console.log(`Height set as inches: ${heightInInches}`);
-  }
-
-  Object.entries(rest).forEach(([key, value]) => {
-    user.setCustomUserAttribute(key, value);
-    console.log(`Custom attribute set: ${key} = ${value}`);
-  });
+  Object.entries(rest).forEach(([key, value]) =>
+    user.setCustomUserAttribute(key, value)
+  );
 
   user.setCustomUserAttribute("intake", "compounded");
   
@@ -962,15 +954,4 @@ function createBrazeUser(data) {
     intake: "compounded"
   });
   console.log("Quiz_Flow_Complete event logged");
-}
-
-// Helper function to convert height to inches
-function convertHeightToInches(heightString) {
-  const match = heightString.match(/(\d+)'\s*(\d+)"/);
-  if (match) {
-    const feet = parseInt(match[1]);
-    const inches = parseInt(match[2]);
-    return feet * 12 + inches;
-  }
-  return null; // Return null if the format is not recognized
 }
