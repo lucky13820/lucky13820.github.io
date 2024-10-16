@@ -886,7 +886,12 @@ function createBrazeUser(data) {
   }
 
   const user = braze.getUser();
-  if (!user) return;
+  if (!user) {
+    console.error("Braze user object not available");
+    return;
+  }
+
+  console.log("Full data object received:", data);
 
   const isStaging = window.location.hostname.includes("webflow.io");
   const subscriptions = isStaging
@@ -901,34 +906,47 @@ function createBrazeUser(data) {
         smsMktg: "033501a5-3110-4d95-90c8-b453c3123308",
       };
 
-      const { phone, email, sms_mktg_opt_in: smsOptIn = false, ...rest } = data;
-      if (email) {
-        const sanitizedEmail = email.trim().toLowerCase();
-        user.setEmail(sanitizedEmail);
-        user.addAlias(sanitizedEmail, "email"); // Also add as an alias for merging purposes
-    
-        // Add the user to email sub group by default (they can unsub later)
-        user.addToSubscriptionGroup(subscriptions.emailMktg);
-      }
-    
-      if (phone) {
-        user.setPhoneNumber(phone);
-    
-        // Add the user to the transactional SMS group by default
-        user.addToSubscriptionGroup(subscriptions.smsTxn);
-    
-        // Add the user to the marketing SMS group if they opted in
-        if (smsOptIn) {
-          user.addToSubscriptionGroup(subscriptions.smsMktg);
-        }
-      }
-  Object.entries(rest).forEach(([key, value]) =>
-    user.setCustomUserAttribute(key, value)
-  );
+  const { phone, Phone, email, sms_mktg_opt_in: smsOptIn = false, ...rest } = data;
+  const phoneNumber = phone || Phone; // Check for both 'phone' and 'Phone'
+
+  console.log("Extracted phone number:", phoneNumber);
+  console.log("Extracted email:", email);
+  console.log("SMS opt-in status:", smsOptIn);
+
+  if (email) {
+    const sanitizedEmail = email.trim().toLowerCase();
+    user.setEmail(sanitizedEmail);
+    user.addAlias(sanitizedEmail, "email");
+    user.addToSubscriptionGroup(subscriptions.emailMktg);
+    console.log("Email set and subscribed to marketing");
+  }
+
+  if (phoneNumber) {
+    user.setPhoneNumber(phoneNumber);
+    console.log("Phone number set:", phoneNumber);
+
+    user.addToSubscriptionGroup(subscriptions.smsTxn);
+    console.log("User added to transactional SMS group");
+
+    if (smsOptIn) {
+      user.addToSubscriptionGroup(subscriptions.smsMktg);
+      console.log("User added to marketing SMS group");
+    }
+  } else {
+    console.log("No phone number found in data");
+  }
+
+  Object.entries(rest).forEach(([key, value]) => {
+    user.setCustomUserAttribute(key, value);
+    console.log(`Custom attribute set: ${key} = ${value}`);
+  });
+
   user.setCustomUserAttribute("intake", "compounded");
+  
   braze.logCustomEvent("Quiz_Flow_Complete", {
     ...data,
     questionnaire_id: "compounded",
     intake: "compounded"
   });
+  console.log("Quiz_Flow_Complete event logged");
 }
