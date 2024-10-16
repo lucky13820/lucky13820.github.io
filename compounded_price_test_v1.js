@@ -397,6 +397,21 @@ function showNotEligibleBlock(reason) {
   }
 }
 
+// Assuming this is within your existing code where you define the optInCheckbox and phoneInput
+const optInCheckbox = document.querySelector('input[type="checkbox"][name="Opt-In"]');
+const phoneInput = document.getElementById("phone");
+
+// Add an event listener to the opt-in checkbox
+if (optInCheckbox) {
+  optInCheckbox.addEventListener("change", () => {
+    // Check if the checkbox is checked and the phone input is empty
+    if (optInCheckbox.checked && (!phoneInput || phoneInput.value.trim() === "")) {
+      alert("Please fill in your phone number to opt-in for SMS marketing."); // Show a popup
+      phoneInput.focus(); // Optionally, focus on the phone input for user convenience
+    }
+  });
+}
+
 quizForm.addEventListener("submit", (e) => {
   const weight = WEIGHT_INPUT.value;
   const height = HEIGHT_INPUT.value;
@@ -886,27 +901,27 @@ function createBrazeUser(data) {
         smsMktg: "033501a5-3110-4d95-90c8-b453c3123308",
       };
 
-  const { phone, email, sms_mktg_opt_in: smsOptIn = false, ...rest } = data;
-  if (email) {
-    const sanitizedEmail = email.trim().toLowerCase();
-    user.setEmail(sanitizedEmail);
-    user.addAlias(sanitizedEmail, "email"); // Also add as an alias for merging purposes
-
-    // Add the user to email sub group by default (they can unsub later)
-    user.addToSubscriptionGroup(subscriptions.emailMktg);
-  }
-
-  if (phone) {
-    user.setPhoneNumber(phone);
-
-    // Add the user to the transactional SMS group by default
-    user.addToSubscriptionGroup(subscriptions.smsTxn);
-
-    // Add the user to the marketing SMS group if they opted in
-    if (smsOptIn) {
-      user.addToSubscriptionGroup(subscriptions.smsMktg);
-    }
-  }
+      const { phone, email, sms_mktg_opt_in: smsOptIn = false, ...rest } = data;
+      if (email) {
+        const sanitizedEmail = email.trim().toLowerCase();
+        user.setEmail(sanitizedEmail);
+        user.addAlias(sanitizedEmail, "email"); // Also add as an alias for merging purposes
+    
+        // Add the user to email sub group by default (they can unsub later)
+        user.addToSubscriptionGroup(subscriptions.emailMktg);
+      }
+    
+      if (phone) {
+        user.setPhoneNumber(phone);
+    
+        // Add the user to the transactional SMS group by default
+        user.addToSubscriptionGroup(subscriptions.smsTxn);
+    
+        // Add the user to the marketing SMS group if they opted in
+        if (smsOptIn) {
+          user.addToSubscriptionGroup(subscriptions.smsMktg);
+        }
+      }
   Object.entries(rest).forEach(([key, value]) =>
     user.setCustomUserAttribute(key, value)
   );
