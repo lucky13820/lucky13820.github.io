@@ -608,6 +608,13 @@ function createBrazeUser(data) {
       user.addToSubscriptionGroup(subscriptions.smsMktg);
     }
   }
+   // Handle height separately
+   if (height) {
+    const heightInInches = convertHeightToInches(height);
+    user.setCustomUserAttribute("height_inches", heightInInches);
+    console.log(`Height set as inches: ${heightInInches}`);
+  }
+
   Object.entries(rest).forEach(([key, value]) =>
     user.setCustomUserAttribute(key, value)
   );
@@ -615,6 +622,16 @@ function createBrazeUser(data) {
     ...data,
     questionnaire_id: "regular",
   });
+}
+
+function convertHeightToInches(heightString) {
+  const match = heightString.match(/(\d+)'\s*(\d+)"/);
+  if (match) {
+    const feet = parseInt(match[1]);
+    const inches = parseInt(match[2]);
+    return feet * 12 + inches;
+  }
+  return null; // Return null if the format is not recognized
 }
 
 // Fetch discount and update prices
