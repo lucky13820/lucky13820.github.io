@@ -30,6 +30,16 @@ document.addEventListener("DOMContentLoaded", function () {
       default:
         return false;
     }
+
+    // Set the popup text
+    var popupElement = document.querySelector("#offer-popup-open");
+
+    // Ensure the element exists before attempting to change its properties
+    if (popupElement) {
+      // Simulate the click
+      popupElement.click();
+      return true;
+    }
     return false;
   }
 
