@@ -15,7 +15,7 @@ function addPriceFormListeners() {
       promo = event.target.parentNode.dataset.price;
 
       let continueToCheckout = document.getElementById("continueToCheckout");
-      continueToCheckout.href = `/purchase-compounded?promo=compounded${promo}`;
+      continueToCheckout.href = `/purchase-compounded?promo=C${promo}SEM`;
       continueToCheckout.rel = "prefetch";
 
       console.log("radio changed to", promo);
