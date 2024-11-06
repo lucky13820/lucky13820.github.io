@@ -27,13 +27,13 @@ document.addEventListener("DOMContentLoaded", function () {
       case "compounded189":
         price = "$189";
         break;
-      case "C99SEM":
+      case "c99sem":
         price = "$99";
         break;
-      case "C139SEM":
+      case "c139sem":
         price = "$139";
         break;
-      case "C169SEM":
+      case "c169sem":
         price = "$169";
         break;
       default:
