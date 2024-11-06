@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Convert promoType to lowercase for case-insensitive comparison
     promoType = promoType.toLowerCase();
+    console.log("Promo type after lowercase:", promoType); // Debug log
 
     switch (promoType) {
       case "compounded129":
@@ -26,33 +27,40 @@ document.addEventListener("DOMContentLoaded", function () {
       case "compounded189":
         price = "$189";
         break;
-      case "c99sem":
+      case "C99SEM":
         price = "$99";
         break;
-      case "c139sem":
+      case "C139SEM":
         price = "$139";
         break;
-      case "c169sem":
+      case "C169SEM":
         price = "$169";
         break;
       default:
+        console.log("No matching promo type found for:", promoType); // Debug log
         return false;
     }
 
     // Set the popup text
     popupText = `You've unlocked your first month for ${price}`;
     var popupElement = document.querySelector("#offer-popup-open");
+    console.log("Popup element found:", !!popupElement); // Debug log
 
     // Ensure the element exists before attempting to change its properties
     if (popupElement) {
       // Set data attribute if needed
-      document.querySelector("[data-popup-text]").textContent = popupText;
+      const popupTextElement = document.querySelector("[data-popup-text]");
+      if (popupTextElement) {
+        popupTextElement.textContent = popupText;
+      }
+      
       // Change the text content
       popupElement.textContent = popupText;
-      // Simulate the click
-
+      
+      // Simulate the click with a slight delay
       setTimeout(function () {
         popupElement.click();
+        console.log("Popup click triggered"); // Debug log
       }, 200);
       return true;
     }
@@ -61,9 +69,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Get the promo value from the URL
   var promoValue = getQueryParam("promo");
+  console.log("URL promo value:", promoValue); // Debug log
 
   // If promoValue is present and valid, call setPopupAndPrice with the promo value
   if (promoValue) {
-    setPopupAndPrice(promoValue);
+    const result = setPopupAndPrice(promoValue);
+    console.log("setPopupAndPrice result:", result); // Debug log
   }
 });
