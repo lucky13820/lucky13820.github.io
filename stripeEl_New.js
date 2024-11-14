@@ -334,11 +334,15 @@ function showMessage(messageText) {
 
 function setLoading(isLoading) {
   const submitButton = document.querySelector("#submit-payment");
-  const notice = document.querySelectorAll(".submit-notice");
+  const notices = document.querySelectorAll(".submit-notice");
   const buttonText = document.querySelector("#button-text");
 
   submitButton.disabled = isLoading;
-  notice.classList.toggle("hidden", !isLoading);
+  
+  notices.forEach(notice => {
+    notice.classList.toggle("hidden", !isLoading);
+  });
+  
   buttonText.classList.toggle("hidden", isLoading);
 }
 
