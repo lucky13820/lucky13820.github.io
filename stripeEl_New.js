@@ -334,7 +334,7 @@ function showMessage(messageText) {
 
 function setLoading(isLoading) {
   const submitButton = document.querySelector("#submit-payment");
-  const notice = document.querySelector(".submit-notice");
+  const notice = document.querySelectorAll(".submit-notice");
   const buttonText = document.querySelector("#button-text");
 
   submitButton.disabled = isLoading;
