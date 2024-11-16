@@ -997,27 +997,30 @@ function handleMotivationSelection(swiper) {
       const selectedMotivation = e.target.value;
       console.log('Selected motivation:', selectedMotivation);
       
-      // Remove all motivation content slides first
-      swiper.slides.forEach((slide, index) => {
-        if (slide.getAttribute('data-slide-event').startsWith('motivation_')) {
-          toggleSlide(swiper, true, slide.getAttribute('data-slide-event'));
-        }
+      // Store all motivation-related slides
+      const motivationSlides = {
+        health: swiper.slides.find(slide => slide.getAttribute('data-slide-event') === 'motivation_health'),
+        appearance: swiper.slides.find(slide => slide.getAttribute('data-slide-event') === 'motivation_appearance'),
+        mental: swiper.slides.find(slide => slide.getAttribute('data-slide-event') === 'motivation_mental'),
+        longer: swiper.slides.find(slide => slide.getAttribute('data-slide-event') === 'motivation_longer')
+      };
+      
+      // Hide all motivation slides first
+      Object.values(motivationSlides).forEach(slide => {
+        if (slide) slide.style.display = 'none';
       });
       
-      // Add the relevant slide back
-      const relevantSlideEvent = `motivation_${selectedMotivation.toLowerCase()}`;
-      toggleSlide(swiper, false, relevantSlideEvent);
+      // Show the relevant slide
+      const relevantSlide = motivationSlides[selectedMotivation.toLowerCase()];
+      if (relevantSlide) {
+        relevantSlide.style.display = 'block';
+        swiper.update(); // Update swiper after changing slide visibility
+      }
       
-      // Update swiper
-      swiper.update();
-      
-      // Allow next slide (integrating with existing validation)
+      // Allow next slide
       swiper.allowSlideNext = true;
-      
-      // Use the existing delay for slide transition
-      setTimeout(() => {
-        swiper.slideNext();
-      }, 500);
+      // Optionally auto-advance to next slide
+      swiper.slideNext();
     });
   });
 }
