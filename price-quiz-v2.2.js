@@ -1007,10 +1007,10 @@ function handleMotivationSelection(swiper) {
       
       // Map the selected value to the correct slide event
       const motivationMap = {
-        'health': 'motivation_health',
-        'appearance': 'motivation_appearance',
-        'mental': 'motivation_mental',
-        'longer': 'motivation_longer'
+        'be healthier and reduce my health risks': 'motivation_health',
+        'improve my physical appearance': 'motivation_appearance',
+        'improve my mental health': 'motivation_mental',
+        'want to live longer life': 'motivation_longer'
       };
       
       const relevantSlideEvent = motivationMap[selectedMotivation];
