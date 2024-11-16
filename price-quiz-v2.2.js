@@ -990,7 +990,7 @@ let removedSlides = {};
 
 function handleMotivationSelection(swiper) {
   // Get all motivation radio inputs
-  const motivationInputs = document.querySelectorAll('input[name="main_motivation"]');
+  const motivationInputs = document.querySelectorAll('input[name="Motivation"]');
   
   motivationInputs.forEach(input => {
     input.addEventListener('change', (e) => {
