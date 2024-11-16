@@ -990,37 +990,58 @@ let removedSlides = {};
 
 function handleMotivationSelection(swiper) {
   // Get all motivation radio inputs
-  const motivationInputs = document.querySelectorAll('input[name="Motivation"]');
+  const motivationInputs = document.querySelectorAll('input[name="main_motivation"]');
   
   motivationInputs.forEach(input => {
     input.addEventListener('change', (e) => {
-      const selectedMotivation = e.target.value;
+      const selectedMotivation = e.target.value.toLowerCase();
       console.log('Selected motivation:', selectedMotivation);
       
-      // Store all motivation-related slides
-      const motivationSlides = {
-        health: swiper.slides.find(slide => slide.getAttribute('data-slide-event') === 'motivation_health'),
-        appearance: swiper.slides.find(slide => slide.getAttribute('data-slide-event') === 'motivation_appearance'),
-        mental: swiper.slides.find(slide => slide.getAttribute('data-slide-event') === 'motivation_mental'),
-        longer: swiper.slides.find(slide => slide.getAttribute('data-slide-event') === 'motivation_longer')
-      };
-      
-      // Hide all motivation slides first
-      Object.values(motivationSlides).forEach(slide => {
-        if (slide) slide.style.display = 'none';
+      // Remove all motivation content slides first
+      swiper.slides.forEach((slide) => {
+        const slideEvent = slide.getAttribute('data-slide-event');
+        if (slideEvent && slideEvent.startsWith('motivation_')) {
+          toggleSlide(swiper, true, slideEvent);
+        }
       });
       
-      // Show the relevant slide
-      const relevantSlide = motivationSlides[selectedMotivation.toLowerCase()];
-      if (relevantSlide) {
-        relevantSlide.style.display = 'block';
-        swiper.update(); // Update swiper after changing slide visibility
-      }
+      // Map the selected value to the correct slide event
+      const motivationMap = {
+        'health': 'motivation_health',
+        'appearance': 'motivation_appearance',
+        'mental': 'motivation_mental',
+        'longer': 'motivation_longer'
+      };
       
-      // Allow next slide
-      swiper.allowSlideNext = true;
-      // Optionally auto-advance to next slide
-      swiper.slideNext();
+      const relevantSlideEvent = motivationMap[selectedMotivation];
+      console.log('Relevant slide event:', relevantSlideEvent);
+      
+      if (relevantSlideEvent) {
+        // Add the relevant slide back
+        toggleSlide(swiper, false, relevantSlideEvent);
+        
+        // Update swiper
+        swiper.update();
+        
+        // Find the index of the next non-motivation slide
+        const nextNonMotivationIndex = swiper.slides.findIndex((slide, index) => {
+          const slideEvent = slide.getAttribute('data-slide-event');
+          return index > swiper.activeIndex && 
+                 slideEvent && 
+                 !slideEvent.startsWith('motivation_');
+        });
+        
+        console.log('Next non-motivation index:', nextNonMotivationIndex);
+        
+        if (nextNonMotivationIndex !== -1) {
+          // Allow slide next
+          swiper.allowSlideNext = true;
+          // Slide to the next non-motivation slide
+          setTimeout(() => {
+            swiper.slideTo(nextNonMotivationIndex);
+          }, 300);
+        }
+      }
     });
   });
 }
