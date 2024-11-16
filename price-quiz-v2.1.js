@@ -90,6 +90,7 @@ const swiperInstanceInitialized = (swiper) => {
   trackSlideChange(swiper.slides[swiper.activeIndex]);
   togglePrevButton(swiper);
   attachInputChangeListeners(swiper);
+  handleMotivationSelection(swiper);
 };
 
 const swiperSlideChanged = (swiper) => {
@@ -986,6 +987,43 @@ const trackSurveyCompleteToSimplifi = () => {
 };
 
 let removedSlides = {};
+
+function handleMotivationSelection(swiper) {
+  // Get all motivation radio inputs
+  const motivationInputs = document.querySelectorAll('input[name="main_motivation"]');
+  
+  motivationInputs.forEach(input => {
+    input.addEventListener('change', (e) => {
+      const selectedMotivation = e.target.value;
+      console.log('Selected motivation:', selectedMotivation);
+      
+      // Store all motivation-related slides
+      const motivationSlides = {
+        health: swiper.slides.find(slide => slide.getAttribute('data-slide-event') === 'motivation_health'),
+        appearance: swiper.slides.find(slide => slide.getAttribute('data-slide-event') === 'motivation_appearance'),
+        general: swiper.slides.find(slide => slide.getAttribute('data-slide-event') === 'motivation_general'),
+        other: swiper.slides.find(slide => slide.getAttribute('data-slide-event') === 'motivation_other')
+      };
+      
+      // Hide all motivation slides first
+      Object.values(motivationSlides).forEach(slide => {
+        if (slide) slide.style.display = 'none';
+      });
+      
+      // Show the relevant slide
+      const relevantSlide = motivationSlides[selectedMotivation.toLowerCase()];
+      if (relevantSlide) {
+        relevantSlide.style.display = 'block';
+        swiper.update(); // Update swiper after changing slide visibility
+      }
+      
+      // Allow next slide
+      swiper.allowSlideNext = true;
+      // Optionally auto-advance to next slide
+      swiper.slideNext();
+    });
+  });
+}
 
 function toggleSlide(swiper, shouldRemove, slideEventValue) {
   if (shouldRemove) {
