@@ -208,9 +208,12 @@ const attachInputChangeListeners = (swiper) => {
 
       // Check if the input is a radio button and it's checked
       if (targetElement.type === "radio" && targetElement.checked) {
-        setTimeout(() => {
-          swiper.slideNext();
-        }, 500);
+        // Don't auto-advance if it's a motivation radio button
+        if (targetElement.name !== "Motivation") {
+          setTimeout(() => {
+            swiper.slideNext();
+          }, 500);
+        }
       }
 
       // Check if the input id is "weight" and the input length is more than 2
@@ -989,13 +992,15 @@ const trackSurveyCompleteToSimplifi = () => {
 let removedSlides = {};
 
 function handleMotivationSelection(swiper) {
-  // Get all motivation radio inputs
   const motivationInputs = document.querySelectorAll('input[name="Motivation"]');
   
   motivationInputs.forEach(input => {
-    input.addEventListener('change', (e) => {
+    input.addEventListener('change', async (e) => {
       const selectedMotivation = e.target.value.toLowerCase();
       console.log('Selected motivation:', selectedMotivation);
+      
+      // Prevent the default auto-advance temporarily
+      e.stopPropagation();
       
       // Remove all motivation content slides first
       swiper.slides.forEach((slide) => {
@@ -1007,10 +1012,10 @@ function handleMotivationSelection(swiper) {
       
       // Map the selected value to the correct slide event
       const motivationMap = {
-        'be healthier and reduce my health risks': 'motivation_health',
-        'improve my physical appearance': 'motivation_appearance',
-        'improve my mental health': 'motivation_mental',
-        'want to live longer life': 'motivation_longer'
+        'health': 'motivation_health',
+        'appearance': 'motivation_appearance',
+        'mental': 'motivation_mental',
+        'longer': 'motivation_longer'
       };
       
       const relevantSlideEvent = motivationMap[selectedMotivation];
@@ -1023,24 +1028,20 @@ function handleMotivationSelection(swiper) {
         // Update swiper
         swiper.update();
         
-        // Find the index of the next non-motivation slide
-        const nextNonMotivationIndex = swiper.slides.findIndex((slide, index) => {
-          const slideEvent = slide.getAttribute('data-slide-event');
-          return index > swiper.activeIndex && 
-                 slideEvent && 
-                 !slideEvent.startsWith('motivation_');
+        // Allow slide next
+        swiper.allowSlideNext = true;
+        
+        // First go to the motivation content slide
+        await new Promise(resolve => {
+          swiper.slideNext();
+          setTimeout(resolve, 500); // Wait for transition
         });
         
-        console.log('Next non-motivation index:', nextNonMotivationIndex);
-        
-        if (nextNonMotivationIndex !== -1) {
-          // Allow slide next
-          swiper.allowSlideNext = true;
-          // Slide to the next non-motivation slide
-          setTimeout(() => {
-            swiper.slideTo(nextNonMotivationIndex);
-          }, 300);
-        }
+        // Then go to the next section
+        await new Promise(resolve => {
+          swiper.slideNext();
+          setTimeout(resolve, 500); // Wait for transition
+        });
       }
     });
   });
