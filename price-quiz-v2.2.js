@@ -1036,12 +1036,7 @@ function handleMotivationSelection(swiper) {
           swiper.slideNext();
           setTimeout(resolve, 500); // Wait for transition
         });
-        
-        // Then go to the next section
-        await new Promise(resolve => {
-          swiper.slideNext();
-          setTimeout(resolve, 500); // Wait for transition
-        });
+      
       }
     });
   });
