@@ -999,8 +999,8 @@ function handleMotivationSelection(swiper) {
       const selectedMotivation = e.target.value.toLowerCase();
       console.log('Selected motivation:', selectedMotivation);
       
-      // Prevent the default auto-advance temporarily
-      e.stopPropagation();
+      // Don't prevent default behavior to allow radio animation
+      // e.stopPropagation(); -- removed this line
       
       // Remove all motivation content slides first
       swiper.slides.forEach((slide) => {
@@ -1031,11 +1031,11 @@ function handleMotivationSelection(swiper) {
         // Allow slide next
         swiper.allowSlideNext = true;
         
-         // Wait 500ms before transitioning
-         await new Promise(resolve => setTimeout(resolve, 500));
-        
-        // Then go to the motivation content slide
-        swiper.slideNext();
+        // Let the radio button animation complete first
+        setTimeout(() => {
+          // Then go to the motivation content slide
+          swiper.slideNext();
+        }, 500);
       }
     });
   });
