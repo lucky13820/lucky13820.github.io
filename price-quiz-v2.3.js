@@ -10,6 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeBraze();
 
   if (window.location.href.includes("#plan")) {
+    $("#quiz-form-wrapper").hide();
+    
     displayPaymentForm();
     const prediction = localStorage.getItem("quiz_prediction");
     if (prediction) {
@@ -366,6 +368,8 @@ function displayPaymentForm() {
   const promo = urlParams.get("promo");
 
   setTimeout(() => {
+    $("#quiz-form-wrapper").hide();
+    
     $(`[data-id="cs-embed"]`).fadeOut("fast", () => {
       $(`[data-id="payment-embed"]`).fadeIn("fast");
       if (Webflow) {
