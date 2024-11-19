@@ -1033,6 +1033,7 @@ function handleMotivationSelection(swiper) {
         
         // First go to the motivation content slide
         await new Promise(resolve => {
+          setTimeout(resolve, 500);
           swiper.slideNext();
           setTimeout(resolve, 500); // Wait for transition
         });
