@@ -1031,13 +1031,11 @@ function handleMotivationSelection(swiper) {
         // Allow slide next
         swiper.allowSlideNext = true;
         
-        // First go to the motivation content slide
-        await new Promise(resolve => {
-          setTimeout(resolve, 500);
-          swiper.slideNext();
-          setTimeout(resolve, 500); // Wait for transition
-        });
-      
+         // Wait 500ms before transitioning
+         await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Then go to the motivation content slide
+        swiper.slideNext();
       }
     });
   });
