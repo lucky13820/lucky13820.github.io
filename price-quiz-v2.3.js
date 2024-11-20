@@ -70,6 +70,16 @@ document.addEventListener("DOMContentLoaded", () => {
   if (window.location.href.includes("#cs")) {
     displayCSEmbed();
   }
+
+  // Add event listener for compounded checkout button
+  const compoundedCheckoutButton = document.querySelector('[data-id="compounded-checkout"]');
+  if (compoundedCheckoutButton) {
+    compoundedCheckoutButton.addEventListener("click", () => {
+      window.dataLayer.push({
+        event: "click_compounded"
+      });
+    });
+  }
 });
 
 const nextButton = document.querySelector("#quiz-next-button");
