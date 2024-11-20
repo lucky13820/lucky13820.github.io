@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeBraze();
 
   if (window.location.href.includes("#plan")) {
-    $("#quiz-form-wrapper").hide();
     
     displayPaymentForm();
     const prediction = localStorage.getItem("quiz_prediction");
