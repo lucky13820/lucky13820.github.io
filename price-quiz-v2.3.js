@@ -53,6 +53,17 @@ document.addEventListener("DOMContentLoaded", () => {
     showPlanButton.addEventListener("click", () => {
       displayPaymentForm();
       window.location.hash = "plans";
+      
+      // Add prediction display logic here
+      const prediction = localStorage.getItem("quiz_prediction");
+      if (prediction) {
+        const predictionElements = document.querySelectorAll('[data-id="prediction"]');
+        predictionElements.forEach(element => {
+          element.textContent = prediction;
+        });
+      } else {
+        document.getElementById("quizPredictionHeading").style.display = "none";
+      }
     });
   }
 
@@ -371,6 +382,18 @@ function displayPaymentForm() {
     
     $(`[data-id="cs-embed"]`).fadeOut("fast", () => {
       $(`[data-id="payment-embed"]`).fadeIn("fast");
+      
+      // Add prediction display logic here as well
+      const prediction = localStorage.getItem("quiz_prediction");
+      if (prediction) {
+        const predictionElements = document.querySelectorAll('[data-id="prediction"]');
+        predictionElements.forEach(element => {
+          element.textContent = prediction;
+        });
+      } else {
+        document.getElementById("quizPredictionHeading").style.display = "none";
+      }
+      
       if (Webflow) {
         Webflow.resize.up();
       }
