@@ -781,11 +781,7 @@ function checkStateSelection() {
     const selectedState = stateInput.value.toLowerCase();
 
     if (
-      selectedState === "mississippi" ||
-      selectedState === "california" ||
-      selectedState === "iowa" ||
-      selectedState === "louisiana" ||
-      selectedState === "wisconsin"
+      selectedState === "louisiana" 
     ) {
       // Show the error message and hide the form
       document.getElementsByClassName("compounded-popup")[0].style.display =
