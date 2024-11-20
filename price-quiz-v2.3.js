@@ -1072,4 +1072,8 @@ function displayCSEmbed() {
       }
     });
   }, 250);
+
+  window.dataLayer.push({
+    event: "cs_recommendation_displayed",
+  });
 }
