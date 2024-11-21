@@ -69,6 +69,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (window.location.href.includes("#cs")) {
     displayCSEmbed();
+    window.dataLayer.push({
+      event: "cs_recommendation_displayed",
+    });
   }
 
   // Add event listener for compounded checkout button
@@ -76,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (compoundedCheckoutButton) {
     compoundedCheckoutButton.addEventListener("click", () => {
       window.dataLayer.push({
-        event: "click_compounded"
+        event: "click_compounded_checkout"
       });
     });
   }
@@ -1074,6 +1077,7 @@ function toggleSlide(swiper, shouldRemove, slideEventValue) {
 }
 
 function displayCSEmbed() {
+ 
   setTimeout(() => {
     $("#quiz-form-wrapper").fadeOut("fast", () => {
       $(`[data-id="cs-embed"]`).fadeIn("fast");
@@ -1082,8 +1086,4 @@ function displayCSEmbed() {
       }
     });
   }, 250);
-
-  window.dataLayer.push({
-    event: "cs_recommendation_displayed",
-  });
 }
