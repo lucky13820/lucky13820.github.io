@@ -69,9 +69,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (window.location.href.includes("#cs")) {
     displayCSEmbed();
-    window.dataLayer.push({
-      event: "cs_recommendation_displayed",
-    });
   }
 
   // Add event listener for compounded checkout button
@@ -1077,6 +1074,9 @@ function toggleSlide(swiper, shouldRemove, slideEventValue) {
 }
 
 function displayCSEmbed() {
+  window.dataLayer.push({
+    event: "cs_recommendation_displayed",
+  });
  
   setTimeout(() => {
     $("#quiz-form-wrapper").fadeOut("fast", () => {
