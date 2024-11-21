@@ -78,6 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
       window.dataLayer.push({
         event: "click_compounded_checkout"
       });
+      console.log("Successfully pushed click_compounded_checkoutd to dataLayer");
     });
   }
 });
