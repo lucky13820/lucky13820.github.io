@@ -1075,16 +1075,21 @@ function toggleSlide(swiper, shouldRemove, slideEventValue) {
 }
 
 function displayCSEmbed() {
-  window.dataLayer.push({
-    event: "cs_recommendation_displayed",
-  });
- 
-  setTimeout(() => {
-    $("#quiz-form-wrapper").fadeOut("fast", () => {
-      $(`[data-id="cs-embed"]`).fadeIn("fast");
+  try {
+    // Push event to dataLayer
+    window.dataLayer.push({
+      event: "cs_recommendation_displayed",
+    });
+
+    // Hide quiz form and show CS embed
+    $("#quiz-form-wrapper").hide();
+    $(`[data-id="cs-embed"]`).fadeIn("fast", () => {
+      // Ensure Webflow updates layout after fade
       if (Webflow) {
         Webflow.resize.up();
       }
     });
-  }, 250);
+  } catch (error) {
+    console.error("Error in displayCSEmbed:", error);
+  }
 }
