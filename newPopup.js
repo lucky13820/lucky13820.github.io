@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Set the popup text
-    popupText = `You've unlocked your first 4 weeks for ${price}`;
+    popupText = `You've unlocked your first 4 weeks for ${price}!`;
     var popupElement = document.querySelector("#offer-popup-open");
 
     // Ensure the element exists before attempting to change its properties
