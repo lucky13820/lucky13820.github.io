@@ -43,6 +43,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Ensure the element exists before attempting to change its properties
     if (popupElement) {
+      // Set data attribute if needed
+      document.querySelector("[data-popup-text]").textContent = popupText;
+      // Change the text content
+      popupElement.textContent = popupText;
       // Simulate the click
       popupElement.click();
       return true;
