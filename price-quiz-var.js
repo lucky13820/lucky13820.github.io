@@ -320,12 +320,12 @@ function toggleGovtPriceAvailability() {
     priceOptions.classList.add("is-govt");
   }
 
-  const specificPriceOption = document.querySelector('[data-price="9"]');
+  const specificPriceOption = document.querySelector('[data-price="39"]');
   if (specificPriceOption) {
     specificPriceOption.remove();
   }
   setTimeout(function () {
-    document.querySelector('[data-price="19"]')?.click();
+    document.querySelector('[data-price="49"]')?.click();
   }, 50);
 }
 
@@ -934,7 +934,7 @@ function trackToShareASale() {
 function addPriceFormListeners() {
   var form = document.querySelector("#wf-form-Price-Options-Form");
 
-  document.querySelector('[data-price="9"]').click();
+  document.querySelector('[data-price="39"]').click();
 
   // Check if the form exists to prevent errors
   if (form) {
