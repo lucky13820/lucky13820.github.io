@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
     promoType = promoType.toLowerCase();
 
     switch (promoType) {
-      case "59.65":
+      case "59":
         price = "$59.65";
         break;
       case "49":
@@ -38,6 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Set the popup text
+    popupText = `You've unlocked your first 4 weeks for ${price}`;
     var popupElement = document.querySelector("#offer-popup-open");
 
     // Ensure the element exists before attempting to change its properties
