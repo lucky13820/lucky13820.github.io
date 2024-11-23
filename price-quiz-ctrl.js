@@ -388,7 +388,7 @@ function displayPaymentForm() {
         '[data-id="direct-checkout-button"]'
       );
       if (checkoutButton) {
-        checkoutButton.href = `/checkout-ctrl?promo=${promo}`;
+        checkoutButton.href = `/checkout-ct?promo=${promo}`;
       }
     }
   } catch (error) {
@@ -948,7 +948,7 @@ function addPriceFormListeners() {
       promo = event.target.parentNode.dataset.price;
 
       let continueToCheckout = document.getElementById("continueToCheckout");
-      continueToCheckout.href = `/checkout-ctrl?promo=${promo}`;
+      continueToCheckout.href = `/checkout-ct?promo=${promo}`;
       continueToCheckout.rel = "prefetch";
 
       console.log("radio changed to", promo);
