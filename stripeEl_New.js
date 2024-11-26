@@ -231,15 +231,9 @@ async function handleSubmit(e) {
     }
 
     const clientSecret = subscription.data.paymentIntent.client_secret;
-    const paymentIntentId = subscription.data.paymentIntent.id;
-    const { finalPrice } = await fetchPrice();
     customerId = subscription.data.customer;
     subscriptionId = subscription.data.subscription;
-
-    sessionStorage.setItem('stripePaymentInfo', JSON.stringify({
-      paymentIntentId,
-      finalPrice
-    }));
+    console.log("Sub was created, proceeding");
 
     // first send customer info to backend
     const response = await sendCustomerInfo(
