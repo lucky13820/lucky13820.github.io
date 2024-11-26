@@ -237,6 +237,7 @@ async function handleSubmit(e) {
 
     sessionStorage.setItem('stripePaymentInfo', JSON.stringify({
       order_id,
+      paymentEmail,
     }));
 
     // first send customer info to backend
