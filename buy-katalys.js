@@ -72,6 +72,9 @@ async function updatePrice() {
         }
 
         const PRICE = finalPrice
+        sessionStorage.setItem('stripePaymentInfo', JSON.stringify({
+            PRICE,
+          }));
 
         const buttonPriceElement = document.getElementById('button-price')
         const checkoutPriceElement = document.getElementById('checkout-price')

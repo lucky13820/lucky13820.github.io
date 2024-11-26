@@ -138,13 +138,13 @@ const trackToRewardful = async () => {
 function trackToKatalys() {
   // Get payment info from sessionStorage
   const paymentInfo = JSON.parse(sessionStorage.getItem('stripePaymentInfo') || '{}');
-  const {  order_id, sale_amount } = paymentInfo;
+  const {  order_id, PRICE } = paymentInfo;
 
   _revoffers_track = window._revoffers_track || [];
   _revoffers_track.push({
     action: "convert",
     order_id:  order_id || '1', // Use payment intent ID as order_id, fallback to '1'
-    sale_amount: sale_amount || 9, // Use final price as sale_amount, fallback to 9
+    sale_amount: PRICE || 9, // Use final price as sale_amount, fallback to 9
     email_address: email,
   });
 
