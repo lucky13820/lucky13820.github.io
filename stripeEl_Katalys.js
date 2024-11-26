@@ -235,7 +235,12 @@ async function handleSubmit(e) {
     customerId = subscription.data.customer;
     subscriptionId = subscription.data.subscription;
 
+    // Get existing data from sessionStorage
+    const existingData = JSON.parse(sessionStorage.getItem('stripePaymentInfo') || '{}');
+    
+    // Merge existing data with new data
     sessionStorage.setItem('stripePaymentInfo', JSON.stringify({
+      ...existingData,
       order_id,
       paymentEmail,
     }));
