@@ -231,12 +231,15 @@ async function handleSubmit(e) {
     }
 
     const clientSecret = subscription.data.paymentIntent.client_secret;
-    const paymentIntentId = subscription.data.paymentIntent.id;
+    const order_id = subscription.data.paymentIntent.id;
+    const { finalPrice } = await fetchPrice();
+    const sale_amount = finalPrice;
     customerId = subscription.data.customer;
     subscriptionId = subscription.data.subscription;
 
     sessionStorage.setItem('stripePaymentInfo', JSON.stringify({
-      paymentIntentId,
+      order_id,
+      sale_amount
     }));
 
     // first send customer info to backend

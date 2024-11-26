@@ -144,7 +144,6 @@ function trackToKatalys() {
     action: "convert",
     order_id: paymentIntentId || '1', // Use payment intent ID as order_id, fallback to '1'
     sale_amount: finalPrice || 9, // Use final price as sale_amount, fallback to 9
-    subtotal_amount: finalPrice || 9, // Use final price as subtotal_amount
     email_address: email,
   });
 
