@@ -148,6 +148,8 @@ function trackToKatalys() {
     email_address: email,
   });
 
+  console.log("trackToKatalys: order_id, PRICE, email", order_id, PRICE, email);
+
   // Clean up stored payment info
   // sessionStorage.removeItem('stripePaymentInfo');
 }
