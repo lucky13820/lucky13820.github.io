@@ -149,5 +149,5 @@ function trackToKatalys() {
   });
 
   // Clean up stored payment info
-  sessionStorage.removeItem('stripePaymentInfo');
+  // sessionStorage.removeItem('stripePaymentInfo');
 }
