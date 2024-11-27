@@ -424,6 +424,7 @@ async function fetchPrice() {
       ...existingData,
       sale_amount,
     }));
+    console.log("sale_amount", sale_amount);
 
     return { originalPrice, priceOff, finalPrice };
   } catch (err) {
