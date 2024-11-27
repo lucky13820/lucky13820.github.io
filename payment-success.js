@@ -151,5 +151,5 @@ function trackToKatalys() {
   console.log("trackToKatalys: order_id, sale_amount, email", order_id, sale_amount, paymentEmail);
 
   // Clean up stored payment info
-  // sessionStorage.removeItem('stripePaymentInfo');
+  sessionStorage.removeItem('stripePaymentInfo');
 }

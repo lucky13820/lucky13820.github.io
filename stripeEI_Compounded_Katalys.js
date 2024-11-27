@@ -1,11 +1,11 @@
 let subscription;
 const STAGING = window.location.hostname.includes("webflow.io"); // true if prod site, else false
 
-const PRICE_ID_PROD = "price_1N9ZNREC8TusN399Fj2wQIXH";
-const PRICE_ID_DEV = "price_1N9ZFWEC8TusN399xNwUHjCh";
+const PRICE_ID_PROD = "price_1OD8avEC8TusN399p3t65EMe";
+const PRICE_ID_DEV = "price_1OAKHpEC8TusN399h2RdfnSo";
 
-const DEFAULT_PROMO_PROD = "GETSTARTED";
-const DEFAULT_PROMO_DEV = "GETSTARTED";
+const DEFAULT_PROMO_PROD = "getcompounded";
+const DEFAULT_PROMO_DEV = "getcompounded";
 
 const DEFAULT_PRICE_ID = STAGING ? PRICE_ID_DEV : PRICE_ID_PROD;
 const DEFAULT_PROMO = STAGING ? DEFAULT_PROMO_DEV : DEFAULT_PROMO_PROD;
@@ -17,7 +17,7 @@ const BASE_URLS = {
 
 const PRICE_API_URL = {
   staging: "https://temp-sunrise-stripe.vercel.app/api/price_staging",
-  prod: "https://temp-sunrise-stripe.vercel.app/api/",
+  prod: "https://temp-sunrise-stripe.vercel.app/api/price_prod",
 };
 
 const ENDPOINT = STAGING ? BASE_URLS.staging : BASE_URLS.prod;
@@ -57,7 +57,7 @@ if (document.getElementById("prediction-form")) {
     .addEventListener("submit", handlePredictionFormSubmit);
 }
 
-async function initializePlaceholder() {
+async function initializePlaceholder(email) {
   const options = {
     mode: "subscription",
     amount: 900,
@@ -70,7 +70,7 @@ async function initializePlaceholder() {
         colorText: "#191a2c",
         colorDanger: "#df1b41",
         borderRadius: "8px",
-        fontSizeSm: "1.15rem",
+        fontSizeSm: "1.15rem"
       },
     },
   };
@@ -82,20 +82,19 @@ async function initializePlaceholder() {
   const paymentElement = elements.create("payment");
   paymentElement.mount("#payment-element");
 
-  createLinkAuthenticationElement(elements);
+  createLinkAuthenticationElement(elements, email);
 }
 
 async function createSubscription() {
   const priceId = getQueryParam("price") ?? DEFAULT_PRICE_ID;
   const linkParam = getQueryParam("lnk");
   const rebateParam = getQueryParam("rebate");
-  const blockPrepaidParam = getQueryParam("bpp")
-  const trialParam = getQueryParam("trial")
+  const blockPrepaidParam = getQueryParam("bpp");
+  const trialParam = getQueryParam("trial");
   const oneWeekCadence = getQueryParam("wkly");
-
+  const compoundedIntake = window.location.href.includes("compounded");
 
   const storedUTMParams = JSON.parse(localStorage.getItem("utmParams") || "{}");
-
 
   // Constructing request body directly
   const body = {
@@ -131,14 +130,21 @@ async function createSubscription() {
     body.introPeriod = true;
   }
 
+  if (compoundedIntake) {
+    body.selectedIntake = "compoundedIntake";
+  } else {
+    body.selectedIntake = "regularIntake";
+  }
+
   if (oneWeekCadence) {
-  	if (STAGING) {
-  		body.weeklyBillingPriceIds =
-  			"price_1NzS8nEC8TusN399sbz44Sfi,price_1NzS9zEC8TusN399qHkXdFEv";
-  	} else { // prod ids
-  		body.weeklyBillingPriceIds =
-  			"price_1O066eEC8TusN399nZGYUJ5Z,price_1NzrT0EC8TusN399xjf0DBfZ";
-  	}
+    if (STAGING) {
+      body.weeklyBillingPriceIds =
+        "price_1NzS8nEC8TusN399sbz44Sfi,price_1NzS9zEC8TusN399qHkXdFEv";
+    } else {
+      // prod ids
+      body.weeklyBillingPriceIds =
+        "price_1O066eEC8TusN399nZGYUJ5Z,price_1NzrT0EC8TusN399xjf0DBfZ";
+    }
   }
 
   const options = {
@@ -168,6 +174,7 @@ function createElements(clientSecret) {
       colorText: "#191a2c",
       colorDanger: "#df1b41",
       borderRadius: "8px",
+      fontSizeSm: "1.15rem"
     },
   };
   const loader = "auto";
@@ -179,10 +186,17 @@ function createElements(clientSecret) {
   });
 }
 
-function createLinkAuthenticationElement(elements) {
-  const linkAuthenticationElement = elements.create("linkAuthentication");
-  linkAuthenticationElement.mount("#link-authentication-element");
+function createLinkAuthenticationElement(elements, email) {
+  let linkAuthenticationElement;
+  if (email) {
+    linkAuthenticationElement = elements.create("linkAuthentication", {
+      email,
+    });
+  } else {
+    linkAuthenticationElement = elements.create("linkAuthentication");
+  }
 
+  linkAuthenticationElement.mount("#link-authentication-element");
   linkAuthenticationElement.on("change", handleLinkAuthenticationChange);
 }
 
@@ -230,7 +244,6 @@ async function handleSubmit(e) {
       subscription = await createSubscription();
     }
 
-    const clientSecret = subscription.data.paymentIntent.client_secret;
     const order_id = subscription.data.paymentIntent.id;
     customerId = subscription.data.customer;
     subscriptionId = subscription.data.subscription;
