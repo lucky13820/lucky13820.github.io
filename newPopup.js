@@ -15,13 +15,13 @@ document.addEventListener("DOMContentLoaded", function () {
     promoType = promoType.toLowerCase();
 
     switch (promoType) {
-      case "58WL":
+      case "58wl":
         price = "$58.65";
         break;
-      case "49WL":
+      case "49wl":
         price = "$49";
         break;
-      case "39WL":
+      case "39wl":
         price = "$39";
         break;
       case "39":
