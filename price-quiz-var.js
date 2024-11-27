@@ -948,7 +948,7 @@ function addPriceFormListeners() {
       promo = event.target.parentNode.dataset.price;
 
       let continueToCheckout = document.getElementById("continueToCheckout");
-      continueToCheckout.href = `/checkout-v?promo=${promo}`;
+      continueToCheckout.href = `/checkout-v?promo=${promo}WL`;
       continueToCheckout.rel = "prefetch";
 
       console.log("radio changed to", promo);
