@@ -419,7 +419,8 @@ async function fetchPrice() {
     const data = await response.json();
     const { originalPrice, priceOff, finalPrice } = data.invoice;
     const sale_amount = finalPrice;
-
+ // Get existing data from sessionStorage
+ const existingData = JSON.parse(sessionStorage.getItem('stripePaymentInfo') || '{}');
     sessionStorage.setItem('stripePaymentInfo', JSON.stringify({
       ...existingData,
       sale_amount,
