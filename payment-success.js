@@ -71,7 +71,7 @@ async function performConversion() {
     trackToKatalys();
     
     // Redirect disabled temporarily
-    if (REDIRECT_URL) {
+    /* if (REDIRECT_URL) {
       console.log("Ready to redirect to:", REDIRECT_URL);
       setTimeout(function () {
         window.location.href = REDIRECT_URL;
@@ -79,15 +79,15 @@ async function performConversion() {
     } else {
       console.warn("Redirect URL is not defined.");
       showAlertAndRedirect(ERROR_MESSAGE);
-    }
+    } */
     
   } catch (error) {
     console.error("An error occurred:", error);
-    if (REDIRECT_URL) {
+    /* if (REDIRECT_URL) {
       window.location.href = REDIRECT_URL;
     } else {
       showAlertAndRedirect(ERROR_MESSAGE);
-    }
+    } */
   }
 }
 
