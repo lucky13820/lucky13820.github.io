@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeBraze();
 
   if (window.location.href.includes("#plan")) {
-    
     displayPaymentForm();
     const prediction = localStorage.getItem("quiz_prediction");
     if (prediction) {
@@ -53,12 +52,14 @@ document.addEventListener("DOMContentLoaded", () => {
     showPlanButton.addEventListener("click", () => {
       displayPaymentForm();
       window.location.hash = "plans";
-      
+
       // Add prediction display logic here
       const prediction = localStorage.getItem("quiz_prediction");
       if (prediction) {
-        const predictionElements = document.querySelectorAll('[data-id="prediction"]');
-        predictionElements.forEach(element => {
+        const predictionElements = document.querySelectorAll(
+          '[data-id="prediction"]'
+        );
+        predictionElements.forEach((element) => {
           element.textContent = prediction;
         });
       } else {
@@ -72,13 +73,17 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Add event listener for compounded checkout button
-  const compoundedCheckoutButton = document.querySelector('[data-id="compounded-checkout"]');
+  const compoundedCheckoutButton = document.querySelector(
+    '[data-id="compounded-checkout"]'
+  );
   if (compoundedCheckoutButton) {
     compoundedCheckoutButton.addEventListener("click", () => {
       window.dataLayer.push({
-        event: "click_compounded_checkout"
+        event: "click_compounded_checkout",
       });
-      console.log("Successfully pushed click_compounded_checkoutd to dataLayer");
+      console.log(
+        "Successfully pushed click_compounded_checkoutd to dataLayer"
+      );
     });
   }
 });
@@ -125,6 +130,7 @@ const swiperInstanceInitialized = (swiper) => {
   trackSlideChange(swiper.slides[swiper.activeIndex]);
   togglePrevButton(swiper);
   attachInputChangeListeners(swiper);
+  handleMotivationSelection(swiper);
 };
 
 const swiperSlideChanged = (swiper) => {
@@ -242,9 +248,12 @@ const attachInputChangeListeners = (swiper) => {
 
       // Check if the input is a radio button and it's checked
       if (targetElement.type === "radio" && targetElement.checked) {
-        setTimeout(() => {
-          swiper.slideNext();
-        }, 500);
+        // Don't auto-advance if it's a motivation radio button
+        if (targetElement.name !== "Motivation") {
+          setTimeout(() => {
+            swiper.slideNext();
+          }, 500);
+        }
       }
 
       // Check if the input id is "weight" and the input length is more than 2
@@ -390,21 +399,23 @@ function displayPaymentForm() {
 
   setTimeout(() => {
     $("#quiz-form-wrapper").hide();
-    
+
     $(`[data-id="cs-embed"]`).fadeOut("fast", () => {
       $(`[data-id="payment-embed"]`).fadeIn("fast");
-      
+
       // Add prediction display logic here as well
       const prediction = localStorage.getItem("quiz_prediction");
       if (prediction) {
-        const predictionElements = document.querySelectorAll('[data-id="prediction"]');
-        predictionElements.forEach(element => {
+        const predictionElements = document.querySelectorAll(
+          '[data-id="prediction"]'
+        );
+        predictionElements.forEach((element) => {
           element.textContent = prediction;
         });
       } else {
         document.getElementById("quizPredictionHeading").style.display = "none";
       }
-      
+
       if (Webflow) {
         Webflow.resize.up();
       }
@@ -493,14 +504,19 @@ function showNotEligibleBlock(reason) {
 }
 
 // Assuming this is within your existing code where you define the optInCheckbox and phoneInput
-const optInCheckbox = document.querySelector('input[type="checkbox"][name="Opt-In"]');
+const optInCheckbox = document.querySelector(
+  'input[type="checkbox"][name="Opt-In"]'
+);
 const phoneInput = document.getElementById("phone");
 
 // Add an event listener to the opt-in checkbox
 if (optInCheckbox) {
   optInCheckbox.addEventListener("change", () => {
     // Check if the checkbox is checked and the phone input is empty
-    if (optInCheckbox.checked && (!phoneInput || phoneInput.value.trim() === "")) {
+    if (
+      optInCheckbox.checked &&
+      (!phoneInput || phoneInput.value.trim() === "")
+    ) {
       alert("Please fill in your phone number to opt-in for SMS marketing."); // Show a popup
       phoneInput.focus(); // Optionally, focus on the phone input for user convenience
     }
@@ -661,7 +677,7 @@ function createBrazeUser(data) {
   Object.entries(rest).forEach(([key, value]) =>
     user.setCustomUserAttribute(key, value)
   );
-  
+
   braze.logCustomEvent("Quiz_Flow_Complete", {
     ...data,
     questionnaire_id: "regular",
@@ -1035,6 +1051,58 @@ const trackSurveyCompleteToSimplifi = () => {
 };
 
 let removedSlides = {};
+
+function handleMotivationSelection(swiper) {
+  const motivationInputs = document.querySelectorAll(
+    'input[name="Motivation"]'
+  );
+
+  motivationInputs.forEach((input) => {
+    input.addEventListener("change", async (e) => {
+      const selectedMotivation = e.target.value.toLowerCase();
+
+      console.log("Selected motivation:", selectedMotivation);
+      // Remove all motivation content slides first
+      swiper.slides.forEach((slide) => {
+        const slideEvent = slide.getAttribute("data-slide-event");
+
+        if (slideEvent && slideEvent.startsWith("motivation_")) {
+          toggleSlide(swiper, true, slideEvent);
+        }
+      });
+
+      // Map the selected value to the correct slide event
+
+      const motivationMap = {
+        health: "motivation_health",
+
+        appearance: "motivation_appearance",
+
+        mental: "motivation_mental",
+
+        longer: "motivation_longer",
+      };
+
+      const relevantSlideEvent = motivationMap[selectedMotivation];
+
+      console.log("Relevant slide event:", relevantSlideEvent);
+
+      if (relevantSlideEvent) {
+        // Add the relevant slide back
+        toggleSlide(swiper, false, relevantSlideEvent);
+        // Update swiper
+        swiper.update();
+        // Allow slide next only if a motivation is selected
+        swiper.allowSlideNext = true;
+        // Let the radio button animation complete first
+        setTimeout(() => {
+          // Then go to the motivation content slide
+          swiper.slideNext();
+        }, 500);
+      }
+    });
+  });
+}
 
 function toggleSlide(swiper, shouldRemove, slideEventValue) {
   if (shouldRemove) {

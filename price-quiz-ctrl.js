@@ -90,6 +90,7 @@ const swiperInstanceInitialized = (swiper) => {
   trackSlideChange(swiper.slides[swiper.activeIndex]);
   togglePrevButton(swiper);
   attachInputChangeListeners(swiper);
+  handleMotivationSelection(swiper);
 };
 
 const swiperSlideChanged = (swiper) => {
@@ -207,9 +208,12 @@ const attachInputChangeListeners = (swiper) => {
 
       // Check if the input is a radio button and it's checked
       if (targetElement.type === "radio" && targetElement.checked) {
-        setTimeout(() => {
-          swiper.slideNext();
-        }, 500);
+        // Don't auto-advance if it's a motivation radio button
+        if (targetElement.name !== "Motivation") {
+          setTimeout(() => {
+            swiper.slideNext();
+          }, 500);
+        }
       }
 
       // Check if the input id is "weight" and the input length is more than 2
@@ -986,6 +990,53 @@ const trackSurveyCompleteToSimplifi = () => {
 };
 
 let removedSlides = {};
+
+function handleMotivationSelection(swiper) {
+  const motivationInputs = document.querySelectorAll('input[name="Motivation"]');
+  
+  motivationInputs.forEach(input => {
+    input.addEventListener('change', async (e) => {
+      const selectedMotivation = e.target.value.toLowerCase();
+      console.log('Selected motivation:', selectedMotivation);
+      
+      // Remove all motivation content slides first
+      swiper.slides.forEach((slide) => {
+        const slideEvent = slide.getAttribute('data-slide-event');
+        if (slideEvent && slideEvent.startsWith('motivation_')) {
+          toggleSlide(swiper, true, slideEvent);
+        }
+      });
+      
+      // Map the selected value to the correct slide event
+      const motivationMap = {
+        'health': 'motivation_health',
+        'appearance': 'motivation_appearance',
+        'mental': 'motivation_mental',
+        'longer': 'motivation_longer'
+      };
+      
+      const relevantSlideEvent = motivationMap[selectedMotivation];
+      console.log('Relevant slide event:', relevantSlideEvent);
+      
+      if (relevantSlideEvent) {
+        // Add the relevant slide back
+        toggleSlide(swiper, false, relevantSlideEvent);
+        
+        // Update swiper
+        swiper.update();
+        
+        // Allow slide next only if a motivation is selected
+        swiper.allowSlideNext = true;
+        
+        // Let the radio button animation complete first
+        setTimeout(() => {
+          // Then go to the motivation content slide
+          swiper.slideNext();
+        }, 500);
+      }
+    });
+  });
+}
 
 function toggleSlide(swiper, shouldRemove, slideEventValue) {
   if (shouldRemove) {
