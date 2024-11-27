@@ -419,6 +419,11 @@ async function fetchPrice() {
     const data = await response.json();
     const { originalPrice, priceOff, finalPrice } = data.invoice;
 
+    sessionStorage.setItem('stripePaymentInfo', JSON.stringify({
+      ...existingData,
+      finalPrice,
+    }));
+
     return { originalPrice, priceOff, finalPrice };
   } catch (err) {
     console.error(err);
