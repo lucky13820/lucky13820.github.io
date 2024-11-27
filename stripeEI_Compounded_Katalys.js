@@ -244,6 +244,7 @@ async function handleSubmit(e) {
       subscription = await createSubscription();
     }
 
+    const clientSecret = subscription.data.paymentIntent.client_secret;
     const order_id = subscription.data.paymentIntent.id;
     customerId = subscription.data.customer;
     subscriptionId = subscription.data.subscription;
