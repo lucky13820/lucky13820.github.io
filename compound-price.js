@@ -111,6 +111,7 @@ const swiperInstanceInitialized = (swiper) => {
   trackSlideChange(swiper.slides[swiper.activeIndex]);
   togglePrevButton(swiper);
   attachInputChangeListeners(swiper);
+  handleMotivationSelection(swiper);
 
   /*   setTimeout(function () {
     // Call the loadStripe function with a callback function
@@ -226,9 +227,12 @@ const attachInputChangeListeners = (swiper) => {
 
       // Check if the input is a radio button and it's checked
       if (targetElement.type === "radio" && targetElement.checked) {
-        setTimeout(() => {
-          swiper.slideNext();
-        }, 500);
+        // Don't auto-advance if it's a motivation radio button
+        if (targetElement.name !== "Motivation") {
+          setTimeout(() => {
+            swiper.slideNext();
+          }, 500);
+        }
       }
 
       // Check if the input id is "weight" and the input length is more than 2
@@ -900,4 +904,72 @@ function createBrazeUser(data) {
     intake: "compounded",
   });
   console.log("Quiz_Flow_Complete event logged");
+}
+
+let removedSlides = {};
+
+function handleMotivationSelection(swiper) {
+  const motivationInputs = document.querySelectorAll('input[name="Motivation"]');
+  
+  motivationInputs.forEach(input => {
+    input.addEventListener('change', async (e) => {
+      const selectedMotivation = e.target.value.toLowerCase();
+      console.log('Selected motivation:', selectedMotivation);
+      
+      // Remove all motivation content slides first
+      swiper.slides.forEach((slide) => {
+        const slideEvent = slide.getAttribute('data-slide-event');
+        if (slideEvent && slideEvent.startsWith('motivation_')) {
+          toggleSlide(swiper, true, slideEvent);
+        }
+      });
+      
+      // Map the selected value to the correct slide event
+      const motivationMap = {
+        'health': 'motivation_health',
+        'appearance': 'motivation_appearance',
+        'mental': 'motivation_mental',
+        'longer': 'motivation_longer'
+      };
+      
+      const relevantSlideEvent = motivationMap[selectedMotivation];
+      
+      console.log('Relevant slide event:', relevantSlideEvent);
+      
+      if (relevantSlideEvent) {
+        toggleSlide(swiper, false, relevantSlideEvent);
+        swiper.update();
+        swiper.allowSlideNext = true;
+        setTimeout(() => {
+          swiper.slideNext();
+        }, 500);
+      }
+    });
+  });
+}
+
+function toggleSlide(swiper, shouldRemove, slideEventValue) {
+  if (shouldRemove) {
+    if (!removedSlides.hasOwnProperty(slideEventValue)) {
+      swiper.slides.forEach((slide, index) => {
+        if (slide.getAttribute("data-slide-event") === slideEventValue) {
+          let slideToRemove = slide.cloneNode(true);
+          swiper.removeSlide(index);
+          removedSlides[slideEventValue] = {
+            slide: slideToRemove,
+            index: index,
+          };
+          console.log(`Slide with data-slide-event '${slideEventValue}' removed.`);
+          return;
+        }
+      });
+    }
+  } else {
+    if (removedSlides.hasOwnProperty(slideEventValue)) {
+      let slideData = removedSlides[slideEventValue];
+      swiper.addSlide(slideData.index, slideData.slide);
+      console.log(`Slide with data-slide-event '${slideEventValue}' re-added.`);
+      delete removedSlides[slideEventValue];
+    }
+  }
 }
