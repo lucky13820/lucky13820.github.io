@@ -48,45 +48,154 @@ function sendVWOPurchaseEvent(textValue) {
 }
 
 async function performConversion() {
-  try {
-    await EF.conversion({
-      offer_id: 7989,
-    });
+  const trackingPromise = (async () => {
+    try {
+      await Promise.all([
+        // Core tracking
+        (async () => {
+          try {
+            await EF.conversion({ offer_id: 7989 });
+            console.log('✅ EF tracking completed successfully');
+          } catch (error) {
+            console.error('❌ EF tracking failed:', error);
+          }
+        })(),
 
-    if (typeof gtag === "function") {
-      const email = localStorage.getItem("email");
-      if (email) {
-        gtag("event", "payment_success", {
-          event_label: email,
-        });
-        if (window.growsurf) {
-          growsurf.triggerReferral(email);
-      }
-      } else {
-        gtag("event", "payment_success");
-      }
+        // GrowSurf tracking
+        (async () => {
+          const email = localStorage.getItem("email");
+          if (!email) {
+            console.log('ℹ️ GrowSurf tracking skipped - email not available');
+            return;
+          }
+
+          try {
+            // Wait for GrowSurf to be ready
+            await new Promise((resolve, reject) => {
+              if (window.growsurf) {
+                resolve();
+                return;
+              }
+
+              let attempts = 0;
+              const maxAttempts = 15; // 3 seconds total
+              const interval = setInterval(() => {
+                attempts++;
+                if (window.growsurf) {
+                  clearInterval(interval);
+                  resolve();
+                } else if (attempts >= maxAttempts) {
+                  clearInterval(interval);
+                  reject(new Error('GrowSurf failed to initialize after 3 seconds'));
+                }
+              }, 200);
+
+              // Also listen for the grsfReady event
+              window.addEventListener('grsfReady', () => {
+                clearInterval(interval);
+                resolve();
+              });
+            });
+
+            const result = await window.growsurf.triggerReferral({ email });
+
+            if (result) {
+              console.log('✅ GrowSurf participant added successfully', result);
+            } else {
+              console.log(result);
+              throw new Error('Invalid response from GrowSurf');
+            }
+
+          } catch (error) {
+            console.error('❌ GrowSurf tracking failed:', error);
+            // Don't rethrow - we want to continue with other tracking
+          }
+        })(),
+
+        // Google Analytics tracking
+        (async () => {
+          try {
+            if (typeof gtag === "function") {
+              const email = localStorage.getItem("email");
+              if (email) {
+                gtag("event", "payment_success", {
+                  event_label: email,
+                });
+              } else {
+                gtag("event", "payment_success");
+              }
+              console.log('✅ Google Analytics tracking completed');
+            } else {
+              console.log("ℹ️ Google Analytics tracking skipped - gtag not defined");
+            }
+          } catch (error) {
+            console.error('❌ Google Analytics tracking failed:', error);
+          }
+        })(),
+
+        // Rewardful tracking
+        (async () => {
+          try {
+            await trackToRewardful();
+            console.log('✅ Rewardful tracking completed');
+          } catch (error) {
+            console.error('❌ Rewardful tracking failed:', error);
+          }
+        })(),
+
+        // VWO tracking
+        (async () => {
+          try {
+            await new Promise(resolve => {
+              sendVWOPurchaseEvent("true");
+              resolve();
+            });
+            console.log('✅ VWO tracking completed');
+          } catch (error) {
+            console.error('❌ VWO tracking failed:', error);
+          }
+        })(),
+
+        // Katalys tracking
+        (async () => {
+          try {
+            await new Promise(resolve => {
+              trackToKatalys();
+              resolve();
+            });
+            console.log('✅ Katalys tracking completed');
+          } catch (error) {
+            console.error('❌ Katalys tracking failed:', error);
+          }
+        })()
+      ]);
+
+    } catch (error) {
+      console.error("❌ Overall tracking error:", error);
+    }
+  })();
+
+  const timeoutPromise = new Promise(resolve => {
+    setTimeout(() => {
+      console.log('⚠️ Tracking timeout reached (3s) - proceeding with redirect');
+      resolve();
+    }, 3000);
+  });
+
+  try {
+    await Promise.race([trackingPromise, timeoutPromise]);
+    console.log('ℹ️ Proceeding with redirect...');
+
+    if (REDIRECT_URL) {
+      window.location.href = REDIRECT_URL;
     } else {
-      console.log("gtag function is not defined.");
+      console.warn("❌ Redirect URL is not defined");
+      showAlertAndRedirect(ERROR_MESSAGE);
     }
 
-    trackToRewardful();
-    sendVWOPurchaseEvent("true");
-    trackToKatalys();
-    
-    // Redirect disabled temporarily
-     if (REDIRECT_URL) {
-      console.log("Ready to redirect to:", REDIRECT_URL);
-      setTimeout(function () {
-        window.location.href = REDIRECT_URL;
-      }, 500);
-    } else {
-      console.warn("Redirect URL is not defined.");
-      showAlertAndRedirect(ERROR_MESSAGE);
-    } 
-    
   } catch (error) {
-    console.error("An error occurred:", error);
-     if (REDIRECT_URL) {
+    console.error("❌ An error occurred:", error);
+    if (REDIRECT_URL) {
       window.location.href = REDIRECT_URL;
     } else {
       showAlertAndRedirect(ERROR_MESSAGE);
@@ -146,8 +255,8 @@ function trackToKatalys() {
   _revoffers_track = window._revoffers_track || [];
   _revoffers_track.push({
     action: "convert",
-    order_id:  order_id, // Use payment intent ID as order_id, fallback to '1'
-    sale_amount: sale_amount, // Use final price as sale_amount, fallback to 9
+    order_id:  order_id, 
+    sale_amount: sale_amount,
     email_address: paymentEmail,
   });
 
