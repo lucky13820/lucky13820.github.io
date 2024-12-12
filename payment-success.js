@@ -59,6 +59,9 @@ async function performConversion() {
         gtag("event", "payment_success", {
           event_label: email,
         });
+        if (window.growsurf) {
+          growsurf.triggerReferral(email);
+      }
       } else {
         gtag("event", "payment_success");
       }
