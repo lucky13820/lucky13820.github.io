@@ -100,7 +100,7 @@ async function performConversion() {
             const result = await window.growsurf.triggerReferral({ email });
 
             if (result) {
-              console.log('✅ GrowSurf participant added successfully', result);
+              console.log('✅ GrowSurf referral triggered successfully', result);
             } else {
               console.log(result);
               throw new Error('Invalid response from GrowSurf');
