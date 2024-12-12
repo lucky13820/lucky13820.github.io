@@ -53,6 +53,7 @@ async function run() {
             })
             if (window.growsurf) {
                 growsurf.addParticipant(emailValue);
+                console.log('participant loged' + emailValue);
             }
             if (isStaging) {
                 console.log('found and updated')
