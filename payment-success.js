@@ -97,15 +97,6 @@ async function performConversion() {
               });
             });
 
-            const result = await window.growsurf.triggerReferral({ email });
-
-            if (result) {
-              console.log('✅ GrowSurf referral triggered successfully', result);
-            } else {
-              console.log(result);
-              throw new Error('Invalid response from GrowSurf');
-            }
-
           } catch (error) {
             console.error('❌ GrowSurf tracking failed:', error);
             // Don't rethrow - we want to continue with other tracking
