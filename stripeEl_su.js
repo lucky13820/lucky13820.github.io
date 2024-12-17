@@ -73,26 +73,19 @@ async function initializePlaceholder() {
         fontSizeSm: "1.15rem",
       },
     },
-    fields: {
-      billingDetails: {
-        address: {
-          country: 'us',
-          line1: 'required', // Street address
-          line2: 'optional', // Apartment, suite, etc.
-          city: 'required',
-          state: 'required',
-          postalCode: 'required'
-        }
-      }
-    }
   };
+
+  const addressOptions = { mode: 'shipping' };
 
   // Set up Stripe.js and Elements to use in checkout form
   elements = stripe.elements(options);
+  const addressElement = elements.create('address', addressOptions);
 
   // Create and mount the Payment Element
   const paymentElement = elements.create("payment");
   paymentElement.mount("#payment-element");
+
+  addressElement.mount('#address-element');
 
   createLinkAuthenticationElement(elements);
 }
