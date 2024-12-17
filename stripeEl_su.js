@@ -75,7 +75,7 @@ async function initializePlaceholder() {
     },
   };
 
-  const addressOptions = { mode: 'shipping' };
+  const addressOptions = { mode: 'shipping', allowedCountries: 'US' };
 
   // Set up Stripe.js and Elements to use in checkout form
   elements = stripe.elements(options);
