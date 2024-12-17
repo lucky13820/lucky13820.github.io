@@ -1,7 +1,7 @@
 let subscription;
 const STAGING = window.location.hostname.includes("webflow.io"); // true if prod site, else false
 
-const PRICE_ID_PROD = "price_1N9ZNREC8TusN399Fj2wQIXH";
+const PRICE_ID_PROD = "price_1QWoMEEC8TusN399LhWTKsoe";
 const PRICE_ID_DEV = "price_1QWpCGEC8TusN399QBMr99RZ";
 
 const DEFAULT_PROMO_PROD = "GETSTARTED";
