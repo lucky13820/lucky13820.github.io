@@ -408,23 +408,17 @@ if (successMessage) {
 
 async function fetchPrice() {
   let promo = promoCode || DEFAULT_PROMO;
-  const options = {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      productId: getQueryParam("price") ?? DEFAULT_PRICE_ID,
-      code: promo,
-    }),
-  };
-
+  const priceId = getQueryParam("price") ?? DEFAULT_PRICE_ID;
+  
   try {
     const response = await fetch(PRICE_ENDPOINT, options);
     if (!response.ok) throw new Error("Failed to fetch price");
     const data = await response.json();
-    const { finalPrice } = data.invoice;
+    const finalPrice = data.unit_amount; // Stripe price object returns amount in cents
     const sale_amount = finalPrice;
- // Get existing data from sessionStorage
- const existingData = JSON.parse(sessionStorage.getItem('stripePaymentInfo') || '{}');
+
+    // Get existing data from sessionStorage
+    const existingData = JSON.parse(sessionStorage.getItem('stripePaymentInfo') || '{}');
     sessionStorage.setItem('stripePaymentInfo', JSON.stringify({
       ...existingData,
       sale_amount,
@@ -433,5 +427,6 @@ async function fetchPrice() {
     return { finalPrice };
   } catch (err) {
     console.error(err);
+    throw err;
   }
 }
