@@ -1,8 +1,8 @@
 let subscription;
 const STAGING = window.location.hostname.includes("webflow.io"); // true if prod site, else false
 
-const PRICE_ID_PROD = "price_1N9ZNREC8TusN399Fj2wQIXH";
-const PRICE_ID_DEV = "price_1N9ZFWEC8TusN399xNwUHjCh";
+const PRICE_ID_PROD = "price_1QWoMEEC8TusN399LhWTKsoe";
+const PRICE_ID_DEV = "price_1QWpCGEC8TusN399QBMr99RZ";
 
 const DEFAULT_PROMO_PROD = "GETSTARTED";
 const DEFAULT_PROMO_DEV = "GETSTARTED";
@@ -59,7 +59,6 @@ if (document.getElementById("prediction-form")) {
 
 async function initializePlaceholder() {
   const options = {
-    mode: "subscription",
     amount: 900,
     currency: "usd",
     appearance: {
@@ -84,7 +83,6 @@ async function initializePlaceholder() {
   // Create and mount the Payment Element
   const paymentElement = elements.create("payment");
   paymentElement.mount("#payment-element");
-
   addressElement.mount('#address-element');
 
   createLinkAuthenticationElement(elements);
