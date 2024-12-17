@@ -421,7 +421,7 @@ async function fetchPrice() {
     const response = await fetch(PRICE_ENDPOINT, options);
     if (!response.ok) throw new Error("Failed to fetch price");
     const data = await response.json();
-    const { originalPrice, priceOff, finalPrice } = data.invoice;
+    const { finalPrice } = data.invoice;
     const sale_amount = finalPrice;
  // Get existing data from sessionStorage
  const existingData = JSON.parse(sessionStorage.getItem('stripePaymentInfo') || '{}');
@@ -430,7 +430,7 @@ async function fetchPrice() {
       sale_amount,
     }));
 
-    return { originalPrice, priceOff, finalPrice };
+    return { finalPrice };
   } catch (err) {
     console.error(err);
   }
