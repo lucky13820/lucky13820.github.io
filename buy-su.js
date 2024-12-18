@@ -73,6 +73,7 @@ async function updatePrice() {
         const buttonPriceElement = document.getElementById('button-price')
         const checkoutPriceElement = document.getElementById('checkout-price')
         const checkoutDiscountElement = document.getElementById('checkout-discount')
+        const originalPriceElements = document.getElementsByClassName('originalPrice')
 
         if (buttonPriceElement && checkoutPriceElement) {
             buttonPriceElement.textContent = finalPrice
@@ -81,6 +82,11 @@ async function updatePrice() {
 
         if (checkoutDiscountElement) {
             checkoutDiscountElement.textContent = priceOff
+        }
+        if (originalPriceElements) {
+            Array.from(originalPriceElements).forEach(element => {
+                element.textContent = originalPrice
+            })
         }
     } catch (error) {
         if (isStaging) {
