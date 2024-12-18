@@ -36,8 +36,8 @@ const PRICES = {
 
 // Update the DEFAULT_PRICE_ID to use the duration-based pricing
 const DEFAULT_PRICE_ID = STAGING 
-  ? PRICE_IDS.dev['1month'] 
-  : PRICE_IDS.prod['1month'];
+  ? PRICE_IDS.dev['3month'] 
+  : PRICE_IDS.prod['3month'];
 
 const DEFAULT_PROMO_PROD = "GETSTARTED";
 const DEFAULT_PROMO_DEV = "GETSTARTED";
@@ -124,7 +124,10 @@ async function initializePlaceholder() {
 }
 
 async function createSubscription() {
-  const duration = getQueryParam('time') || '1month';
+  // Get duration from URL parameter, default to '1month'
+  const duration = getQueryParam('time')?.replace('month', '') + 'month' || '3month';
+  
+  // Select correct price ID based on duration and environment
   const priceId = STAGING 
     ? PRICE_IDS.dev[duration] 
     : PRICE_IDS.prod[duration];
@@ -135,13 +138,11 @@ async function createSubscription() {
   const trialParam = getQueryParam("trial")
   const oneWeekCadence = getQueryParam("wkly");
 
-
   const storedUTMParams = JSON.parse(localStorage.getItem("utmParams") || "{}");
 
-
-  // Constructing request body directly
+  // Constructing request body with the duration-specific priceId
   const body = {
-    priceId,
+    priceId, // This will now be the duration-specific price ID
     utm: {
       utmCampaign: storedUTMParams.utm_campaign,
       utmSource: storedUTMParams.utm_source,
