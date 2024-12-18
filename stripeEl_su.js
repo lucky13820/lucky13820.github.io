@@ -115,6 +115,9 @@ async function initializePlaceholder() {
     fields: {
       name: 'always',
     },
+    validation: {
+      name: 'required',
+    },
   };
 
   // Set up Stripe.js and Elements to use in checkout form
@@ -267,6 +270,14 @@ async function handleSubmit(e) {
   setLoading(true);
 
   try {
+    // First create the subscription to get the client secret
+    if (!subscription) {
+      subscription = await createSubscription();
+      if (!subscription?.data?.paymentIntent?.client_secret) {
+        throw new Error('Failed to create subscription: Missing client secret');
+      }
+    }
+
     const addressElement = elements.getElement('address');
     const addressValue = await addressElement.getValue();
     
@@ -287,10 +298,6 @@ async function handleSubmit(e) {
     }
 
     const { firstName, lastName } = splitFullName(fullName);
-
-    if (!subscription) {
-      subscription = await createSubscription();
-    }
 
     const clientSecret = subscription.data.paymentIntent.client_secret;
     const order_id = subscription.data.paymentIntent.id;
