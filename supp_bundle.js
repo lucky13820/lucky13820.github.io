@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Select the 3-month option by default when page loads
-    const threeMonthRadio = document.querySelector('#3month');
+    const threeMonthRadio = document.querySelector('#month3');
     if (threeMonthRadio) {
         threeMonthRadio.checked = true;
-        updateContent('3month');
+        updateContent('month3');
     }
 
     // Add event listeners to all radio buttons
@@ -23,17 +23,17 @@ function updateContent(period) {
     console.log('Selected period:', period);
 
     const content = {
-        '3month': {
+        'month3': {
             membership: '3 months of membership',
             gift: 'Free gifts worth $102',
             checkout: '/checkout-s?time=3month'
         },
-        '2month': {
+        'month2': {
             membership: '2 months of membership',
             gift: 'Free gifts worth $67',
             checkout: '/checkout-s?time=2month'
         },
-        '1month': {
+        'month1': {
             membership: '1 month of membership',
             gift: 'Free gifts worth $27',
             checkout: '/checkout-s?time=1month'
