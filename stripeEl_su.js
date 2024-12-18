@@ -111,16 +111,8 @@ async function initializePlaceholder() {
   const addressOptions = { 
     mode: 'shipping', 
     allowedCountries: ['US'],
-    defaultValues: {
-      name: '',
-    },
     fields: {
-      name: 'required',
-    },
-    validation: {
-      name: {
-        required: 'Please enter your name',
-      },
+      name: 'always',
     },
   };
 
