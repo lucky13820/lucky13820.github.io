@@ -132,26 +132,22 @@ async function initializePlaceholder() {
   createLinkAuthenticationElement(elements);
 }
 
-async function createSubscription() {
-  // Get duration from URL parameter, default to '1month'
+async function createSubscription(customerDetails = {}) {
   const duration = getQueryParam('time')?.replace('month', '') + 'month' || '3month';
   
-  // Select correct price ID based on duration and environment
   const priceId = STAGING 
     ? PRICE_IDS.dev[duration] 
     : PRICE_IDS.prod[duration];
 
-  const linkParam = getQueryParam("lnk");
-  const rebateParam = getQueryParam("rebate");
-  const blockPrepaidParam = getQueryParam("bpp")
-  const trialParam = getQueryParam("trial")
-  const oneWeekCadence = getQueryParam("wkly");
-
   const storedUTMParams = JSON.parse(localStorage.getItem("utmParams") || "{}");
 
-  // Constructing request body with the duration-specific priceId
   const body = {
-    priceId, // This will now be the duration-specific price ID
+    priceId,
+    customer: {
+      email: customerDetails.email,
+      name: customerDetails.name,
+      address: customerDetails.address
+    },
     utm: {
       utmCampaign: storedUTMParams.utm_campaign,
       utmSource: storedUTMParams.utm_source,
@@ -160,6 +156,12 @@ async function createSubscription() {
       utmContent: storedUTMParams.utm_content,
     },
   };
+
+  const linkParam = getQueryParam("lnk");
+  const rebateParam = getQueryParam("rebate");
+  const blockPrepaidParam = getQueryParam("bpp")
+  const trialParam = getQueryParam("trial")
+  const oneWeekCadence = getQueryParam("wkly");
 
   const promo = promoCode !== "0" ? promoCode ?? DEFAULT_PROMO : null;
 
@@ -270,23 +272,11 @@ async function handleSubmit(e) {
   setLoading(true);
 
   try {
-    // First create the subscription to get the client secret
-    if (!subscription) {
-      subscription = await createSubscription();
-      if (!subscription?.data?.paymentIntent?.client_secret) {
-        throw new Error('Failed to create subscription: Missing client secret');
-      }
-    }
-
+    // Get address details first
     const addressElement = elements.getElement('address');
     const addressValue = await addressElement.getValue();
     
     console.log('Address element value:', addressValue); // Debug log
-
-    const { error } = await elements.submit();
-    if (error) {
-      return showMessage(error?.message ?? "An unexpected error occurred.");
-    }
 
     // Extract name and address from the correct path in addressValue
     const fullName = addressValue?.value?.name;
@@ -297,7 +287,29 @@ async function handleSubmit(e) {
       return showMessage("Please provide your name.");
     }
 
-    const { firstName, lastName } = splitFullName(fullName);
+    // Create subscription with customer details
+    if (!subscription) {
+      const { firstName, lastName } = splitFullName(fullName);
+      
+      // Add customer details to the subscription creation
+      subscription = await createSubscription({
+        name: fullName,
+        email: paymentEmail,
+        address: address
+      });
+      
+      console.log('Created subscription:', subscription); // Debug log
+    }
+
+    if (!subscription?.data?.paymentIntent?.client_secret) {
+      console.error('Subscription response:', subscription);
+      throw new Error('Invalid subscription response: Missing client secret');
+    }
+
+    const { error } = await elements.submit();
+    if (error) {
+      return showMessage(error?.message ?? "An unexpected error occurred.");
+    }
 
     const clientSecret = subscription.data.paymentIntent.client_secret;
     const order_id = subscription.data.paymentIntent.id;
@@ -316,7 +328,8 @@ async function handleSubmit(e) {
       address: address
     }));
 
-    // Send customer info with the name and address from Stripe's response
+    // Send customer info
+    const { firstName, lastName } = splitFullName(fullName);
     const response = await sendCustomerInfo(
       customerId,
       paymentEmail,
@@ -327,16 +340,13 @@ async function handleSubmit(e) {
     if (response.status === 204) {
       console.log("Confirmed, payment is good to go. Attempting payment now.");
 
-      const RETURN_URLS = {
-        staging: `https://findsunrise.webflow.io/payment-success?redirect=${encodeURIComponent(
-          "https://app.staging.findsunrise.com/api/confirm-signup?subscriptionId="
-        )}${subscriptionId}`,
-        prod: `https://www.findsunrise.com/payment-success?redirect=${encodeURIComponent(
-          "https://app.findsunrise.com/api/confirm-signup?subscriptionId="
-        )}${subscriptionId}`,
-      };
-
-      let RETURN_URL = STAGING ? RETURN_URLS.staging : RETURN_URLS.prod;
+      const RETURN_URL = STAGING 
+        ? `https://findsunrise.webflow.io/payment-success?redirect=${encodeURIComponent(
+            "https://app.staging.findsunrise.com/api/confirm-signup?subscriptionId="
+          )}${subscriptionId}`
+        : `https://www.findsunrise.com/payment-success?redirect=${encodeURIComponent(
+            "https://app.findsunrise.com/api/confirm-signup?subscriptionId="
+          )}${subscriptionId}`;
 
       // Confirm payment with billing details
       const { error } = await stripe.confirmPayment({
@@ -346,27 +356,13 @@ async function handleSubmit(e) {
           receipt_email: paymentEmail,
           shipping: {
             name: fullName,
-            address: {
-              line1: address?.line1,
-              line2: address?.line2,
-              city: address?.city,
-              state: address?.state,
-              postal_code: address?.postal_code,
-              country: address?.country,
-            }
+            address: address
           },
           payment_method_data: {
             billing_details: {
               name: fullName,
               email: paymentEmail,
-              address: {
-                line1: address?.line1,
-                line2: address?.line2,
-                city: address?.city,
-                state: address?.state,
-                postal_code: address?.postal_code,
-                country: address?.country,
-              }
+              address: address
             }
           }
         },
