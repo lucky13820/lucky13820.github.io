@@ -39,10 +39,10 @@ const DEFAULT_PRICE_ID = STAGING
   ? PRICE_IDS.dev['3month'] 
   : PRICE_IDS.prod['3month'];
 
-const DEFAULT_PROMO_PROD = "GETSTARTED";
-const DEFAULT_PROMO_DEV = "GETSTARTED";
+// const DEFAULT_PROMO_PROD = "GETSTARTED";
+// const DEFAULT_PROMO_DEV = "GETSTARTED";
 
-const DEFAULT_PROMO = STAGING ? DEFAULT_PROMO_DEV : DEFAULT_PROMO_PROD;
+// const DEFAULT_PROMO = STAGING ? DEFAULT_PROMO_DEV : DEFAULT_PROMO_PROD;
 
 const BASE_URLS = {
   staging: "https://api.staging.findsunrise.com/api/signup/",
@@ -163,11 +163,11 @@ async function createSubscription(customerDetails = {}) {
   const trialParam = getQueryParam("trial")
   const oneWeekCadence = getQueryParam("wkly");
 
-  const promo = promoCode !== "0" ? promoCode ?? DEFAULT_PROMO : null;
+  // const promo = promoCode !== "0" ? promoCode ?? DEFAULT_PROMO : null;
 
-  if (promo) {
-    body.promoCode = promo;
-  }
+  // if (promo) {
+  //   body.promoCode = promo;
+  // }
 
   if (blockPrepaidParam === "1") {
     body.blockPrepaid = true;
@@ -201,15 +201,42 @@ async function createSubscription(customerDetails = {}) {
     body: JSON.stringify(body),
   };
 
-  const response = await fetch(`${ENDPOINT}create-subscription`, options);
+  console.log('Creating subscription with:', {
+    endpoint: `${ENDPOINT}create-subscription`,
+    body: body,
+    staging: STAGING
+  });
 
-  if (response.status === 201) {
-    return await response.json();
-  } else if (response.status === 500) {
-    console.log("Promo code is incorrect");
-    promo = DEFAULT_PROMO;
-  } else {
-    throw new Error(`Unexpected response: ${response.status}`);
+  try {
+    const response = await fetch(`${ENDPOINT}create-subscription`, options);
+    console.log('Response status:', response.status);
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Server error response:', errorText);
+      throw new Error(`Server returned ${response.status}: ${errorText}`);
+    }
+
+    const data = await response.json();
+    console.log('Server response data:', data);
+
+    if (response.status === 201) {
+      if (!data?.data?.paymentIntent?.client_secret) {
+        console.error('Response missing client_secret:', data);
+        throw new Error('Server response missing client_secret');
+      }
+      return data;
+    } else if (response.status === 500) {
+      console.log("Promo code is incorrect");
+      promo = DEFAULT_PROMO;
+      // Retry with default promo
+      return createSubscription(customerDetails);
+    } else {
+      throw new Error(`Unexpected response: ${response.status}`);
+    }
+  } catch (error) {
+    console.error('Subscription creation error:', error);
+    throw error;
   }
 }
 
