@@ -260,6 +260,9 @@ async function handleSubmit(e) {
   e.preventDefault();
   setLoading(true);
 
+  const fullName = document.querySelector("#Field-nameInput").value;
+  const { firstName, lastName } = splitFullName(fullName);
+
   try {
     const { error } = await elements.submit();
     if (error) {
