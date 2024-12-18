@@ -9,9 +9,9 @@ const PRICE_IDS = {
     '3month': 'price_3QWoMEEC8TusN399LhWTKsoe'  // Replace with actual 3-month price ID
   },
   dev: {
-    '1month': 'price_1QWpCGEC8TusN399QBMr99RZ',
-    '2month': 'price_2QWpCGEC8TusN399QBMr99RZ', // Replace with actual 2-month price ID
-    '3month': 'price_3QWpCGEC8TusN399QBMr99RZ'  // Replace with actual 3-month price ID
+    '1month': 'price_1QXSSFEC8TusN399P8CYW35s',
+    '2month': 'price_1QWpCGEC8TusN399QBMr99RZ', // Replace with actual 2-month price ID
+    '3month': 'price_1QXSRzEC8TusN399BX2JFycc'  // Replace with actual 3-month price ID
   }
 };
 
