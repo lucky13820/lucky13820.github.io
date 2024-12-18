@@ -98,6 +98,7 @@ async function initializePlaceholder() {
     currency: "usd",
     appearance: {
       theme: "stripe",
+
       variables: {
         colorPrimary: "#0057b8",
         colorText: "#191a2c",
@@ -273,9 +274,9 @@ async function handleSubmit(e) {
 
     console.log('Stripe Elements submission value:', value); // Debug log
 
-    // Extract name and address details from the payment element's response
-    const fullName = value?.shipping?.name;
-    const address = value?.shipping;
+    // Extract name from address element instead of shipping
+    const fullName = value?.address?.name;
+    const address = value?.address;
 
     if (!fullName) {
       console.error('Name not found in submission:', value);
