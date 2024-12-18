@@ -422,12 +422,12 @@ function handlePredictionFormSubmit() {
       return;
     }
 
-    if (document.getElementById("email")) {
+    if (document.getElementById("Field-emailInput")) {
       paymentElement.update({
         layout: "tabs",
         defaultValues: {
           billingDetails: {
-            email: document.getElementById("email").value,
+            email: document.getElementById("Field-emailInput").value,
           },
         },
         paymentMethodOrder: ["card", "apple_pay", "google_pay"],
