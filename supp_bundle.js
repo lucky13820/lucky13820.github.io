@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const threeMonthRadio = document.querySelector('#month3');
     if (threeMonthRadio) {
         threeMonthRadio.checked = true;
+        threeMonthRadio.dispatchEvent(new Event('change'));
         updateContent('month3');
     }
 
@@ -26,7 +27,8 @@ function updateContent(period) {
         'month3': {
             membership: '3 months of membership',
             gift: 'Free gifts worth $102',
-            checkout: '/checkout-s?time=3month'
+            checkout: '/checkout-s?time=3month',
+            image: 'https://www.example.com/image3.jpg'
         },
         'month2': {
             membership: '2 months of membership',

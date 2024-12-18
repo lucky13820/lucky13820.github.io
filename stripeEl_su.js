@@ -1,13 +1,47 @@
 let subscription;
 const STAGING = window.location.hostname.includes("webflow.io"); // true if prod site, else false
 
-const PRICE_ID_PROD = "price_1QWoMEEC8TusN399LhWTKsoe";
-const PRICE_ID_DEV = "price_1QWpCGEC8TusN399QBMr99RZ";
+// Add new price IDs for different durations
+const PRICE_IDS = {
+  prod: {
+    '1month': 'price_1QWoMEEC8TusN399LhWTKsoe',
+    '2month': 'price_2QWoMEEC8TusN399LhWTKsoe', // Replace with actual 2-month price ID
+    '3month': 'price_3QWoMEEC8TusN399LhWTKsoe'  // Replace with actual 3-month price ID
+  },
+  dev: {
+    '1month': 'price_1QWpCGEC8TusN399QBMr99RZ',
+    '2month': 'price_2QWpCGEC8TusN399QBMr99RZ', // Replace with actual 2-month price ID
+    '3month': 'price_3QWpCGEC8TusN399QBMr99RZ'  // Replace with actual 3-month price ID
+  }
+};
+
+// Add hard-coded prices
+const PRICES = {
+  '1month': {
+    originalPrice: '149',
+    priceOff: '100',
+    finalPrice: '49'
+  },
+  '2month': {
+    originalPrice: '158',
+    priceOff: '33',
+    finalPrice: '125'
+  },
+  '3month': {
+    originalPrice: '307',
+    priceOff: '112',
+    finalPrice: '195'
+  }
+};
+
+// Update the DEFAULT_PRICE_ID to use the duration-based pricing
+const DEFAULT_PRICE_ID = STAGING 
+  ? PRICE_IDS.dev['1month'] 
+  : PRICE_IDS.prod['1month'];
 
 const DEFAULT_PROMO_PROD = "GETSTARTED";
 const DEFAULT_PROMO_DEV = "GETSTARTED";
 
-const DEFAULT_PRICE_ID = STAGING ? PRICE_ID_DEV : PRICE_ID_PROD;
 const DEFAULT_PROMO = STAGING ? DEFAULT_PROMO_DEV : DEFAULT_PROMO_PROD;
 
 const BASE_URLS = {
@@ -90,7 +124,11 @@ async function initializePlaceholder() {
 }
 
 async function createSubscription() {
-  const priceId = getQueryParam("price") ?? DEFAULT_PRICE_ID;
+  const duration = getQueryParam('time') || '1month';
+  const priceId = STAGING 
+    ? PRICE_IDS.dev[duration] 
+    : PRICE_IDS.prod[duration];
+
   const linkParam = getQueryParam("lnk");
   const rebateParam = getQueryParam("rebate");
   const blockPrepaidParam = getQueryParam("bpp")
@@ -407,26 +445,19 @@ if (successMessage) {
 // NEW FETCH PRICE
 
 async function fetchPrice() {
-  let promo = promoCode || DEFAULT_PROMO;
-  const priceId = getQueryParam("price") ?? DEFAULT_PRICE_ID;
+  const duration = getQueryParam('time') || '1month';
+  const prices = PRICES[duration];
   
-  try {
-    const response = await fetch(PRICE_ENDPOINT, options);
-    if (!response.ok) throw new Error("Failed to fetch price");
-    const data = await response.json();
-    const finalPrice = data.unit_amount; // Stripe price object returns amount in cents
-    const sale_amount = finalPrice;
-
-    // Get existing data from sessionStorage
-    const existingData = JSON.parse(sessionStorage.getItem('stripePaymentInfo') || '{}');
-    sessionStorage.setItem('stripePaymentInfo', JSON.stringify({
-      ...existingData,
-      sale_amount,
-    }));
-
-    return { finalPrice };
-  } catch (err) {
-    console.error(err);
-    throw err;
+  if (!prices) {
+    throw new Error('Invalid duration specified');
   }
+
+  // Get existing data from sessionStorage
+  const existingData = JSON.parse(sessionStorage.getItem('stripePaymentInfo') || '{}');
+  sessionStorage.setItem('stripePaymentInfo', JSON.stringify({
+    ...existingData,
+    sale_amount: prices.finalPrice,
+  }));
+
+  return prices;
 }

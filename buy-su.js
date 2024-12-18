@@ -68,17 +68,15 @@ run()
 
 async function updatePrice() {
     try {
-        const {finalPrice } = await fetchPrice()
-
-        const PRICE = finalPrice
+        const { originalPrice, priceOff, finalPrice } = await fetchPrice()
 
         const buttonPriceElement = document.getElementById('button-price')
         const checkoutPriceElement = document.getElementById('checkout-price')
         const checkoutDiscountElement = document.getElementById('checkout-discount')
 
         if (buttonPriceElement && checkoutPriceElement) {
-            buttonPriceElement.textContent = PRICE
-            checkoutPriceElement.textContent = PRICE
+            buttonPriceElement.textContent = finalPrice
+            checkoutPriceElement.textContent = finalPrice
         }
 
         if (checkoutDiscountElement) {
