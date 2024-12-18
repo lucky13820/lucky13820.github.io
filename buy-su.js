@@ -73,7 +73,7 @@ async function updatePrice() {
         const buttonPriceElement = document.getElementById('button-price')
         const checkoutPriceElement = document.getElementById('checkout-price')
         const checkoutDiscountElement = document.getElementById('checkout-discount')
-        const originalPriceElements = document.getElementsByClassName('originalPrice')
+        const originalPriceElements = document.getElementsByClassName('originalprice')
 
         if (buttonPriceElement && checkoutPriceElement) {
             buttonPriceElement.textContent = finalPrice
