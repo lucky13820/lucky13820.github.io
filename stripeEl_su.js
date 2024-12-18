@@ -267,19 +267,23 @@ async function handleSubmit(e) {
   setLoading(true);
 
   try {
-    const { error, value } = await elements.submit();
+    // Get address element and its complete value
+    const addressElement = elements.getElement('address');
+    const addressValue = await addressElement.getValue();
+    
+    console.log('Address element value:', addressValue); // Debug log
+
+    const { error } = await elements.submit();
     if (error) {
       return showMessage(error?.message ?? "An unexpected error occurred.");
     }
 
-    console.log('Stripe Elements submission value:', value); // Debug log
-
-    // Extract name from address element instead of shipping
-    const fullName = value?.name;
-    const address = value?.address;
+    // Extract name and address from the address element value
+    const fullName = addressValue?.name;
+    const address = addressValue?.address;
 
     if (!fullName) {
-      console.error('Name not found in submission:', value);
+      console.error('Name not found in address element:', addressValue);
       return showMessage("Please provide your name.");
     }
 
