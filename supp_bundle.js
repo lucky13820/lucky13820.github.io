@@ -20,6 +20,8 @@ function updateContent(period) {
     const giftText = document.getElementById('giftText');
     const checkoutButton = document.getElementById('checkoutButton');
 
+    console.log('Selected period:', period);
+
     const content = {
         '3month': {
             membership: '3 months of membership',
@@ -37,6 +39,11 @@ function updateContent(period) {
             checkout: '/checkout-s?time=1month'
         }
     };
+
+    if (!content[period]) {
+        console.error('Invalid period:', period);
+        return;
+    }
 
     if (membershipText) membershipText.textContent = content[period].membership;
     if (giftText) giftText.textContent = content[period].gift;
