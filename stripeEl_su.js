@@ -98,7 +98,6 @@ async function initializePlaceholder() {
     currency: "usd",
     appearance: {
       theme: "stripe",
-
       variables: {
         colorPrimary: "#0057b8",
         colorText: "#191a2c",
@@ -109,7 +108,21 @@ async function initializePlaceholder() {
     },
   };
 
-  const addressOptions = { mode: 'shipping', allowedCountries: ['US'] };
+  const addressOptions = { 
+    mode: 'shipping', 
+    allowedCountries: ['US'],
+    defaultValues: {
+      name: '',
+    },
+    fields: {
+      name: 'required',
+    },
+    validation: {
+      name: {
+        required: 'Please enter your name',
+      },
+    },
+  };
 
   // Set up Stripe.js and Elements to use in checkout form
   elements = stripe.elements(options);
