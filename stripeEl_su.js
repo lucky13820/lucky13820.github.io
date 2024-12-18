@@ -261,14 +261,21 @@ async function handleSubmit(e) {
   setLoading(true);
 
   try {
-    // Get the complete event from elements.submit() which includes billing details
     const { error, value } = await elements.submit();
     if (error) {
       return showMessage(error?.message ?? "An unexpected error occurred.");
     }
 
-    // Extract name from the payment element's response
-    const fullName = value?.address?.name || 'Unknown User';
+    console.log('Stripe Elements submission value:', value); // Debug log
+
+    // Extract name and address details from the payment element's response
+    const fullName = value?.address?.name;
+    const address = value?.address;
+
+    if (!fullName) {
+      return showMessage("Please provide your name.");
+    }
+
     const { firstName, lastName } = splitFullName(fullName);
 
     if (!subscription) {
@@ -288,9 +295,11 @@ async function handleSubmit(e) {
       ...existingData,
       order_id,
       paymentEmail,
+      customerName: fullName,
+      address: address
     }));
 
-    // Send customer info with the name from Stripe's response
+    // Send customer info with the name and address from Stripe's response
     const response = await sendCustomerInfo(
       customerId,
       paymentEmail,
@@ -312,12 +321,37 @@ async function handleSubmit(e) {
 
       let RETURN_URL = STAGING ? RETURN_URLS.staging : RETURN_URLS.prod;
 
-      // if success TRY MAKE payment
+      // Confirm payment with billing details
       const { error } = await stripe.confirmPayment({
         elements,
         confirmParams: {
           return_url: RETURN_URL,
           receipt_email: paymentEmail,
+          shipping: {
+            name: fullName,
+            address: {
+              line1: address?.line1,
+              line2: address?.line2,
+              city: address?.city,
+              state: address?.state,
+              postal_code: address?.postal_code,
+              country: address?.country,
+            }
+          },
+          payment_method_data: {
+            billing_details: {
+              name: fullName,
+              email: paymentEmail,
+              address: {
+                line1: address?.line1,
+                line2: address?.line2,
+                city: address?.city,
+                state: address?.state,
+                postal_code: address?.postal_code,
+                country: address?.country,
+              }
+            }
+          }
         },
         clientSecret,
       });
