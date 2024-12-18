@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Select the 3-month option by default when page loads
-    const threeMonthRadio = document.querySelector('[data-id="3month"]');
+    const threeMonthRadio = document.querySelector('#3month');
     if (threeMonthRadio) {
         threeMonthRadio.checked = true;
         updateContent('3month');
@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const radioButtons = document.querySelectorAll('input[type="radio"]');
     radioButtons.forEach(radio => {
         radio.addEventListener('change', function() {
-            updateContent(this.getAttribute('data-id'));
+            updateContent(this.id);
         });
     });
 });
