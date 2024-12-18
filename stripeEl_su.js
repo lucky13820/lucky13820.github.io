@@ -275,7 +275,7 @@ async function handleSubmit(e) {
     console.log('Stripe Elements submission value:', value); // Debug log
 
     // Extract name from address element instead of shipping
-    const fullName = value?.address?.name;
+    const fullName = value?.name;
     const address = value?.address;
 
     if (!fullName) {
