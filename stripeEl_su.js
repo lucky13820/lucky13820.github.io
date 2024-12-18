@@ -10,8 +10,8 @@ const PRICE_IDS = {
   },
   dev: {
     '1month': 'price_1QXSSFEC8TusN399P8CYW35s',
-    '2month': 'price_1QWpCGEC8TusN399QBMr99RZ', // Replace with actual 2-month price ID
-    '3month': 'price_1QXSRzEC8TusN399BX2JFycc'  // Replace with actual 3-month price ID
+    '2month': 'price_1QXSYPEC8TusN399GMApyC9t', // Replace with actual 2-month price ID
+    '3month': 'price_1QXSY2EC8TusN399l7ImYC2N'  // Replace with actual 3-month price ID
   }
 };
 
@@ -259,9 +259,6 @@ async function sendCustomerInfo(customerId, email, firstName, lastName) {
 async function handleSubmit(e) {
   e.preventDefault();
   setLoading(true);
-
-  const fullName = document.querySelector("#full-name").value;
-  const { firstName, lastName } = splitFullName(fullName);
 
   try {
     const { error } = await elements.submit();
