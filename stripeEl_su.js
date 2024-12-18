@@ -10,8 +10,8 @@ const PRICE_IDS = {
   },
   dev: {
     '1month': 'price_1QXSSFEC8TusN399P8CYW35s',
-    '2month': 'price_1QWpCGEC8TusN399QBMr99RZ', // Replace with actual 2-month price ID
-    '3month': 'price_1QXSRzEC8TusN399BX2JFycc'  // Replace with actual 3-month price ID
+    '2month': 'price_1QXSYPEC8TusN399GMApyC9t', // Replace with actual 2-month price ID
+    '3month': 'price_1QXSY2EC8TusN399l7ImYC2N'  // Replace with actual 3-month price ID
   }
 };
 
@@ -260,14 +260,16 @@ async function handleSubmit(e) {
   e.preventDefault();
   setLoading(true);
 
-  const fullName = document.querySelector("#Field-nameInput").value;
-  const { firstName, lastName } = splitFullName(fullName);
-
   try {
-    const { error } = await elements.submit();
+    // Get the complete event from elements.submit() which includes billing details
+    const { error, value } = await elements.submit();
     if (error) {
       return showMessage(error?.message ?? "An unexpected error occurred.");
     }
+
+    // Extract name from the payment element's response
+    const fullName = value?.address?.name || 'Unknown User';
+    const { firstName, lastName } = splitFullName(fullName);
 
     if (!subscription) {
       subscription = await createSubscription();
@@ -288,7 +290,7 @@ async function handleSubmit(e) {
       paymentEmail,
     }));
 
-    // first send customer info to backend
+    // Send customer info with the name from Stripe's response
     const response = await sendCustomerInfo(
       customerId,
       paymentEmail,
@@ -338,6 +340,7 @@ async function handleSubmit(e) {
       );
     }
   } catch (error) {
+    console.error('Payment error:', error);
     showMessage(
       error?.message ??
         "An unexpected error occurred. Please contact support@findsunrise.com"
