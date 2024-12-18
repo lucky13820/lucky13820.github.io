@@ -280,7 +280,7 @@ function displayBlockById(id) {
 }
 
 function checkBMIEligibility(bmi) {
-  if (parseInt(bmi) < 27.0) {
+  if (parseInt(bmi) < 25.0) {
     showNotEligibleBlock("bmiNotEligible");
     return false;
   } else {
