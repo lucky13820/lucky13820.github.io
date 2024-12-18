@@ -267,7 +267,6 @@ async function handleSubmit(e) {
   setLoading(true);
 
   try {
-    // Get address element and its complete value
     const addressElement = elements.getElement('address');
     const addressValue = await addressElement.getValue();
     
@@ -278,9 +277,9 @@ async function handleSubmit(e) {
       return showMessage(error?.message ?? "An unexpected error occurred.");
     }
 
-    // Extract name and address from the address element value
-    const fullName = addressValue?.name;
-    const address = addressValue?.address;
+    // Extract name and address from the correct path in addressValue
+    const fullName = addressValue?.value?.name;
+    const address = addressValue?.value?.address;
 
     if (!fullName) {
       console.error('Name not found in address element:', addressValue);
