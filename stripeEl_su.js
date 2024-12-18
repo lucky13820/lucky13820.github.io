@@ -269,10 +269,11 @@ async function handleSubmit(e) {
     console.log('Stripe Elements submission value:', value); // Debug log
 
     // Extract name and address details from the payment element's response
-    const fullName = value?.address?.name;
-    const address = value?.address;
+    const fullName = value?.shipping?.name;
+    const address = value?.shipping;
 
     if (!fullName) {
+      console.error('Name not found in submission:', value);
       return showMessage("Please provide your name.");
     }
 
