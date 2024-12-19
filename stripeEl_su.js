@@ -525,13 +525,11 @@ if (successMessage) {
 async function fetchPrice() {
   const duration = getQueryParam('time') || '1month';
   const prices = PRICES[duration]; 
-  let promo = promoCode || DEFAULT_PROMO;
   const options = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       productId: getQueryParam("price") ?? DEFAULT_PRICE_ID,
-      code: promo,
     }),
   };
 
