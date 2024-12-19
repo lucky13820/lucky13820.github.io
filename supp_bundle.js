@@ -20,6 +20,7 @@ function updateContent(period) {
     const membershipText = document.getElementById('membershipText');
     const giftText = document.getElementById('giftText');
     const checkoutButton = document.getElementById('checkoutButton');
+    const giftImage = document.getElementById('giftImage');
 
     console.log('Selected period:', period);
 
@@ -28,17 +29,19 @@ function updateContent(period) {
             membership: '3 months of membership',
             gift: 'Free gifts worth $102',
             checkout: '/checkout-s?time=3month',
-            image: 'https://www.example.com/image3.jpg'
+            image: 'https://cdn.prod.website-files.com/6357d4fbecfafa3f24d20445/67628ced452afe483208aa52_all3.avif'
         },
         'month2': {
             membership: '2 months of membership',
             gift: 'Free gifts worth $67',
-            checkout: '/checkout-s?time=2month'
+            checkout: '/checkout-s?time=2month',
+            image: 'https://cdn.prod.website-files.com/6357d4fbecfafa3f24d20445/67636c46f340b0299d729d85_all2.avif'
         },
         'month1': {
             membership: '1 month of membership',
             gift: 'Free gifts worth $27',
-            checkout: '/checkout-s?time=1month'
+            checkout: '/checkout-s?time=1month',
+            image: 'https://cdn.prod.website-files.com/6357d4fbecfafa3f24d20445/67636c466c9bf69e5e512f40_all1.avif'
         }
     };
 
@@ -50,4 +53,5 @@ function updateContent(period) {
     if (membershipText) membershipText.textContent = content[period].membership;
     if (giftText) giftText.textContent = content[period].gift;
     if (checkoutButton) checkoutButton.href = content[period].checkout;
+    if (giftImage) giftImage.src = content[period].image;
 }

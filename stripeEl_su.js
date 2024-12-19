@@ -4,9 +4,9 @@ const STAGING = window.location.hostname.includes("webflow.io"); // true if prod
 // Add new price IDs for different durations
 const PRICE_IDS = {
   prod: {
-    '1month': 'price_1QWoMEEC8TusN399LhWTKsoe',
-    '2month': 'price_2QWoMEEC8TusN399LhWTKsoe', // Replace with actual 2-month price ID
-    '3month': 'price_3QWoMEEC8TusN399LhWTKsoe'  // Replace with actual 3-month price ID
+    '1month': 'price_1QXXcjEC8TusN399ATuzVTTf',
+    '2month': 'price_1QXXcYEC8TusN399CYYlFzDC', // Replace with actual 2-month price ID
+    '3month': 'price_1QXXbzEC8TusN399LAlepqLs'  // Replace with actual 3-month price ID
   },
   dev: {
     '1month': 'price_1QXSSFEC8TusN399P8CYW35s',
@@ -524,10 +524,17 @@ if (successMessage) {
 
 async function fetchPrice() {
   const duration = getQueryParam('time') || '1month';
-  const prices = PRICES[duration];
+  const prices = PRICES[duration]; 
   
   if (!prices) {
     throw new Error('Invalid duration specified');
+  }
+
+  // Update the month text based on duration
+  const monthElement = document.querySelector('#month');
+  if (monthElement) {
+    const months = duration.replace('month', '');
+    monthElement.textContent = `${months} month${months > 1 ? 's' : ''}`;
   }
 
   // Get existing data from sessionStorage
