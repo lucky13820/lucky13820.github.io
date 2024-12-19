@@ -525,24 +525,46 @@ if (successMessage) {
 async function fetchPrice() {
   const duration = getQueryParam('time') || '1month';
   const prices = PRICES[duration]; 
+  let promo = promoCode || DEFAULT_PROMO;
+  const options = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      productId: getQueryParam("price") ?? DEFAULT_PRICE_ID,
+      code: promo,
+    }),
+  };
+
+  try {
+    const response = await fetch(PRICE_ENDPOINT, options);
+    if (!response.ok) throw new Error("Failed to fetch price");
+    const data = await response.json();
+    const { originalPrice, priceOff, finalPrice } = data.invoice;
+    console.log (originalPrice, priceOff, finalPrice)
+
+    return { originalPrice, priceOff, finalPrice };
+  } catch (err) {
+    console.error(err);
+  }
   
-  if (!prices) {
-    throw new Error('Invalid duration specified');
-  }
+  // if (!prices) {
+  //   throw new Error('Invalid duration specified');
 
-  // Update the month text based on duration
-  const monthElement = document.querySelector('#month');
-  if (monthElement) {
-    const months = duration.replace('month', '');
-    monthElement.textContent = `${months} month${months > 1 ? 's' : ''}`;
-  }
+  // }
 
-  // Get existing data from sessionStorage
-  const existingData = JSON.parse(sessionStorage.getItem('stripePaymentInfo') || '{}');
-  sessionStorage.setItem('stripePaymentInfo', JSON.stringify({
-    ...existingData,
-    sale_amount: prices.finalPrice,
-  }));
+  // // Update the month text based on duration
+  // const monthElement = document.querySelector('#month');
+  // if (monthElement) {
+  //   const months = duration.replace('month', '');
+  //   monthElement.textContent = `${months} month${months > 1 ? 's' : ''}`;
+  // }
 
-  return prices;
+  // // Get existing data from sessionStorage
+  // const existingData = JSON.parse(sessionStorage.getItem('stripePaymentInfo') || '{}');
+  // sessionStorage.setItem('stripePaymentInfo', JSON.stringify({
+  //   ...existingData,
+  //   sale_amount: prices.finalPrice,
+  // }));
+
+  // return prices;
 }
