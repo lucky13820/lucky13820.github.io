@@ -107,6 +107,9 @@ async function initializePlaceholder() {
         fontSizeSm: "1.15rem",
       },
     },
+    phone_number_collection: {
+      enabled: true,
+    },
   };
 
   const addressOptions = { 
