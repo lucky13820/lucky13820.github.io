@@ -107,9 +107,6 @@ async function initializePlaceholder() {
         fontSizeSm: "1.15rem",
       },
     },
-    phone_number_collection: {
-      enabled: true,
-    },
   };
 
   const addressOptions = { 
@@ -117,6 +114,7 @@ async function initializePlaceholder() {
     allowedCountries: ['US'],
     fields: {
       name: 'always',
+      phone: 'always',
     },
     validation: {
       name: 'required',
