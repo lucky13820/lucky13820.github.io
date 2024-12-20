@@ -5,7 +5,6 @@ let eligibleStates;
 
 document.addEventListener("DOMContentLoaded", () => {
   initializeSwiper();
-  addPriceFormListeners();
   trackSurveyStartToSimplifi();
   initializeBraze();
   updateContent();
