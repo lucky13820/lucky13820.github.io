@@ -229,7 +229,7 @@ async function createSubscription(customerDetails = {}) {
       return data;
     } else if (response.status === 500) {
       console.log("Promo code is incorrect");
-      promo = DEFAULT_PROMO;
+      // promo = DEFAULT_PROMO;
       // Retry with default promo
       return createSubscription(customerDetails);
     } else {

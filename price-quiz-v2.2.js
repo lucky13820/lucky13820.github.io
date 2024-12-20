@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
   addPriceFormListeners();
   trackSurveyStartToSimplifi();
   initializeBraze();
+  updateContent();
 
   if (window.location.href.includes("#plan")) {
     displayPaymentForm();
@@ -1075,3 +1076,48 @@ function toggleSlide(swiper, shouldRemove, slideEventValue) {
     }
   }
 }
+
+// Add this function to get the time parameter from URL
+function getTimeParameter() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const time = urlParams.get('time');
+  return time ? `month${time.replace('month', '')}` : 'month3'; // default to month3 if no parameter
+}
+
+// Modify the updateContent function to use URL parameter
+function updateContent() {
+  const giftText = document.getElementById('giftText');
+  const checkoutButton = document.getElementById('continueToCheckout');
+  const giftImage = document.getElementById('giftImage');
+
+  const period = getTimeParameter();
+  console.log('Selected period:', period);
+
+  const content = {
+      'month3': {
+          gift: 'Continue to start your 3 months membership with free gifts',
+          checkout: '/checkout-s?time=3month',
+          image: 'https://cdn.prod.website-files.com/6357d4fbecfafa3f24d20445/67636c46c2014f800b3a50e0_just3.avif'
+      },
+      'month2': {
+          gift: 'Continue to start your 2 months membership with free gifts',
+          checkout: '/checkout-s?time=2month',
+          image: 'https://cdn.prod.website-files.com/6357d4fbecfafa3f24d20445/67636c460f9d7aa404219c0d_just2.avif'
+      },
+      'month1': {
+          gift: 'Continue to start your 1 month membership with free gift',
+          checkout: '/checkout-s?time=1month',
+          image: 'https://cdn.prod.website-files.com/6357d4fbecfafa3f24d20445/67636c46ebdffc7811ff1916_just1.avif'
+      }
+  };
+
+  if (!content[period]) {
+      console.error('Invalid period:', period);
+      return;
+  }
+
+  if (giftText) giftText.textContent = content[period].gift;
+  if (checkoutButton) checkoutButton.href = content[period].checkout;
+  if (giftImage) giftImage.src = content[period].image;
+}
+

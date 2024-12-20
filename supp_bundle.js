@@ -28,19 +28,19 @@ function updateContent(period) {
         'month3': {
             membership: '3 months of membership',
             gift: 'Free gifts worth $102',
-            checkout: '/checkout-s?time=3month',
+            checkout: '/quiz-s?time=3month',
             image: 'https://cdn.prod.website-files.com/6357d4fbecfafa3f24d20445/67628ced452afe483208aa52_all3.avif'
         },
         'month2': {
             membership: '2 months of membership',
             gift: 'Free gifts worth $67',
-            checkout: '/checkout-s?time=2month',
+            checkout: '/quiz-s?time=2month',
             image: 'https://cdn.prod.website-files.com/6357d4fbecfafa3f24d20445/67636c46f340b0299d729d85_all2.avif'
         },
         'month1': {
             membership: '1 month of membership',
             gift: 'Free gifts worth $27',
-            checkout: '/checkout-s?time=1month',
+            checkout: '/quiz-s?time=1month',
             image: 'https://cdn.prod.website-files.com/6357d4fbecfafa3f24d20445/67636c466c9bf69e5e512f40_all1.avif'
         }
     };
