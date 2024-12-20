@@ -936,41 +936,6 @@ function trackToShareASale() {
   }, 500);
 }
 
-function addPriceFormListeners() {
-  var form = document.querySelector("#wf-form-Price-Options-Form");
-
-  document.querySelector('[data-price="9"]').click();
-
-  // Check if the form exists to prevent errors
-  if (form) {
-    // Get all radio buttons within the form with the name 'Price'
-    let radios = form.querySelectorAll('input[name="Price"]');
-
-    // Define the event listener function
-    let radioChangeListener = function (event) {
-      // Log 'changed' with the value of the changed radio button
-
-      promo = event.target.parentNode.dataset.price;
-
-      let continueToCheckout = document.getElementById("continueToCheckout");
-      continueToCheckout.href = `/checkout?promo=${promo}`;
-      continueToCheckout.rel = "prefetch";
-
-      console.log("radio changed to", promo);
-
-      window.dataLayer.push({
-        event: "price_change",
-        event_label: promo,
-      });
-    };
-
-    // Add the event listener to each radio button
-    radios.forEach(function (radio) {
-      radio.addEventListener("change", radioChangeListener);
-    });
-  }
-}
-
 const loadIframe = (url) => {
   try {
     const iframe = document.createElement("iframe");

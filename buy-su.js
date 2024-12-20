@@ -171,5 +171,46 @@ async function sendAddToCartEvent() {
     }
 }
 
+function getTimeParameter() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const time = urlParams.get('time');
+    return time ? `month${time.replace('month', '')}` : 'month3'; // default to month3 if no parameter
+  }
+
+function updateContent() {
+    const giftText = document.getElementById('giftText');
+    const giftImage = document.getElementById('giftImage');
+  
+    const period = getTimeParameter();
+    console.log('Selected period:', period);
+  
+    const content = {
+        'month3': {
+            gift: '$102 worth of free gifts',
+            image: 'https://cdn.prod.website-files.com/6357d4fbecfafa3f24d20445/67636c46c2014f800b3a50e0_just3.avif'
+        },
+        'month2': {
+            gift: '$67 worth of free gifts',
+            image: 'https://cdn.prod.website-files.com/6357d4fbecfafa3f24d20445/67636c460f9d7aa404219c0d_just2.avif'
+        },
+        'month1': {
+            gift: '$28 worth of free gifts',
+            image: 'https://cdn.prod.website-files.com/6357d4fbecfafa3f24d20445/67636c46ebdffc7811ff1916_just1.avif'
+        }
+    };
+  
+    if (!content[period]) {
+        console.error('Invalid period:', period);
+        return;
+    }
+  
+    if (giftText) giftText.textContent = content[period].gift;
+    if (checkoutButton) checkoutButton.href = content[period].checkout;
+    if (giftImage) giftImage.src = content[period].image;
+  }
+
 // Call the function when the DOM is fully loaded
-document.addEventListener('DOMContentLoaded', sendAddToCartEvent)
+document.addEventListener('DOMContentLoaded', () => {
+    sendAddToCartEvent();
+    updateContent()
+})
