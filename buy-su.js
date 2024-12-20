@@ -2,6 +2,12 @@ const isStaging = window.location.href.includes('webflow')
 const urlParams = new URLSearchParams(window.location.search)
 const email = urlParams.get('email')
 
+// Call the function when the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', () => {
+    sendAddToCartEvent();
+    updateContent()
+})
+
 async function run() {
     await Promise.all([updatePrice(), initializePlaceholder()])
 
@@ -205,12 +211,5 @@ function updateContent() {
     }
   
     if (giftText) giftText.textContent = content[period].gift;
-    if (checkoutButton) checkoutButton.href = content[period].checkout;
     if (giftImage) giftImage.src = content[period].image;
   }
-
-// Call the function when the DOM is fully loaded
-document.addEventListener('DOMContentLoaded', () => {
-    sendAddToCartEvent();
-    updateContent()
-})

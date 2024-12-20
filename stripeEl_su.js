@@ -531,6 +531,7 @@ async function fetchPrice() {
     throw new Error('Invalid duration specified');
 
   }
+  
 
   // Update the month text based on duration
   const monthElement = document.querySelector('#month');
