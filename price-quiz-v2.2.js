@@ -1051,9 +1051,16 @@ function getTimeParameter() {
 
 // Modify the updateContent function to use URL parameter
 function updateContent() {
+  console.log('updateContent called');
   const giftText = document.getElementById('giftText');
   const checkoutButton = document.getElementById('continueToCheckout');
   const giftImage = document.getElementById('giftImage');
+  
+  console.log('Elements found:', { 
+    giftText: !!giftText, 
+    checkoutButton: !!checkoutButton, 
+    giftImage: !!giftImage 
+  });
 
   const period = getTimeParameter();
   console.log('Selected period:', period);
