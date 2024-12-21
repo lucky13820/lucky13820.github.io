@@ -98,7 +98,6 @@ async function initializePlaceholder() {
     currency: "usd",
     appearance: {
       theme: "stripe",
-
       variables: {
         colorPrimary: "#0057b8",
         colorText: "#191a2c",
@@ -131,6 +130,18 @@ async function initializePlaceholder() {
   addressElement.mount('#address-element');
 
   createLinkAuthenticationElement(elements);
+
+  // Add immediate email prefill attempt
+  let emailValue = email || localStorage.getItem('email');
+  if (emailValue && paymentElement) {
+    paymentElement.update({
+      defaultValues: {
+        billingDetails: {
+          email: emailValue,
+        },
+      },
+    });
+  }
 }
 
 async function createSubscription(customerDetails = {}) {
