@@ -5,9 +5,9 @@ let eligibleStates;
 
 document.addEventListener("DOMContentLoaded", () => {
   initializeSwiper();
-  addPriceFormListeners();
   trackSurveyStartToSimplifi();
   initializeBraze();
+  updateContent();
 
   if (window.location.href.includes("#plan")) {
     displayPaymentForm();
@@ -935,41 +935,6 @@ function trackToShareASale() {
   }, 500);
 }
 
-function addPriceFormListeners() {
-  var form = document.querySelector("#wf-form-Price-Options-Form");
-
-  document.querySelector('[data-price="9"]').click();
-
-  // Check if the form exists to prevent errors
-  if (form) {
-    // Get all radio buttons within the form with the name 'Price'
-    let radios = form.querySelectorAll('input[name="Price"]');
-
-    // Define the event listener function
-    let radioChangeListener = function (event) {
-      // Log 'changed' with the value of the changed radio button
-
-      promo = event.target.parentNode.dataset.price;
-
-      let continueToCheckout = document.getElementById("continueToCheckout");
-      continueToCheckout.href = `/checkout?promo=${promo}`;
-      continueToCheckout.rel = "prefetch";
-
-      console.log("radio changed to", promo);
-
-      window.dataLayer.push({
-        event: "price_change",
-        event_label: promo,
-      });
-    };
-
-    // Add the event listener to each radio button
-    radios.forEach(function (radio) {
-      radio.addEventListener("change", radioChangeListener);
-    });
-  }
-}
-
 const loadIframe = (url) => {
   try {
     const iframe = document.createElement("iframe");
@@ -1075,3 +1040,55 @@ function toggleSlide(swiper, shouldRemove, slideEventValue) {
     }
   }
 }
+
+// Add this function to get the time parameter from URL
+function getTimeParameter() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const time = urlParams.get('time');
+  return time ? `month${time.replace('month', '')}` : 'month3'; // default to month3 if no parameter
+}
+
+// Modify the updateContent function to use URL parameter
+function updateContent() {
+  console.log('updateContent called');
+  const giftText = document.getElementById('giftText');
+  const checkoutButton = document.getElementById('continueToCheckout');
+  const giftImage = document.getElementById('giftImage');
+  
+  console.log('Elements found:', { 
+    giftText: !!giftText, 
+    checkoutButton: !!checkoutButton, 
+    giftImage: !!giftImage 
+  });
+
+  const period = getTimeParameter();
+  console.log('Selected period:', period);
+
+  const content = {
+      'month3': {
+          gift: 'Continue to start your 3 months membership with free gifts',
+          checkout: '/checkout-s?time=3month',
+          image: 'https://cdn.prod.website-files.com/6357d4fbecfafa3f24d20445/67636c46c2014f800b3a50e0_just3.avif'
+      },
+      'month2': {
+          gift: 'Continue to start your 2 months membership with free gifts',
+          checkout: '/checkout-s?time=2month',
+          image: 'https://cdn.prod.website-files.com/6357d4fbecfafa3f24d20445/67636c460f9d7aa404219c0d_just2.avif'
+      },
+      'month1': {
+          gift: 'Continue to start your 1 month membership with free gift',
+          checkout: '/checkout-s?time=1month',
+          image: 'https://cdn.prod.website-files.com/6357d4fbecfafa3f24d20445/67636c46ebdffc7811ff1916_just1.avif'
+      }
+  };
+
+  if (!content[period]) {
+      console.error('Invalid period:', period);
+      return;
+  }
+
+  if (giftText) giftText.textContent = content[period].gift;
+  if (checkoutButton) checkoutButton.href = content[period].checkout;
+  if (giftImage) giftImage.src = content[period].image;
+}
+
