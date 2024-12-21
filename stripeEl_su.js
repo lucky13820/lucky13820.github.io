@@ -19,8 +19,8 @@ const PRICE_IDS = {
 const PRICES = {
   '1month': {
     originalPrice: '149',
-    priceOff: '100',
-    finalPrice: '49'
+    priceOff: '140',
+    finalPrice: '9'
   },
   '2month': {
     originalPrice: '158',
