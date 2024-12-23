@@ -39,8 +39,8 @@ const DEFAULT_PRICE_ID = STAGING
   ? PRICE_IDS.dev['3month'] 
   : PRICE_IDS.prod['3month'];
 
-const DEFAULT_PROMO_PROD = "";
-const DEFAULT_PROMO_DEV = "";
+const DEFAULT_PROMO_PROD = "fake";
+const DEFAULT_PROMO_DEV = "feke";
 
 const DEFAULT_PROMO = STAGING ? DEFAULT_PROMO_DEV : DEFAULT_PROMO_PROD;
 
