@@ -77,7 +77,7 @@ const getQueryParam = (paramName) => {
   return new URLSearchParams(window.location.search).get(paramName) || null;
 };
 
-const promoCode = getQueryParam("promo");
+// const promoCode = getQueryParam("promo");
 
 checkStatus();
 
@@ -138,9 +138,10 @@ async function initializePlaceholder() {
       defaultValues: {
         billingDetails: {
           email: emailValue,
-        },
-      },
+        }
+      }
     });
+    console.log('email', emailValue);
   }
 }
 
