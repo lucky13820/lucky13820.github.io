@@ -39,10 +39,10 @@ const DEFAULT_PRICE_ID = STAGING
   ? PRICE_IDS.dev['3month'] 
   : PRICE_IDS.prod['3month'];
 
-// const DEFAULT_PROMO_PROD = "GETSTARTED";
-// const DEFAULT_PROMO_DEV = "GETSTARTED";
+const DEFAULT_PROMO_PROD = "";
+const DEFAULT_PROMO_DEV = "";
 
-// const DEFAULT_PROMO = STAGING ? DEFAULT_PROMO_DEV : DEFAULT_PROMO_PROD;
+const DEFAULT_PROMO = STAGING ? DEFAULT_PROMO_DEV : DEFAULT_PROMO_PROD;
 
 const BASE_URLS = {
   staging: "https://api.staging.findsunrise.com/api/signup/",
@@ -77,7 +77,7 @@ const getQueryParam = (paramName) => {
   return new URLSearchParams(window.location.search).get(paramName) || null;
 };
 
-// const promoCode = getQueryParam("promo");
+const promoCode = getQueryParam("promo");
 
 checkStatus();
 
@@ -176,11 +176,11 @@ async function createSubscription(customerDetails = {}) {
   const trialParam = getQueryParam("trial")
   const oneWeekCadence = getQueryParam("wkly");
 
-  // const promo = promoCode !== "0" ? promoCode ?? DEFAULT_PROMO : null;
+  const promo = promoCode !== "0" ? promoCode ?? DEFAULT_PROMO : null;
 
-  // if (promo) {
-  //   body.promoCode = promo;
-  // }
+  if (promo) {
+    body.promoCode = promo;
+  }
 
   if (blockPrepaidParam === "1") {
     body.blockPrepaid = true;
