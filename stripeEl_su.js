@@ -198,15 +198,15 @@ async function createSubscription(customerDetails = {}) {
     body.introPeriod = true;
   }
 
-  if (oneWeekCadence) {
-  	if (STAGING) {
-  		body.weeklyBillingPriceIds =
-  			"price_1NzS8nEC8TusN399sbz44Sfi,price_1NzS9zEC8TusN399qHkXdFEv";
-  	} else { // prod ids
-  		body.weeklyBillingPriceIds =
-  			"price_1O066eEC8TusN399nZGYUJ5Z,price_1NzrT0EC8TusN399xjf0DBfZ";
-  	}
-  }
+  // if (oneWeekCadence) {
+  // 	if (STAGING) {
+  // 		body.weeklyBillingPriceIds =
+  // 			"price_1NzS8nEC8TusN399sbz44Sfi,price_1NzS9zEC8TusN399qHkXdFEv";
+  // 	} else { // prod ids
+  // 		body.weeklyBillingPriceIds =
+  // 			"price_1O066eEC8TusN399nZGYUJ5Z,price_1NzrT0EC8TusN399xjf0DBfZ";
+  // 	}
+  // }
 
   const options = {
     method: "POST",
