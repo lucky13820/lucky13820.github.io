@@ -39,8 +39,8 @@ const DEFAULT_PRICE_ID = STAGING
   ? PRICE_IDS.dev['3month'] 
   : PRICE_IDS.prod['3month'];
 
-const DEFAULT_PROMO_PROD = "fake";
-const DEFAULT_PROMO_DEV = "feke";
+const DEFAULT_PROMO_PROD = "NOPROMO";
+const DEFAULT_PROMO_DEV = "NOPROMO";
 
 const DEFAULT_PROMO = STAGING ? DEFAULT_PROMO_DEV : DEFAULT_PROMO_PROD;
 
@@ -76,8 +76,6 @@ let customerId;
 const getQueryParam = (paramName) => {
   return new URLSearchParams(window.location.search).get(paramName) || null;
 };
-
-const promoCode = getQueryParam("promo");
 
 checkStatus();
 
