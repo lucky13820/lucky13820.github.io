@@ -6,7 +6,7 @@ const PRICE_IDS = {
   prod: {
     '1month': 'price_1QXXcjEC8TusN399ATuzVTTf',
     '2month': 'price_1QXXcYEC8TusN399CYYlFzDC', // Replace with actual 2-month price ID
-    '3month': 'price_1QXXbzEC8TusN399LAlepqLs'  // Replace with actual 3-month price ID
+    '3month': 'price_1QZMLHEC8TusN399jYnU4jrU'  // Replace with actual 3-month price ID
   },
   dev: {
     '1month': 'price_1QXSSFEC8TusN399P8CYW35s',
