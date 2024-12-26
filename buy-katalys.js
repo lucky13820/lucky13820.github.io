@@ -51,10 +51,6 @@ async function run() {
                     },
                 },
             })
-            if (window.growsurf) {
-                growsurf.addParticipant(emailValue);
-                console.log('participant created' + emailValue);
-            }
             if (isStaging) {
                 console.log('found and updated')
             }

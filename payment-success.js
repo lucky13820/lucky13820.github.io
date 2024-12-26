@@ -158,6 +158,21 @@ async function performConversion() {
           } catch (error) {
             console.error('❌ Katalys tracking failed:', error);
           }
+        })(),
+
+        // GrowSurf referral tracking
+        (async () => {
+          try {
+            const referrerId = window.growsurf?.getReferrerId();
+            if (referrerId) {
+              await window.growsurf.triggerReferral();
+              console.log('✅ GrowSurf referral triggered successfully');
+            } else {
+              console.log('ℹ️ No GrowSurf referral ID found - skipping referral trigger');
+            }
+          } catch (error) {
+            console.error('❌ GrowSurf referral tracking failed:', error);
+          }
         })()
       ]);
 
