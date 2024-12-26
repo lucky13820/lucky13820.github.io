@@ -209,7 +209,7 @@ async function performConversion() {
     console.log('ℹ️ Proceeding with redirect...');
 
     if (REDIRECT_URL) {
-      // window.location.href = REDIRECT_URL;
+      window.location.href = REDIRECT_URL;
     } else {
       console.warn("❌ Redirect URL is not defined");
       showAlertAndRedirect(ERROR_MESSAGE);
@@ -221,7 +221,7 @@ async function performConversion() {
   } catch (error) {
     console.error("❌ An error occurred:", error);
     if (REDIRECT_URL) {
-      // window.location.href = REDIRECT_URL;
+      window.location.href = REDIRECT_URL;
     } else {
       showAlertAndRedirect(ERROR_MESSAGE);
     }

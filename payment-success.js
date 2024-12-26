@@ -150,13 +150,22 @@ async function performConversion() {
         // GrowSurf referral tracking
         (async () => {
           try {
-            const referrerId = window.growsurf?.getReferrerId();
-            if (referrerId) {
+            // Wait for GrowSurf to be ready
+            await new Promise(resolve => {
+              if (window.growsurf) {
+                resolve();
+                return;
+              }
+              window.addEventListener('grsfReady', resolve);
+            });
+
+            // Proceed with referral tracking once GrowSurf is ready
+            if (window.growsurf && !!window.growsurf.getReferrerId()) {
               const paymentInfo = JSON.parse(sessionStorage.getItem('stripePaymentInfo') || '{}');
               const { paymentEmail } = paymentInfo;
               
               if (paymentEmail) {
-                await window.growsurf.addParticipant(paymentEmail);
+                window.growsurf.addParticipant(paymentEmail);
                 console.log('✅ GrowSurf referral triggered successfully for:', paymentEmail);
               } else {
                 console.warn('⚠️ No payment email found in sessionStorage');
@@ -205,6 +214,9 @@ async function performConversion() {
       console.warn("❌ Redirect URL is not defined");
       showAlertAndRedirect(ERROR_MESSAGE);
     }
+  
+      // Clean up stored payment info
+  sessionStorage.removeItem('stripePaymentInfo');
 
   } catch (error) {
     console.error("❌ An error occurred:", error);
@@ -213,6 +225,8 @@ async function performConversion() {
     } else {
       showAlertAndRedirect(ERROR_MESSAGE);
     }
+      // Clean up stored payment info
+  sessionStorage.removeItem('stripePaymentInfo');
   }
 }
 
@@ -274,7 +288,4 @@ function trackToKatalys() {
   });
 
   console.log("trackToKatalys: order_id, sale_amount, email", order_id, sale_amount, paymentEmail);
-
-  // Clean up stored payment info
-  sessionStorage.removeItem('stripePaymentInfo');
 }
