@@ -150,6 +150,16 @@ async function performConversion() {
         // GrowSurf referral tracking
         (async () => {
           try {
+            // Wait for GrowSurf to be ready
+            await new Promise(resolve => {
+              if (window.growsurf) {
+                resolve();
+                return;
+              }
+              window.addEventListener('grsfReady', resolve);
+            });
+
+            // Proceed with referral tracking once GrowSurf is ready
             if (window.growsurf && !!window.growsurf.getReferrerId()) {
               const paymentInfo = JSON.parse(sessionStorage.getItem('stripePaymentInfo') || '{}');
               const { paymentEmail } = paymentInfo;
