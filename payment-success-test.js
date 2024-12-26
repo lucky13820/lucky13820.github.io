@@ -150,13 +150,12 @@ async function performConversion() {
         // GrowSurf referral tracking
         (async () => {
           try {
-            const referrerId = window.growsurf.getReferrerId();
-            if (referrerId) {
+            if (window.growsurf && !!window.growsurf.getReferrerId()) {
               const paymentInfo = JSON.parse(sessionStorage.getItem('stripePaymentInfo') || '{}');
               const { paymentEmail } = paymentInfo;
               
               if (paymentEmail) {
-                await window.growsurf.addParticipant(paymentEmail);
+                window.growsurf.addParticipant(paymentEmail);
                 console.log('✅ GrowSurf referral triggered successfully for:', paymentEmail);
               } else {
                 console.warn('⚠️ No payment email found in sessionStorage');
