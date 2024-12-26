@@ -147,6 +147,28 @@ async function performConversion() {
           }
         })(),
 
+        // GrowSurf referral tracking
+        (async () => {
+          try {
+            const referrerId = window.growsurf?.getReferrerId();
+            if (referrerId) {
+              const paymentInfo = JSON.parse(sessionStorage.getItem('stripePaymentInfo') || '{}');
+              const { paymentEmail } = paymentInfo;
+              
+              if (paymentEmail) {
+                await window.growsurf.addParticipant(paymentEmail);
+                console.log('✅ GrowSurf referral triggered successfully for:', paymentEmail);
+              } else {
+                console.warn('⚠️ No payment email found in sessionStorage');
+              }
+            } else {
+              console.log('ℹ️ No GrowSurf referral ID found - skipping referral trigger');
+            }
+          } catch (error) {
+            console.error('❌ GrowSurf referral tracking failed:', error);
+          }
+        })(),
+
         // Katalys tracking
         (async () => {
           try {
@@ -157,21 +179,6 @@ async function performConversion() {
             console.log('✅ Katalys tracking completed');
           } catch (error) {
             console.error('❌ Katalys tracking failed:', error);
-          }
-        })(),
-
-        // GrowSurf referral tracking
-        (async () => {
-          try {
-            const referrerId = window.growsurf?.getReferrerId();
-            if (referrerId) {
-              await window.growsurf.triggerReferral();
-              console.log('✅ GrowSurf referral triggered successfully');
-            } else {
-              console.log('ℹ️ No GrowSurf referral ID found - skipping referral trigger');
-            }
-          } catch (error) {
-            console.error('❌ GrowSurf referral tracking failed:', error);
           }
         })()
       ]);
