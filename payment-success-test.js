@@ -214,6 +214,9 @@ async function performConversion() {
       console.warn("❌ Redirect URL is not defined");
       showAlertAndRedirect(ERROR_MESSAGE);
     }
+  
+      // Clean up stored payment info
+  sessionStorage.removeItem('stripePaymentInfo');
 
   } catch (error) {
     console.error("❌ An error occurred:", error);
@@ -222,6 +225,8 @@ async function performConversion() {
     } else {
       showAlertAndRedirect(ERROR_MESSAGE);
     }
+      // Clean up stored payment info
+  sessionStorage.removeItem('stripePaymentInfo');
   }
 }
 
@@ -283,7 +288,4 @@ function trackToKatalys() {
   });
 
   console.log("trackToKatalys: order_id, sale_amount, email", order_id, sale_amount, paymentEmail);
-
-  // Clean up stored payment info
-  sessionStorage.removeItem('stripePaymentInfo');
 }
