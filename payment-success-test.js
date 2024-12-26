@@ -150,7 +150,7 @@ async function performConversion() {
         // GrowSurf referral tracking
         (async () => {
           try {
-            const referrerId = window.growsurf?.getReferrerId();
+            const referrerId = window.growsurf.getReferrerId();
             if (referrerId) {
               const paymentInfo = JSON.parse(sessionStorage.getItem('stripePaymentInfo') || '{}');
               const { paymentEmail } = paymentInfo;
