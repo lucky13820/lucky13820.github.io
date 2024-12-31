@@ -89,6 +89,21 @@ async function updatePrice() {
         if (checkoutDiscountElement) {
             checkoutDiscountElement.textContent = priceOff
         }
+
+        const promoCode = getQueryParam("promo");
+
+if (promoCode?.toLowerCase() === 'newyear199') {
+    const first3MonthElement = document.querySelector('#first3month')
+    const after3MonthElement = document.querySelector('#after3month')
+    
+    if (first3MonthElement) {
+        first3MonthElement.innerHTML = '<strong> off your first three months<br></strong>'
+    }
+    
+    if (after3MonthElement) {
+        after3MonthElement.textContent = 'Then $349 after the three month'
+    }
+}
     } catch (error) {
         if (isStaging) {
             console.error(error)
