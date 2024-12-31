@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
         break;
       case "newyear199":
         price = "$199";
-        popupText = `You've unlocked ${price} for your first 3 months`;
+        popupText = `You've unlocked ${price}/mo for your first 3 months`;
         break;
       default:
         console.log("No matching promo type found for:", promoType);

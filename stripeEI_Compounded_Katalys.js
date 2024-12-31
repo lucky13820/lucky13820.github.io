@@ -54,7 +54,7 @@ if (promoCode?.toLowerCase() === 'newyear199') {
     }
     
     if (after3MonthElement) {
-        after3MonthElement.textContent = 'Then $349 after the 3 month'
+        after3MonthElement.textContent = 'Then $349 after the three month'
     }
 }
 
