@@ -50,7 +50,7 @@ if (promoCode?.toLowerCase() === 'newyear199') {
     const after3MonthElement = document.querySelector('#after3month')
     
     if (first3MonthElement) {
-        first3MonthElement.innerHTML = '<strong>off your first three months<br></strong>'
+        first3MonthElement.innerHTML = '<strong> off your first three months<br></strong>'
     }
     
     if (after3MonthElement) {
