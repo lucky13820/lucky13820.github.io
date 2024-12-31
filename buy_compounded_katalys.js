@@ -91,6 +91,7 @@ async function updatePrice() {
         }
 
         const promo = urlParams.get('promo')
+        console.log(promo)
 
 if (promo?.toLowerCase() === 'newyear199') {
     const first3MonthElement = document.querySelector('#first3month')
