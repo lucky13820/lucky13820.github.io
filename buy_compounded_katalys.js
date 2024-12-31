@@ -1,6 +1,20 @@
 const isStaging = window.location.href.includes('webflow')
 const urlParams = new URLSearchParams(window.location.search)
 const email = urlParams.get('email')
+const promo = urlParams.get('promo')
+
+if (promo?.toLowerCase() === 'newyear199') {
+    const first3MonthElement = document.querySelector('#first3month')
+    const after3MonthElement = document.querySelector('#after3month')
+    
+    if (first3MonthElement) {
+        first3MonthElement.textContent = 'off your first three months'
+    }
+    
+    if (after3MonthElement) {
+        after3MonthElement.textContent = 'Then $349 after the 3 month'
+    }
+}
 
 async function run() {
     await Promise.all([

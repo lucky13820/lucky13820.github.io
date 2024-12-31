@@ -36,13 +36,20 @@ document.addEventListener("DOMContentLoaded", function () {
       case "c169sem":
         price = "$169";
         break;
+      case "newyear199":
+        price = "$199";
+        popupText = `You've unlocked ${price} for your first 3 months`;
+        break;
       default:
-        console.log("No matching promo type found for:", promoType); // Debug log
+        console.log("No matching promo type found for:", promoType);
         return false;
     }
 
-    // Set the popup text
-    popupText = `You've unlocked your first month for ${price}`;
+    // Set the popup text only if it hasn't been set in the switch statement
+    if (!popupText) {
+      popupText = `You've unlocked your first month for ${price}`;
+    }
+
     var popupElement = document.querySelector("#offer-popup-open");
     console.log("Popup element found:", !!popupElement); // Debug log
 
