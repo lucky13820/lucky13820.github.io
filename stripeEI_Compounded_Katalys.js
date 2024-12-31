@@ -57,6 +57,21 @@ if (document.getElementById("prediction-form")) {
     .addEventListener("submit", handlePredictionFormSubmit);
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+  if (promoCode?.toLowerCase() === 'newyear199') {
+    const first3MonthElement = document.querySelector('#first3month')
+    const after3MonthElement = document.querySelector('#after3month')
+    
+    if (first3MonthElement) {
+        first3MonthElement.innerHTML = '<strong> off your first three months<br></strong>'
+    }
+    
+    if (after3MonthElement) {
+        after3MonthElement.textContent = 'Then $349 after the three month'
+    }
+}
+});
+
 async function initializePlaceholder(email) {
   const options = {
     mode: "subscription",
