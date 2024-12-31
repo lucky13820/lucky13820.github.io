@@ -45,6 +45,19 @@ const getQueryParam = (paramName) => {
 
 const promoCode = getQueryParam("promo");
 
+if (promoCode?.toLowerCase() === 'newyear199') {
+    const first3MonthElement = document.querySelector('#first3month')
+    const after3MonthElement = document.querySelector('#after3month')
+    
+    if (first3MonthElement) {
+        first3MonthElement.textContent = 'off your first three months'
+    }
+    
+    if (after3MonthElement) {
+        after3MonthElement.textContent = 'Then $349 after the 3 month'
+    }
+}
+
 checkStatus();
 
 document
