@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     
     if (after3MonthElement) {
-        after3MonthElement.textContent = 'Then $349 after the three month'
+        after3MonthElement.textContent = 'Then $349 after the three months'
     }
 }
 });
