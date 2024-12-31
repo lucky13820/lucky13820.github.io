@@ -90,9 +90,9 @@ async function updatePrice() {
             checkoutDiscountElement.textContent = priceOff
         }
 
-        const promoCode = getQueryParam("promo");
+        const promo = urlParams.get('promo')
 
-if (promoCode?.toLowerCase() === 'newyear199') {
+if (promo?.toLowerCase() === 'newyear199') {
     const first3MonthElement = document.querySelector('#first3month')
     const after3MonthElement = document.querySelector('#after3month')
     
