@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
   addPriceFormListeners();
   trackSurveyStartToSimplifi();
   initializeBraze();
+  handleNoneCheckbox();
 
   if (window.location.href.includes("#plan")) {
     displayPaymentForm();
@@ -1074,4 +1075,31 @@ function toggleSlide(swiper, shouldRemove, slideEventValue) {
       );
     }
   }
+}
+
+function handleNoneCheckbox() {
+  const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+  
+  checkboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', (e) => {
+      const isNoneOption = e.target.getAttribute('data-id') === 'none';
+      const isChecked = e.target.checked;
+      
+      if (isNoneOption && isChecked) {
+        // If "none" is selected, uncheck all other checkboxes
+        checkboxes.forEach(cb => {
+          if (cb !== e.target && cb.getAttribute('data-id') === 'multiple') {
+            cb.checked = false;
+          }
+        });
+      } else if (!isNoneOption && isChecked) {
+        // If any other option is selected, uncheck the "none" option
+        checkboxes.forEach(cb => {
+          if (cb.getAttribute('data-id') === 'none') {
+            cb.checked = false;
+          }
+        });
+      }
+    });
+  });
 }
