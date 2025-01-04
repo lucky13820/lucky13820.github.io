@@ -1092,16 +1092,16 @@ function handleNoneCheckbox() {
       if (isNoneOption && isChecked) {
         // If "none" is selected, uncheck all other checkboxes
         checkboxes.forEach(cb => {
-          if (cb !== e.target && cb.getAttribute('data-id') === 'multiple') {
-            cb.checked = false;
+          if (cb !== e.target && cb.getAttribute('data-id') === 'multiple' && cb.checked) {
+            cb.click(); // Trigger click instead of setting checked
             console.log('none selected');
           }
         });
       } else if (!isNoneOption && isChecked) {
         // If any other option is selected, uncheck the "none" option
         checkboxes.forEach(cb => {
-          if (cb.getAttribute('data-id') === 'none') {
-            cb.checked = false;
+          if (cb.getAttribute('data-id') === 'none' && cb.checked) {
+            cb.click(); // Trigger click instead of setting checked
             console.log('other selected');
           }
         });
