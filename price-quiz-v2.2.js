@@ -1078,7 +1078,11 @@ function toggleSlide(swiper, shouldRemove, slideEventValue) {
 }
 
 function handleNoneCheckbox() {
-  const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+  // Only select checkboxes within the specific slide
+  const slideContainer = document.querySelector('[data-slide-event="apply_to_you"]');
+  if (!slideContainer) return;
+  
+  const checkboxes = slideContainer.querySelectorAll('input[type="checkbox"]');
   
   checkboxes.forEach(checkbox => {
     checkbox.addEventListener('change', (e) => {
