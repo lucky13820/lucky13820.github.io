@@ -1090,6 +1090,7 @@ function handleNoneCheckbox() {
         checkboxes.forEach(cb => {
           if (cb !== e.target && cb.getAttribute('data-id') === 'multiple') {
             cb.checked = false;
+            console.log('none selected');
           }
         });
       } else if (!isNoneOption && isChecked) {
@@ -1097,6 +1098,7 @@ function handleNoneCheckbox() {
         checkboxes.forEach(cb => {
           if (cb.getAttribute('data-id') === 'none') {
             cb.checked = false;
+            console.log('other selected');
           }
         });
       }
