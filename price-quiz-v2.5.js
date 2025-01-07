@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Start initial animation if we're on the plans page
   if (window.location.href.includes("#plan")) {
-    animateLostPounds(1250); // Start from this initial value
+    animateLostPounds(242402); // Start from 242,402
     setTimeout(() => {
       startRandomPoundUpdates();
     }, 6000); // Start random updates after initial animation completes
@@ -525,6 +525,11 @@ quizForm.addEventListener("submit", (e) => {
   try {
     createWeightChart();
     
+    animateLostPounds(242402);
+    setTimeout(() => {
+      startRandomPoundUpdates();
+    }, 6000);
+
     // Add name and state update here
     const quizAnswers = JSON.parse(localStorage.getItem("quizAnswers") || "{}");
     
@@ -596,7 +601,7 @@ quizForm.addEventListener("submit", (e) => {
 
   try {
     // Add the lost pounds animation
-    animateLostPounds(1250);
+    animateLostPounds(242402);
     setTimeout(() => {
       startRandomPoundUpdates();
     }, 6000);
@@ -1350,7 +1355,10 @@ const animateLostPounds = (startValue) => {
     },
   };
 
-  const numAnim = new countUp.CountUp(lostPoundElement, startValue, options);
+  const numAnim = new countUp.CountUp(lostPoundElement, startValue, {
+    ...options,
+    formattingFn: (value) => value.toLocaleString()
+  });
   numAnim.start();
 };
 
@@ -1360,25 +1368,30 @@ const startRandomPoundUpdates = () => {
   if (!lostPoundElement) return;
 
   const updateValue = () => {
-    const currentValue = parseInt(lostPoundElement.textContent);
+    const currentValue = parseInt(lostPoundElement.textContent.replace(/,/g, ''));
     const randomIncrease = Math.floor(Math.random() * 5) + 2; // Random number between 2-6
     const newValue = currentValue + randomIncrease;
     
-    const options = {
-      duration: 2,
-      easingFn(t, b, c, d) {
-        let ts = (t /= d) * t;
-        let tc = ts * t;
-        return b + c * (tc + -3 * ts + 3 * t);
-      },
-    };
+    // Get the old and new value strings
+    const oldStr = currentValue.toString();
+    const newStr = newValue.toString();
+    
+    // Find the position where the numbers start to differ
+    let i = 0;
+    while (i < oldStr.length && i < newStr.length && oldStr[i] === newStr[i]) {
+      i++;
+    }
 
-    const numAnim = new countUp.CountUp(lostPoundElement, newValue, options);
-    numAnim.start();
+    // Create a number that only shows the changed part
+    const unchangedPart = newStr.slice(0, i);
+    const changedPart = newStr.slice(i);
+    
+    // Update the display with animation only on changed digits
+    lostPoundElement.innerHTML = `${unchangedPart}<span class="animate-digit">${changedPart}</span>`;
   };
 
   // Update every 3-4 seconds randomly
-  const getRandomInterval = () => (Math.random() * 1000) + 3000; // Between 3000-4000ms
+  const getRandomInterval = () => (Math.random() * 1000) + 3000;
 
   const scheduleNextUpdate = () => {
     setTimeout(() => {
