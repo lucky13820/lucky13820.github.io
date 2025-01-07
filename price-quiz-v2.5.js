@@ -1396,14 +1396,15 @@ const startRandomPoundUpdates = () => {
     return reel;
   };
 
+  let baseNumber = 242402; // Keep track of the actual number
+
   const updateValue = () => {
-    const currentValue = parseInt(lostPoundElement.textContent.replace(/,/g, ''));
     const randomIncrease = Math.floor(Math.random() * 5) + 2;
-    const newValue = currentValue + randomIncrease;
+    baseNumber += randomIncrease; // Update the base number
     
     // Format both numbers with commas
-    const oldStr = currentValue.toLocaleString();
-    const newStr = newValue.toLocaleString();
+    const oldStr = (baseNumber - randomIncrease).toLocaleString();
+    const newStr = baseNumber.toLocaleString();
     
     // Find the position where the numbers start to differ
     let i = 0;
@@ -1430,8 +1431,8 @@ const startRandomPoundUpdates = () => {
 
     // After animation completes, update with the final number
     setTimeout(() => {
-      lostPoundElement.textContent = newValue.toLocaleString();
-    }, 500); // Match this with CSS animation duration
+      lostPoundElement.textContent = baseNumber.toLocaleString();
+    }, 500);
   };
 
   const getRandomInterval = () => (Math.random() * 1000) + 3000;
