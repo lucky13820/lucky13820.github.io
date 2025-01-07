@@ -1251,15 +1251,15 @@ function createWeightChart() {
                 
                 // Draw the decorative lines
                 ctx.beginPath();
-                ctx.lineWidth = 2;
+                ctx.lineWidth = 3;
                 ctx.strokeStyle = '#0066FF';
                 
                 // First line
-                ctx.moveTo(x - 15, y + 10);
+                ctx.moveTo(x - 20, y + 15);
                 ctx.lineTo(x + 15, y + 10);
                 
                 // Second line (slightly shorter)
-                ctx.moveTo(x - 10, y + 15);
+                ctx.moveTo(x - 15, y + 20);
                 ctx.lineTo(x + 10, y + 15);
                 
                 ctx.stroke();
