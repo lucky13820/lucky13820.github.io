@@ -1156,8 +1156,8 @@ function createWeightChart() {
         responsive: true,
         maintainAspectRatio: false,
         animation: {
-          duration: 2000, // Animation duration in milliseconds
-          easing: 'easeInOutQuart', // Animation easing function
+          duration: 2000,
+          easing: 'easeInOutQuart',
         },
         animations: {
           tension: {
@@ -1170,7 +1170,7 @@ function createWeightChart() {
         transitions: {
           active: {
             animation: {
-              duration: 0 // Disable hover animations
+              duration: 0
             }
           }
         },
@@ -1200,28 +1200,26 @@ function createWeightChart() {
             min: Math.min(targetWeight - 10, targetWeight * 0.95),
             max: Math.max(currentWeight + 10, currentWeight * 1.05)
           }
-        },
-        plugins: [{
-          afterDraw: function(chart) {
-            const ctx = chart.ctx;
-            ctx.save();
-            ctx.font = '16px Helvetica Neue';
-            ctx.fillStyle = '#000';
-            ctx.textAlign = 'center';
-            
-            // Only draw labels if animation is complete
-            if (chart.animator.running.length === 0) {
-              chart.data.datasets[0].data.forEach((value, index) => {
-                const meta = chart.getDatasetMeta(0);
-                const x = meta.data[index].x;
-                const y = meta.data[index].y - 20;
-                ctx.fillText(`${Math.round(value)} lbs`, x, y);
-              });
-            }
-            ctx.restore();
-          }
-        }]
-      }
+        }
+      },
+      plugins: [{
+        id: 'weightLabels',
+        afterDraw: (chart) => {
+          const ctx = chart.ctx;
+          const meta = chart.getDatasetMeta(0);
+          
+          ctx.save();
+          ctx.font = '16px Helvetica Neue';
+          ctx.fillStyle = '#000';
+          ctx.textAlign = 'center';
+          
+          meta.data.forEach((point, index) => {
+            const value = chart.data.datasets[0].data[index];
+            ctx.fillText(`${Math.round(value)} lbs`, point.x, point.y - 20);
+          });
+          ctx.restore();
+        }
+      }]
     });
   } catch (error) {
     console.error('Error creating weight chart:', error);
