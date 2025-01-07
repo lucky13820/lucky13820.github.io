@@ -1254,7 +1254,7 @@ function createWeightChart() {
           },
           y: {
             display: false,
-            min: Math.min(targetWeight - 10, targetWeight * 0.6),
+            min: Math.min(targetWeight - 10, targetWeight * 0.78),
             max: Math.max(currentWeight + 10, currentWeight * 1.05),
           },
         },
