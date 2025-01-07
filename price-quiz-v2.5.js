@@ -1375,35 +1375,36 @@ const startRandomPoundUpdates = () => {
     const wrapper = document.createElement('div');
     wrapper.className = 'digit-wrapper';
     
-    // Add all numbers in sequence
-    const sequence = [];
-    let current = from;
-    while (current !== to) {
-      sequence.push(current);
-      current = (current + 1) % 10;
-    }
-    sequence.push(to);
+    // Calculate sequence length (handle wrapping from 9 to 0)
+    const sequenceLength = (to - from + 10) % 10 + 1;
     
     // Add numbers to wrapper
-    sequence.forEach(num => {
+    for (let i = 0; i < sequenceLength; i++) {
+      const num = (from + i) % 10;
       const digit = document.createElement('div');
       digit.className = 'digit';
       digit.textContent = num;
       wrapper.appendChild(digit);
-    });
+    }
     
     reel.appendChild(wrapper);
+    
+    // Calculate animation distance based on number of digits
+    const distance = (sequenceLength - 1) * 100;
+    wrapper.style.transform = `translateY(-${distance}%)`;
+    
     return reel;
   };
 
-  let baseNumber = 242402; // Keep track of the actual number
+  let baseNumber = 242402;
 
   const updateValue = () => {
     const randomIncrease = Math.floor(Math.random() * 5) + 2;
-    baseNumber += randomIncrease; // Update the base number
+    const oldValue = baseNumber;
+    baseNumber += randomIncrease;
     
     // Format both numbers with commas
-    const oldStr = (baseNumber - randomIncrease).toLocaleString();
+    const oldStr = oldValue.toLocaleString();
     const newStr = baseNumber.toLocaleString();
     
     // Find the position where the numbers start to differ
@@ -1432,7 +1433,7 @@ const startRandomPoundUpdates = () => {
     // After animation completes, update with the final number
     setTimeout(() => {
       lostPoundElement.textContent = baseNumber.toLocaleString();
-    }, 500);
+    }, 600); // Slightly longer than CSS animation
   };
 
   const getRandomInterval = () => (Math.random() * 1000) + 3000;
