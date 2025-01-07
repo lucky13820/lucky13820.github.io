@@ -1375,44 +1375,35 @@ const startRandomPoundUpdates = () => {
     const wrapper = document.createElement('div');
     wrapper.className = 'digit-wrapper';
     
-    // Calculate sequence length (handle wrapping from 9 to 0)
-    const sequenceLength = (to - from + 10) % 10 + 1;
+    // Add all numbers in sequence
+    const sequence = [];
+    let current = from;
+    while (current !== to) {
+      sequence.push(current);
+      current = (current + 1) % 10;
+    }
+    sequence.push(to);
     
     // Add numbers to wrapper
-    for (let i = 0; i < sequenceLength; i++) {
-      const num = (from + i) % 10;
+    sequence.forEach(num => {
       const digit = document.createElement('div');
       digit.className = 'digit';
       digit.textContent = num;
       wrapper.appendChild(digit);
-    }
-    
-    reel.appendChild(wrapper);
-    
-    // Set initial position
-    wrapper.style.transform = 'translateY(0)';
-    
-    // Force a reflow
-    wrapper.offsetHeight;
-    
-    // Start the animation
-    requestAnimationFrame(() => {
-      wrapper.style.transform = `translateY(-${(sequenceLength - 1) * 100}%)`;
     });
     
+    reel.appendChild(wrapper);
     return reel;
   };
 
-  let baseNumber = 242402;
-
   const updateValue = () => {
+    const currentValue = parseInt(lostPoundElement.textContent.replace(/,/g, ''));
     const randomIncrease = Math.floor(Math.random() * 5) + 2;
-    const oldValue = baseNumber;
-    baseNumber += randomIncrease;
+    const newValue = currentValue + randomIncrease;
     
     // Format both numbers with commas
-    const oldStr = oldValue.toLocaleString();
-    const newStr = baseNumber.toLocaleString();
+    const oldStr = currentValue.toLocaleString();
+    const newStr = newValue.toLocaleString();
     
     // Find the position where the numbers start to differ
     let i = 0;
@@ -1439,8 +1430,8 @@ const startRandomPoundUpdates = () => {
 
     // After animation completes, update with the final number
     setTimeout(() => {
-      lostPoundElement.textContent = baseNumber.toLocaleString();
-    }, 600);
+      lostPoundElement.textContent = newValue.toLocaleString();
+    }, 500); // Match this with CSS animation duration
   };
 
   const getRandomInterval = () => (Math.random() * 1000) + 3000;
