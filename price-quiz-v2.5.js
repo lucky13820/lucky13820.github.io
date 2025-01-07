@@ -1221,8 +1221,13 @@ function createWeightChart() {
             
             // Make the last label bigger and add lines
             if (index === meta.data.length - 1) {
-              ctx.font = 'bold 24px Helvetica Neue'; // Bigger font for last label
-              ctx.fillStyle = '#0066FF'; // Blue color to match the line
+              // Draw semi-circle background
+              ctx.beginPath();
+              ctx.fillStyle = 'rgba(26, 51, 142, 0.1)'; // Very light blue
+              ctx.arc(x, y + 5, 40, Math.PI, 0, false); // Semi-circle
+              ctx.fill();
+              
+              ctx.font = 'bold 20px Helvetica Neue';
               
               // Draw the label
               ctx.fillText(`${Math.round(value)} lbs`, x, y);
