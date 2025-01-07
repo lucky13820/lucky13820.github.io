@@ -48,6 +48,26 @@ document.addEventListener("DOMContentLoaded", () => {
   } catch (error) {
     console.error("Error accessing localStorage:", error);
   }
+
+  try {
+    const quizAnswers = JSON.parse(localStorage.getItem("quizAnswers") || "{}");
+    
+    // Update state
+    const stateElement = document.querySelector('#approved_state');
+    if (stateElement && quizAnswers['state']) {
+      stateElement.textContent = quizAnswers['state'];
+    }
+
+    // Update name (first name only)
+    const nameElement = document.querySelector('#approved_name');
+    if (nameElement && quizAnswers['Full-name']) {
+      // Split the full name and take the first part
+      const firstName = quizAnswers['Full-name'].split(' ')[0];
+      nameElement.textContent = firstName;
+    }
+  } catch (error) {
+    console.error('Error updating approved state and name:', error);
+  }
 });
 
 const nextButton = document.querySelector("#quiz-next-button");
@@ -496,8 +516,25 @@ quizForm.addEventListener("submit", (e) => {
 
   try {
     createWeightChart();
+    
+    // Add name and state update here
+    const quizAnswers = JSON.parse(localStorage.getItem("quizAnswers") || "{}");
+    
+    // Update state
+    const stateElement = document.querySelector('#approved_state');
+    if (stateElement && quizAnswers['state']) {
+      stateElement.textContent = quizAnswers['state'];
+    }
+
+    // Update name (first name only)
+    const nameElement = document.querySelector('#approved_name');
+    if (nameElement && quizAnswers['Full-name']) {
+      // Split the full name and take the first part
+      const firstName = quizAnswers['Full-name'].split(' ')[0];
+      nameElement.textContent = firstName;
+    }
   } catch (error) {
-    console.error("Error creating chart on form submit:", error);
+    console.error("Error creating chart or updating approved info:", error);
   }
 
   const formDataInstance = new FormData(
@@ -1210,14 +1247,14 @@ function createWeightChart() {
             ticks: {
               font: {
                 size: 16,
-                family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+                family: "'Abcdiatype', 'Helvetica', 'Arial', sans-serif",
               },
               color: "#666",
             },
           },
           y: {
             display: false,
-            min: Math.min(targetWeight - 10, targetWeight * 0.8),
+            min: Math.min(targetWeight - 10, targetWeight * 0.6),
             max: Math.max(currentWeight + 10, currentWeight * 1.05),
           },
         },
@@ -1239,7 +1276,7 @@ function createWeightChart() {
               
               if (index === meta.data.length - 1) {
                 // Draw the label first
-                ctx.font = 'bold 20px Helvetica Neue';
+                ctx.font = 'bold 20px Abcdiatype';
                 ctx.fillStyle = '#000';
                 ctx.fillText(`${Math.round(value)} lbs`, x, y);
                 
@@ -1260,13 +1297,13 @@ function createWeightChart() {
                 ctx.lineTo(x + 22, y + 10);
                 
                 // Second line (slightly shorter)
-                ctx.moveTo(x - 14, y + 17);
-                ctx.lineTo(x + 14, y + 17);
+                ctx.moveTo(x - 13, y + 17);
+                ctx.lineTo(x + 13, y + 17);
                 
                 ctx.stroke();
               } else {
                 // Regular labels for other points
-                ctx.font = '16px Helvetica Neue';
+                ctx.font = '16px Abcdiatype';
                 ctx.fillStyle = '#000';
                 ctx.fillText(`${Math.round(value)} lbs`, x, y);
               }
