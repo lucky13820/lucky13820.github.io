@@ -9,10 +9,10 @@ document.addEventListener("DOMContentLoaded", () => {
   trackSurveyStartToSimplifi();
   initializeBraze();
   handleNoneCheckbox();
-  createWeightChart();
 
   if (window.location.href.includes("#plan")) {
     displayPaymentForm();
+    createWeightChart();
     const prediction = localStorage.getItem("quiz_prediction");
     if (prediction) {
       document.querySelector('[data-id="prediction"]').textContent = prediction;
