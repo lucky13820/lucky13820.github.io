@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   trackSurveyStartToSimplifi();
   initializeBraze();
   handleNoneCheckbox();
+  createWeightChart();
 
   if (window.location.href.includes("#plan")) {
     displayPaymentForm();
@@ -487,6 +488,12 @@ quizForm.addEventListener("submit", (e) => {
 
   displayPaymentForm();
   window.location.hash = "plans";
+
+  try {
+    createWeightChart();
+  } catch (error) {
+    console.error('Error creating chart on form submit:', error);
+  }
 
   const formDataInstance = new FormData(
     document.getElementById("prediction-form")
@@ -1110,67 +1117,79 @@ function handleNoneCheckbox() {
   });
 }
 
-function createWeightChart(currentWeight, prediction) {
-  // Calculate intermediate points
-  const weightLoss = currentWeight - prediction;
-  const month4Weight = Math.round(currentWeight - (weightLoss * 0.4)); // 40% of weight loss by month 4
-  const month8Weight = Math.round(currentWeight - (weightLoss * 0.8)); // 80% of weight loss by month 8
+function createWeightChart() {
+  try {
+    const quizAnswers = JSON.parse(localStorage.getItem('quizAnswers') || '{}');
+    const currentWeight = parseInt(quizAnswers.weight);
+    const prediction = parseInt(quizAnswers.prediction);
 
-  const ctx = document.getElementById('weightChart').getContext('2d');
-  
-  new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: ['month 1', 'month 4', 'month 8', 'month 12'],
-      datasets: [{
-        data: [currentWeight, month4Weight, month8Weight, prediction],
-        borderColor: '#0066FF',
-        backgroundColor: 'rgba(0, 102, 255, 0.1)',
-        fill: 'start',
-        tension: 0.4,
-        pointRadius: 6,
-        pointBackgroundColor: '#0066FF'
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          display: false
-        },
-        tooltip: {
-          callbacks: {
-            label: function(context) {
-              return `${context.parsed.y} lbs`;
-            }
-          }
-        }
+    if (!currentWeight || !prediction) {
+      console.log('Weight or prediction not found in localStorage');
+      return;
+    }
+
+    // Calculate intermediate points
+    const weightLoss = currentWeight - prediction;
+    const month4Weight = Math.round(currentWeight - (weightLoss * 0.4));
+    const month8Weight = Math.round(currentWeight - (weightLoss * 0.8));
+
+    const ctx = document.getElementById('weightChart');
+    if (!ctx) {
+      console.log('Weight chart canvas not found');
+      return;
+    }
+
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['month 1', 'month 4', 'month 8', 'month 12'],
+        datasets: [{
+          data: [currentWeight, month4Weight, month8Weight, prediction],
+          borderColor: '#0066FF',
+          backgroundColor: 'rgba(0, 102, 255, 0.1)',
+          fill: 'start',
+          tension: 0.4,
+          pointRadius: 6,
+          pointBackgroundColor: '#0066FF'
+        }]
       },
-      scales: {
-        x: {
-          grid: {
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
             display: false
           },
-          ticks: {
-            font: {
-              size: 16,
-              family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"
-            },
-            color: '#666'
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return `${context.parsed.y} lbs`;
+              }
+            }
           }
         },
-        y: {
-          display: false,
-          min: Math.min(prediction - 10, prediction * 0.95),
-          max: Math.max(currentWeight + 10, currentWeight * 1.05)
+        scales: {
+          x: {
+            grid: {
+              display: false
+            },
+            ticks: {
+              font: {
+                size: 16,
+                family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"
+              },
+              color: '#666'
+            }
+          },
+          y: {
+            display: false,
+            min: Math.min(prediction - 10, prediction * 0.95),
+            max: Math.max(currentWeight + 10, currentWeight * 1.05)
+          }
         }
       }
-    }
-  });
+    });
+  } catch (error) {
+    console.error('Error creating weight chart:', error);
+  }
 }
-
-// Then call the function with the weight input and prediction:
-const weight = parseInt(WEIGHT_INPUT.value);
-const predictedWeight = getWeight(HEIGHT_INPUT.value, weight);
-createWeightChart(weight, predictedWeight);
