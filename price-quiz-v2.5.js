@@ -1135,8 +1135,8 @@ function createWeightChart() {
 
     // Create gradient
     const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 400);
-    gradient.addColorStop(0, 'rgba(0, 102, 255, 0.2)');
-    gradient.addColorStop(1, 'rgba(0, 102, 255, 0)');
+    gradient.addColorStop(0, 'rgba(26, 51, 142, 0.4)');
+    gradient.addColorStop(1, 'rgba(26, 51, 142, 0)');
 
     new Chart(ctx, {
       type: 'line',
@@ -1206,7 +1206,7 @@ function createWeightChart() {
             const ctx = chart.ctx;
             ctx.save();
             ctx.font = '16px Helvetica Neue';
-            ctx.fillStyle = '#666';
+            ctx.fillStyle = '#000';
             ctx.textAlign = 'center';
             
             // Only draw labels if animation is complete
