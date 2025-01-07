@@ -1235,7 +1235,7 @@ function createWeightChart() {
             meta.data.forEach((point, index) => {
               const value = chart.data.datasets[0].data[index];
               const x = point.x;
-              const y = point.y - (index === meta.data.length - 1 ? 28 : 20);
+              const y = point.y - (index === meta.data.length - 1 ? 30 : 20);
               
               if (index === meta.data.length - 1) {
                 // Draw the label first
@@ -1253,14 +1253,15 @@ function createWeightChart() {
                 ctx.beginPath();
                 ctx.lineWidth = 3;
                 ctx.strokeStyle = '#0066FF';
+                ctx.lineCap = 'round';
                 
                 // First line
-                ctx.moveTo(x - 25, y + 10);
-                ctx.lineTo(x + 25, y + 10);
+                ctx.moveTo(x - 22, y + 10);
+                ctx.lineTo(x + 22, y + 10);
                 
                 // Second line (slightly shorter)
-                ctx.moveTo(x - 20, y + 15);
-                ctx.lineTo(x + 20, y + 15);
+                ctx.moveTo(x - 16, y + 18);
+                ctx.lineTo(x + 16, y + 18);
                 
                 ctx.stroke();
               } else {
