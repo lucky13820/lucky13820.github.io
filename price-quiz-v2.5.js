@@ -450,14 +450,19 @@ function showNotEligibleBlock(reason) {
 }
 
 // Assuming this is within your existing code where you define the optInCheckbox and phoneInput
-const optInCheckbox = document.querySelector('input[type="checkbox"][name="Opt-In"]');
+const optInCheckbox = document.querySelector(
+  'input[type="checkbox"][name="Opt-In"]'
+);
 const phoneInput = document.getElementById("phone");
 
 // Add an event listener to the opt-in checkbox
 if (optInCheckbox) {
   optInCheckbox.addEventListener("change", () => {
     // Check if the checkbox is checked and the phone input is empty
-    if (optInCheckbox.checked && (!phoneInput || phoneInput.value.trim() === "")) {
+    if (
+      optInCheckbox.checked &&
+      (!phoneInput || phoneInput.value.trim() === "")
+    ) {
       alert("Please fill in your phone number to opt-in for SMS marketing."); // Show a popup
       phoneInput.focus(); // Optionally, focus on the phone input for user convenience
     }
@@ -492,7 +497,7 @@ quizForm.addEventListener("submit", (e) => {
   try {
     createWeightChart();
   } catch (error) {
-    console.error('Error creating chart on form submit:', error);
+    console.error("Error creating chart on form submit:", error);
   }
 
   const formDataInstance = new FormData(
@@ -624,7 +629,7 @@ function createBrazeUser(data) {
   Object.entries(rest).forEach(([key, value]) =>
     user.setCustomUserAttribute(key, value)
   );
-  
+
   braze.logCustomEvent("Quiz_Flow_Complete", {
     ...data,
     questionnaire_id: "regular",
@@ -1000,42 +1005,44 @@ const trackSurveyCompleteToSimplifi = () => {
 let removedSlides = {};
 
 function handleMotivationSelection(swiper) {
-  const motivationInputs = document.querySelectorAll('input[name="Motivation"]');
-  
-  motivationInputs.forEach(input => {
-    input.addEventListener('change', async (e) => {
+  const motivationInputs = document.querySelectorAll(
+    'input[name="Motivation"]'
+  );
+
+  motivationInputs.forEach((input) => {
+    input.addEventListener("change", async (e) => {
       const selectedMotivation = e.target.value.toLowerCase();
-      console.log('Selected motivation:', selectedMotivation);
-      
+      console.log("Selected motivation:", selectedMotivation);
+
       // Remove all motivation content slides first
       swiper.slides.forEach((slide) => {
-        const slideEvent = slide.getAttribute('data-slide-event');
-        if (slideEvent && slideEvent.startsWith('motivation_')) {
+        const slideEvent = slide.getAttribute("data-slide-event");
+        if (slideEvent && slideEvent.startsWith("motivation_")) {
           toggleSlide(swiper, true, slideEvent);
         }
       });
-      
+
       // Map the selected value to the correct slide event
       const motivationMap = {
-        'health': 'motivation_health',
-        'appearance': 'motivation_appearance',
-        'mental': 'motivation_mental',
-        'longer': 'motivation_longer'
+        health: "motivation_health",
+        appearance: "motivation_appearance",
+        mental: "motivation_mental",
+        longer: "motivation_longer",
       };
-      
+
       const relevantSlideEvent = motivationMap[selectedMotivation];
-      console.log('Relevant slide event:', relevantSlideEvent);
-      
+      console.log("Relevant slide event:", relevantSlideEvent);
+
       if (relevantSlideEvent) {
         // Add the relevant slide back
         toggleSlide(swiper, false, relevantSlideEvent);
-        
+
         // Update swiper
         swiper.update();
-        
+
         // Allow slide next only if a motivation is selected
         swiper.allowSlideNext = true;
-        
+
         // Let the radio button animation complete first
         setTimeout(() => {
           // Then go to the motivation content slide
@@ -1086,30 +1093,36 @@ function toggleSlide(swiper, shouldRemove, slideEventValue) {
 
 function handleNoneCheckbox() {
   // Only select checkboxes within the specific slide
-  const slideContainer = document.querySelector('[data-slide-event="apply_to_you"]');
+  const slideContainer = document.querySelector(
+    '[data-slide-event="apply_to_you"]'
+  );
   if (!slideContainer) return;
-  
+
   const checkboxes = slideContainer.querySelectorAll('input[type="checkbox"]');
-  
-  checkboxes.forEach(checkbox => {
-    checkbox.addEventListener('change', (e) => {
-      const isNoneOption = e.target.getAttribute('data-id') === 'none';
+
+  checkboxes.forEach((checkbox) => {
+    checkbox.addEventListener("change", (e) => {
+      const isNoneOption = e.target.getAttribute("data-id") === "none";
       const isChecked = e.target.checked;
-      
+
       if (isNoneOption && isChecked) {
         // If "none" is selected, uncheck all other checkboxes
-        checkboxes.forEach(cb => {
-          if (cb !== e.target && cb.getAttribute('data-id') === 'multiple' && cb.checked) {
+        checkboxes.forEach((cb) => {
+          if (
+            cb !== e.target &&
+            cb.getAttribute("data-id") === "multiple" &&
+            cb.checked
+          ) {
             cb.click(); // Trigger click instead of setting checked
-            console.log('none selected');
+            console.log("none selected");
           }
         });
       } else if (!isNoneOption && isChecked) {
         // If any other option is selected, uncheck the "none" option
-        checkboxes.forEach(cb => {
-          if (cb.getAttribute('data-id') === 'none' && cb.checked) {
+        checkboxes.forEach((cb) => {
+          if (cb.getAttribute("data-id") === "none" && cb.checked) {
             cb.click(); // Trigger click instead of setting checked
-            console.log('other selected');
+            console.log("other selected");
           }
         });
       }
@@ -1119,147 +1132,150 @@ function handleNoneCheckbox() {
 
 function createWeightChart() {
   try {
-    const quizAnswers = JSON.parse(
-      localStorage.getItem("quizAnswers") || "{}"
-    );
+    const quizAnswers = JSON.parse(localStorage.getItem("quizAnswers") || "{}");
     const currentWeight = Number(quizAnswers.Weight);
     const targetWeight = currentWeight - Number(quizAnswers.prediction);
 
     // Calculate intermediate points
-    const month4Weight = Math.round(currentWeight - (quizAnswers.prediction * 0.4));
-    const month8Weight = Math.round(currentWeight - (quizAnswers.prediction * 0.8));
+    const month4Weight = Math.round(
+      currentWeight - quizAnswers.prediction * 0.4
+    );
+    const month8Weight = Math.round(
+      currentWeight - quizAnswers.prediction * 0.8
+    );
     const finalWeight = Math.round(targetWeight);
 
-    const ctx = document.getElementById('weightChart');
+    const ctx = document.getElementById("weightChart");
     if (!ctx) return;
 
     // Create gradient
-    const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 400);
-    gradient.addColorStop(0, 'rgba(26, 51, 142, 0.4)');
-    gradient.addColorStop(1, 'rgba(26, 51, 142, 0)');
+    const gradient = ctx.getContext("2d").createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, "rgba(26, 51, 142, 0.4)");
+    gradient.addColorStop(1, "rgba(26, 51, 142, 0)");
 
     new Chart(ctx, {
-      type: 'line',
+      type: "line",
       data: {
-        labels: ['month 1', 'month 4', 'month 8', 'month 12'],
-        datasets: [{
-          data: [currentWeight, month4Weight, month8Weight, targetWeight],
-          borderColor: '#0066FF',
-          backgroundColor: gradient,
-          fill: 'start',
-          tension: 0.4,
-          pointRadius: 6,
-          pointBackgroundColor: '#0066FF'
-        }]
+        labels: ["month 1", "month 4", "month 8", "month 12"],
+        datasets: [
+          {
+            data: [currentWeight, month4Weight, month8Weight, targetWeight],
+            borderColor: "#0066FF",
+            backgroundColor: gradient,
+            fill: "start",
+            tension: 0.4,
+            pointRadius: 6,
+            pointBackgroundColor: "#0066FF",
+          },
+        ],
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
         animation: {
           duration: 2000,
-          easing: 'easeInOutQuart',
+          easing: "easeInOutQuart",
         },
         animations: {
           tension: {
             duration: 2000,
-            easing: 'linear',
+            easing: "linear",
             from: 0,
-            to: 0.4
-          }
+            to: 0.4,
+          },
         },
         transitions: {
           active: {
             animation: {
-              duration: 0
-            }
-          }
+              duration: 0,
+            },
+          },
         },
         plugins: {
           legend: {
-            display: false
+            display: false,
           },
           tooltip: {
-            enabled: false
-          }
+            enabled: false,
+          },
         },
         scales: {
           x: {
             grid: {
-              display: false
+              display: false,
             },
             border: {
-              display: false  // This removes the x-axis line
+              display: false, // This removes the x-axis line
             },
             ticks: {
               font: {
                 size: 16,
-                family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"
+                family: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
               },
-              color: '#666'
-            }
+              color: "#666",
+            },
           },
           y: {
             display: false,
             min: Math.min(targetWeight - 10, targetWeight * 0.95),
-            max: Math.max(currentWeight + 10, currentWeight * 1.05)
-          }
-        }
+            max: Math.max(currentWeight + 10, currentWeight * 1.05),
+          },
+        },
       },
-      plugins: [{
-        id: 'weightLabels',
-        afterDraw: (chart) => {
-          const ctx = chart.ctx;
-          const meta = chart.getDatasetMeta(0);
-          
-          ctx.save();
-          ctx.textAlign = 'center';
-          
-          meta.data.forEach((point, index) => {
-            const value = chart.data.datasets[0].data[index];
-            const x = point.x;
-            const y = point.y - (index === meta.data.length - 1 ? 28 : 20);
+      plugins: [
+        {
+          id: "weightLabels",
+          afterDraw: (chart) => {
+            const ctx = chart.ctx;
+            const meta = chart.getDatasetMeta(0);
             
-            if (index === meta.data.length - 1) {
-
-                            // Then draw the label on top
-                            ctx.font = 'bold 20px Helvetica Neue';
-                            ctx.fillStyle = '#000';
-                            ctx.fillText(`${Math.round(value)}`, x, y);
-
-                            
-              // Draw semi-circle background first
-              ctx.beginPath();
-              ctx.fillStyle = 'rgba(23, 92, 211, 0.12)';
-              ctx.arc(x, y + 5, 25, Math.PI, 0, false);
-              ctx.fill();
+            ctx.save();
+            ctx.textAlign = 'center';
             
+            meta.data.forEach((point, index) => {
+              const value = chart.data.datasets[0].data[index];
+              const x = point.x;
+              const y = point.y - (index === meta.data.length - 1 ? 28 : 20);
               
-              // Finally draw the decorative lines
-              ctx.beginPath();
-              ctx.lineWidth = 2;
-              ctx.strokeStyle = '#0066FF';
-              
-              // First line
-              ctx.moveTo(x - 15, y + 10);
-              ctx.lineTo(x + 15, y + 10);
-              
-              // Second line (slightly shorter)
-              ctx.moveTo(x - 10, y + 15);
-              ctx.lineTo(x + 10, y + 15);
-              
-              ctx.stroke();
-            } else {
-              // Regular labels for other points
-              ctx.font = '16px Helvetica Neue';
-              ctx.fillStyle = '#000';
-              ctx.fillText(`${Math.round(value)}`, x, y);
-            }
-          });
-          ctx.restore();
-        }
-      }]
+              if (index === meta.data.length - 1) {
+                // Draw the label first
+                ctx.font = 'bold 20px Helvetica Neue';
+                ctx.fillStyle = '#000';
+                ctx.fillText(`${Math.round(value)} lbs`, x, y);
+                
+                // Then draw the semi-circle aligned to the right
+                ctx.beginPath();
+                ctx.fillStyle = 'rgba(23, 92, 211, 0.12)';
+                ctx.arc(x + 30, y + 5, 12, Math.PI, 0, false); // Smaller radius and shifted right
+                ctx.fill();
+                
+                // Draw the decorative lines
+                ctx.beginPath();
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = '#0066FF';
+                
+                // First line
+                ctx.moveTo(x - 15, y + 10);
+                ctx.lineTo(x + 15, y + 10);
+                
+                // Second line (slightly shorter)
+                ctx.moveTo(x - 10, y + 15);
+                ctx.lineTo(x + 10, y + 15);
+                
+                ctx.stroke();
+              } else {
+                // Regular labels for other points
+                ctx.font = '16px Helvetica Neue';
+                ctx.fillStyle = '#000';
+                ctx.fillText(`${Math.round(value)} lbs`, x, y);
+              }
+            });
+            ctx.restore();
+          }
+        },
+      ],
     });
   } catch (error) {
-    console.error('Error creating weight chart:', error);
+    console.error("Error creating weight chart:", error);
   }
 }
