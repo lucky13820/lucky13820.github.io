@@ -1123,35 +1123,17 @@ function createWeightChart() {
       localStorage.getItem("quizAnswers") || "{}"
     );
     const currentWeight = Number(quizAnswers.Weight);
-    const targetWeight = currentWeight - Number(quizAnswers.prediction);  // This is the weight loss amount
+    const targetWeight = currentWeight - Number(quizAnswers.prediction);
 
-    console.log('Starting weight:', currentWeight);
-    console.log('Weight to lose:', quizAnswers.prediction);
-    console.log('Target weight:', targetWeight);
-
-    if (!currentWeight || !targetWeight) {
-      console.log('Weight or target weight not found:', { currentWeight, targetWeight });
-      return;
-    }
-
-    // Calculate intermediate points - gradual weight loss
+    // Calculate intermediate points
     const month4Weight = Math.round(currentWeight - (quizAnswers.prediction * 0.4));
     const month8Weight = Math.round(currentWeight - (quizAnswers.prediction * 0.8));
     const finalWeight = Math.round(targetWeight);
 
-    console.log('Calculated weights:', {
-      start: currentWeight,
-      month4: month4Weight,
-      month8: month8Weight,
-      final: finalWeight
-    });
-
     const ctx = document.getElementById('weightChart');
-    if (!ctx) {
-      console.log('Weight chart canvas not found');
-      return;
-    }
+    if (!ctx) return;
 
+    // Create gradient
     const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 400);
     gradient.addColorStop(0, 'rgba(0, 102, 255, 0.2)');
     gradient.addColorStop(1, 'rgba(0, 102, 255, 0)');
@@ -1163,7 +1145,7 @@ function createWeightChart() {
         datasets: [{
           data: [currentWeight, month4Weight, month8Weight, targetWeight],
           borderColor: '#0066FF',
-          backgroundColor: 'gradient',
+          backgroundColor: gradient,
           fill: 'start',
           tension: 0.4,
           pointRadius: 6,
@@ -1173,16 +1155,31 @@ function createWeightChart() {
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        animation: {
+          duration: 2000, // Animation duration in milliseconds
+          easing: 'easeInOutQuart', // Animation easing function
+        },
+        animations: {
+          tension: {
+            duration: 2000,
+            easing: 'linear',
+            from: 0,
+            to: 0.4
+          }
+        },
+        transitions: {
+          active: {
+            animation: {
+              duration: 0 // Disable hover animations
+            }
+          }
+        },
         plugins: {
           legend: {
             display: false
           },
           tooltip: {
-            callbacks: {
-              label: function(context) {
-                return `${context.parsed.y} lbs`;
-              }
-            }
+            enabled: false
           }
         },
         scales: {
@@ -1204,7 +1201,26 @@ function createWeightChart() {
             max: Math.max(currentWeight + 10, currentWeight * 1.05)
           }
         },
-        plugins: {
+        plugins: [{
+          afterDraw: function(chart) {
+            const ctx = chart.ctx;
+            ctx.save();
+            ctx.font = '16px Helvetica Neue';
+            ctx.fillStyle = '#666';
+            ctx.textAlign = 'center';
+            
+            // Only draw labels if animation is complete
+            if (chart.animator.running.length === 0) {
+              chart.data.datasets[0].data.forEach((value, index) => {
+                const meta = chart.getDatasetMeta(0);
+                const x = meta.data[index].x;
+                const y = meta.data[index].y - 20;
+                ctx.fillText(`${Math.round(value)} lbs`, x, y);
+              });
+            }
+            ctx.restore();
+          }
+        }]
       }
     });
   } catch (error) {
