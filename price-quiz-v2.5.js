@@ -1217,19 +1217,22 @@ function createWeightChart() {
           meta.data.forEach((point, index) => {
             const value = chart.data.datasets[0].data[index];
             const x = point.x;
-            const y = point.y - (index === meta.data.length - 1 ? 24 : 20);
+            const y = point.y - (index === meta.data.length - 1 ? 28 : 20);
             
-            // Make the last label bigger and add lines
             if (index === meta.data.length - 1) {
-              // Draw semi-circle background first (smaller radius)
+
+                            // Then draw the label on top
+                            ctx.font = 'bold 20px Helvetica Neue';
+                            ctx.fillStyle = '#000';
+                            ctx.fillText(`${Math.round(value)}`, x, y);
+
+                            
+              // Draw semi-circle background first
               ctx.beginPath();
               ctx.fillStyle = 'rgba(23, 92, 211, 0.12)';
-              ctx.arc(x, y + 5, 25, Math.PI, 0, false); // Reduced radius from 40 to 25
+              ctx.arc(x, y + 5, 25, Math.PI, 0, false);
               ctx.fill();
-              
-              // Then draw the label on top
-              ctx.font = 'bold 20px Helvetica Neue';
-              ctx.fillText(`${Math.round(value)}`, x, y);
+            
               
               // Finally draw the decorative lines
               ctx.beginPath();
