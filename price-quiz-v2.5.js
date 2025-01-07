@@ -1427,6 +1427,11 @@ const startRandomPoundUpdates = () => {
     // Update the display
     lostPoundElement.innerHTML = unchangedPart;
     reels.forEach(reel => lostPoundElement.appendChild(reel));
+
+    // After animation completes, update with the final number
+    setTimeout(() => {
+      lostPoundElement.textContent = newValue.toLocaleString();
+    }, 500); // Match this with CSS animation duration
   };
 
   const getRandomInterval = () => (Math.random() * 1000) + 3000;
