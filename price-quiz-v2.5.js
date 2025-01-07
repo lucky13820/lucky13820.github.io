@@ -1277,7 +1277,7 @@ function createWeightChart() {
           },
           y: {
             display: false,
-            min: Math.min(targetWeight - 10, targetWeight * 0.78),
+            min: Math.min(targetWeight - 10, targetWeight * 0.72),
             max: Math.max(currentWeight + 10, currentWeight * 1.05),
           },
         },
@@ -1367,14 +1367,43 @@ const startRandomPoundUpdates = () => {
   const lostPoundElement = document.querySelector('#lost-pound');
   if (!lostPoundElement) return;
 
+  const createDigitReel = (from, to) => {
+    const reel = document.createElement('div');
+    reel.className = 'digit-reel';
+    
+    // Create wrapper for animation
+    const wrapper = document.createElement('div');
+    wrapper.className = 'digit-wrapper';
+    
+    // Add all numbers in sequence
+    const sequence = [];
+    let current = from;
+    while (current !== to) {
+      sequence.push(current);
+      current = (current + 1) % 10;
+    }
+    sequence.push(to);
+    
+    // Add numbers to wrapper
+    sequence.forEach(num => {
+      const digit = document.createElement('div');
+      digit.className = 'digit';
+      digit.textContent = num;
+      wrapper.appendChild(digit);
+    });
+    
+    reel.appendChild(wrapper);
+    return reel;
+  };
+
   const updateValue = () => {
     const currentValue = parseInt(lostPoundElement.textContent.replace(/,/g, ''));
-    const randomIncrease = Math.floor(Math.random() * 5) + 2; // Random number between 2-6
+    const randomIncrease = Math.floor(Math.random() * 5) + 2;
     const newValue = currentValue + randomIncrease;
     
-    // Get the old and new value strings
-    const oldStr = currentValue.toString();
-    const newStr = newValue.toString();
+    // Format both numbers with commas
+    const oldStr = currentValue.toLocaleString();
+    const newStr = newValue.toLocaleString();
     
     // Find the position where the numbers start to differ
     let i = 0;
@@ -1386,11 +1415,20 @@ const startRandomPoundUpdates = () => {
     const unchangedPart = newStr.slice(0, i);
     const changedPart = newStr.slice(i);
     
-    // Update the display with animation only on changed digits
-    lostPoundElement.innerHTML = `${unchangedPart}<span class="animate-digit">${changedPart}</span>`;
+    // Create reels for each changed digit
+    const oldDigits = oldStr.slice(i).split('');
+    const newDigits = changedPart.split('');
+    
+    const reels = newDigits.map((newDigit, index) => {
+      const oldDigit = oldDigits[index] || '0';
+      return createDigitReel(parseInt(oldDigit), parseInt(newDigit));
+    });
+    
+    // Update the display
+    lostPoundElement.innerHTML = unchangedPart;
+    reels.forEach(reel => lostPoundElement.appendChild(reel));
   };
 
-  // Update every 3-4 seconds randomly
   const getRandomInterval = () => (Math.random() * 1000) + 3000;
 
   const scheduleNextUpdate = () => {
