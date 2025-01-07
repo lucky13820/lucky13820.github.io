@@ -1122,7 +1122,7 @@ function createWeightChart() {
     const quizAnswers = JSON.parse(
       localStorage.getItem("quizAnswers") || "{}"
     );
-    const currentWeight = quizAnswers.weight;
+    const currentWeight = quizAnswers.Weight;
     const prediction = quizAnswers.prediction;
 
     if (!currentWeight || !prediction) {
