@@ -1119,9 +1119,11 @@ function handleNoneCheckbox() {
 
 function createWeightChart() {
   try {
-    const quizAnswers = JSON.parse(localStorage.getItem('quizAnswers') || '{}');
-    const currentWeight = parseInt(quizAnswers.weight);
-    const prediction = parseInt(quizAnswers.prediction);
+    const quizAnswers = JSON.parse(
+      localStorage.getItem("quizAnswers") || "{}"
+    );
+    const currentWeight = quizAnswers.weight;
+    const prediction = quizAnswers.prediction;
 
     if (!currentWeight || !prediction) {
       console.log('Weight or prediction not found in localStorage');
