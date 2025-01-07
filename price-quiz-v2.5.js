@@ -1187,7 +1187,7 @@ function createWeightChart() {
         transitions: {
           active: {
             animation: {
-              duration: 0,
+              duration: 2000,
             },
           },
         },
@@ -1217,7 +1217,7 @@ function createWeightChart() {
           },
           y: {
             display: false,
-            min: Math.min(targetWeight - 10, targetWeight * 0.95),
+            min: Math.min(targetWeight - 10, targetWeight * 0.8),
             max: Math.max(currentWeight + 10, currentWeight * 1.05),
           },
         },
