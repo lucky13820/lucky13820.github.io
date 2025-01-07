@@ -1246,7 +1246,7 @@ function createWeightChart() {
                 // Then draw the semi-circle aligned to the right
                 ctx.beginPath();
                 ctx.fillStyle = 'rgba(23, 92, 211, 0.12)';
-                ctx.arc(x + 30, y + 5, 12, Math.PI, 0, false); // Smaller radius and shifted right
+                ctx.arc(x, y + 5, 15, Math.PI, 0, false); // Smaller radius and shifted right
                 ctx.fill();
                 
                 // Draw the decorative lines
