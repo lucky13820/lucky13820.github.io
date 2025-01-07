@@ -1122,18 +1122,29 @@ function createWeightChart() {
     const quizAnswers = JSON.parse(
       localStorage.getItem("quizAnswers") || "{}"
     );
-    const currentWeight = quizAnswers.Weight;
-    const prediction = quizAnswers.prediction;
+    const currentWeight = Number(quizAnswers.Weight);
+    const targetWeight = currentWeight - Number(quizAnswers.prediction);  // This is the weight loss amount
 
-    if (!currentWeight || !prediction) {
-      console.log('Weight or prediction not found in localStorage');
+    console.log('Starting weight:', currentWeight);
+    console.log('Weight to lose:', quizAnswers.prediction);
+    console.log('Target weight:', targetWeight);
+
+    if (!currentWeight || !targetWeight) {
+      console.log('Weight or target weight not found:', { currentWeight, targetWeight });
       return;
     }
 
-    // Calculate intermediate points
-    const weightLoss = currentWeight - prediction;
-    const month4Weight = Math.round(currentWeight - (weightLoss * 0.4));
-    const month8Weight = Math.round(currentWeight - (weightLoss * 0.8));
+    // Calculate intermediate points - gradual weight loss
+    const month4Weight = Math.round(currentWeight - (quizAnswers.prediction * 0.4));
+    const month8Weight = Math.round(currentWeight - (quizAnswers.prediction * 0.8));
+    const finalWeight = Math.round(targetWeight);
+
+    console.log('Calculated weights:', {
+      start: currentWeight,
+      month4: month4Weight,
+      month8: month8Weight,
+      final: finalWeight
+    });
 
     const ctx = document.getElementById('weightChart');
     if (!ctx) {
@@ -1146,7 +1157,7 @@ function createWeightChart() {
       data: {
         labels: ['month 1', 'month 4', 'month 8', 'month 12'],
         datasets: [{
-          data: [currentWeight, month4Weight, month8Weight, prediction],
+          data: [currentWeight, month4Weight, month8Weight, targetWeight],
           borderColor: '#0066FF',
           backgroundColor: 'rgba(0, 102, 255, 0.1)',
           fill: 'start',
@@ -1185,7 +1196,7 @@ function createWeightChart() {
           },
           y: {
             display: false,
-            min: Math.min(prediction - 10, prediction * 0.95),
+            min: Math.min(targetWeight - 10, targetWeight * 0.95),
             max: Math.max(currentWeight + 10, currentWeight * 1.05)
           }
         }
