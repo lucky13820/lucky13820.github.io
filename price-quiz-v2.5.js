@@ -1246,7 +1246,7 @@ function createWeightChart() {
                 // Then draw the semi-circle aligned to the right
                 ctx.beginPath();
                 ctx.fillStyle = 'rgba(23, 92, 211, 0.12)';
-                ctx.arc(x, y + 10, 15, Math.PI, 0, false); // Smaller radius and shifted right
+                ctx.arc(x, y, 16, Math.PI, 0, false); // Smaller radius and shifted right
                 ctx.fill();
                 
                 // Draw the decorative lines
@@ -1255,12 +1255,12 @@ function createWeightChart() {
                 ctx.strokeStyle = '#0066FF';
                 
                 // First line
-                ctx.moveTo(x - 22, y + 17);
-                ctx.lineTo(x + 22, y + 17);
+                ctx.moveTo(x - 25, y + 10);
+                ctx.lineTo(x + 25, y + 10);
                 
                 // Second line (slightly shorter)
-                ctx.moveTo(x - 15, y + 20);
-                ctx.lineTo(x + 15, y + 20);
+                ctx.moveTo(x - 20, y + 15);
+                ctx.lineTo(x + 20, y + 15);
                 
                 ctx.stroke();
               } else {
