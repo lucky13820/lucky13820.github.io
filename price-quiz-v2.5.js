@@ -1187,6 +1187,9 @@ function createWeightChart() {
             grid: {
               display: false
             },
+            border: {
+              display: false  // This removes the x-axis line
+            },
             ticks: {
               font: {
                 size: 16,
@@ -1209,13 +1212,41 @@ function createWeightChart() {
           const meta = chart.getDatasetMeta(0);
           
           ctx.save();
-          ctx.font = '16px Helvetica Neue';
-          ctx.fillStyle = '#000';
           ctx.textAlign = 'center';
           
           meta.data.forEach((point, index) => {
             const value = chart.data.datasets[0].data[index];
-            ctx.fillText(`${Math.round(value)} lbs`, point.x, point.y - 20);
+            const x = point.x;
+            const y = point.y - 20;
+            
+            // Make the last label bigger and add lines
+            if (index === meta.data.length - 1) {
+              ctx.font = 'bold 24px Helvetica Neue'; // Bigger font for last label
+              ctx.fillStyle = '#0066FF'; // Blue color to match the line
+              
+              // Draw the label
+              ctx.fillText(`${Math.round(value)} lbs`, x, y);
+              
+              // Draw the decorative lines
+              ctx.beginPath();
+              ctx.lineWidth = 2;
+              ctx.strokeStyle = '#0066FF';
+              
+              // First line
+              ctx.moveTo(x - 15, y + 10);
+              ctx.lineTo(x + 15, y + 10);
+              
+              // Second line (slightly shorter)
+              ctx.moveTo(x - 10, y + 15);
+              ctx.lineTo(x + 10, y + 15);
+              
+              ctx.stroke();
+            } else {
+              // Regular labels for other points
+              ctx.font = '16px Helvetica Neue';
+              ctx.fillStyle = '#000';
+              ctx.fillText(`${Math.round(value)} lbs`, x, y);
+            }
           });
           ctx.restore();
         }
