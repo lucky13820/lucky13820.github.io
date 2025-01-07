@@ -68,6 +68,14 @@ document.addEventListener("DOMContentLoaded", () => {
   } catch (error) {
     console.error('Error updating approved state and name:', error);
   }
+
+  // Start initial animation if we're on the plans page
+  if (window.location.href.includes("#plan")) {
+    animateLostPounds(1250); // Start from this initial value
+    setTimeout(() => {
+      startRandomPoundUpdates();
+    }, 6000); // Start random updates after initial animation completes
+  }
 });
 
 const nextButton = document.querySelector("#quiz-next-button");
@@ -584,6 +592,16 @@ quizForm.addEventListener("submit", (e) => {
     trackSurveyCompleteToSimplifi();
   } catch (error) {
     console.error("Error in checkout tracking:", error);
+  }
+
+  try {
+    // Add the lost pounds animation
+    animateLostPounds(1250);
+    setTimeout(() => {
+      startRandomPoundUpdates();
+    }, 6000);
+  } catch (error) {
+    console.error("Error in form submission:", error);
   }
 });
 
@@ -1317,3 +1335,57 @@ function createWeightChart() {
     console.error("Error creating weight chart:", error);
   }
 }
+
+// Add this function near other animation functions
+const animateLostPounds = (startValue) => {
+  const lostPoundElement = document.querySelector('#lost-pound');
+  if (!lostPoundElement) return;
+
+  const options = {
+    duration: 6,
+    easingFn(t, b, c, d) {
+      let ts = (t /= d) * t;
+      let tc = ts * t;
+      return b + c * (tc + -3 * ts + 3 * t);
+    },
+  };
+
+  const numAnim = new countUp.CountUp(lostPoundElement, startValue, options);
+  numAnim.start();
+};
+
+// Add this function to handle the random updates
+const startRandomPoundUpdates = () => {
+  const lostPoundElement = document.querySelector('#lost-pound');
+  if (!lostPoundElement) return;
+
+  const updateValue = () => {
+    const currentValue = parseInt(lostPoundElement.textContent);
+    const randomIncrease = Math.floor(Math.random() * 5) + 2; // Random number between 2-6
+    const newValue = currentValue + randomIncrease;
+    
+    const options = {
+      duration: 2,
+      easingFn(t, b, c, d) {
+        let ts = (t /= d) * t;
+        let tc = ts * t;
+        return b + c * (tc + -3 * ts + 3 * t);
+      },
+    };
+
+    const numAnim = new countUp.CountUp(lostPoundElement, newValue, options);
+    numAnim.start();
+  };
+
+  // Update every 3-4 seconds randomly
+  const getRandomInterval = () => (Math.random() * 1000) + 3000; // Between 3000-4000ms
+
+  const scheduleNextUpdate = () => {
+    setTimeout(() => {
+      updateValue();
+      scheduleNextUpdate();
+    }, getRandomInterval());
+  };
+
+  scheduleNextUpdate();
+};
