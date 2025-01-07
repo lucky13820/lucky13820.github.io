@@ -1152,6 +1152,10 @@ function createWeightChart() {
       return;
     }
 
+    const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(0, 102, 255, 0.2)');
+    gradient.addColorStop(1, 'rgba(0, 102, 255, 0)');
+
     new Chart(ctx, {
       type: 'line',
       data: {
@@ -1159,7 +1163,7 @@ function createWeightChart() {
         datasets: [{
           data: [currentWeight, month4Weight, month8Weight, targetWeight],
           borderColor: '#0066FF',
-          backgroundColor: 'rgba(0, 102, 255, 0.1)',
+          backgroundColor: 'gradient',
           fill: 'start',
           tension: 0.4,
           pointRadius: 6,
@@ -1199,7 +1203,8 @@ function createWeightChart() {
             min: Math.min(targetWeight - 10, targetWeight * 0.95),
             max: Math.max(currentWeight + 10, currentWeight * 1.05)
           }
-        }
+        },
+        plugins: {
       }
     });
   } catch (error) {
