@@ -1389,9 +1389,16 @@ const startRandomPoundUpdates = () => {
     
     reel.appendChild(wrapper);
     
-    // Calculate animation distance based on number of digits
-    const distance = (sequenceLength - 1) * 100;
-    wrapper.style.transform = `translateY(-${distance}%)`;
+    // Set initial position
+    wrapper.style.transform = 'translateY(0)';
+    
+    // Force a reflow
+    wrapper.offsetHeight;
+    
+    // Start the animation
+    requestAnimationFrame(() => {
+      wrapper.style.transform = `translateY(-${(sequenceLength - 1) * 100}%)`;
+    });
     
     return reel;
   };
@@ -1433,7 +1440,7 @@ const startRandomPoundUpdates = () => {
     // After animation completes, update with the final number
     setTimeout(() => {
       lostPoundElement.textContent = baseNumber.toLocaleString();
-    }, 600); // Slightly longer than CSS animation
+    }, 600);
   };
 
   const getRandomInterval = () => (Math.random() * 1000) + 3000;
