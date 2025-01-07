@@ -1260,8 +1260,8 @@ function createWeightChart() {
                 ctx.lineTo(x + 22, y + 10);
                 
                 // Second line (slightly shorter)
-                ctx.moveTo(x - 16, y + 18);
-                ctx.lineTo(x + 16, y + 18);
+                ctx.moveTo(x - 14, y + 17);
+                ctx.lineTo(x + 14, y + 17);
                 
                 ctx.stroke();
               } else {
