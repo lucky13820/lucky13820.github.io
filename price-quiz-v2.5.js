@@ -1243,8 +1243,9 @@ function createWeightChart() {
 
     // Create gradient
     const gradient = ctx.getContext("2d").createLinearGradient(0, 0, 0, 400);
-    gradient.addColorStop(0, "rgba(26, 51, 142, 0.3)");
-    gradient.addColorStop(1, "rgba(26, 51, 142, 0)");
+    gradient.addColorStop(0, "rgba(26, 51, 142, 0.3)"); // Start with 30% opacity
+    gradient.addColorStop(0.7, "rgba(26, 51, 142, 0.05)"); // Add a middle stop with very low opacity
+    gradient.addColorStop(1, "rgba(26, 51, 142, 0)"); // End with complete transparency
 
     new Chart(ctx, {
       type: "line",
