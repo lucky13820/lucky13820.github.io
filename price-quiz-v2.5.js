@@ -3,6 +3,39 @@ const isStaging = window.location.hostname.includes("webflow.io");
 let APPROVED_INSURANCES;
 let eligibleStates;
 
+function handlePriceContainerScroll() {
+  const priceContainer = document.querySelector('#choose-price-container');
+  const priceSection = document.querySelector('#choose-your-price');
+  
+  if (!priceContainer || !priceSection) return;
+
+  // Set initial state
+  let isVisible = true;
+  
+  function updateContainerVisibility() {
+    const sectionRect = priceSection.getBoundingClientRect();
+    const isInPriceSection = sectionRect.top <= window.innerHeight && sectionRect.bottom >= 0;
+    
+    // Only update if state needs to change
+    if (isInPriceSection && isVisible) {
+      priceContainer.style.transform = 'translateY(100%)';
+      isVisible = false;
+    } else if (!isInPriceSection && !isVisible) {
+      priceContainer.style.transform = 'translateY(0)';
+      isVisible = true;
+    }
+  }
+
+  // Add smooth transition
+  priceContainer.style.transition = 'transform 0.3s ease-in-out';
+  
+  // Listen for scroll events
+  window.addEventListener('scroll', updateContainerVisibility, { passive: true });
+  
+  // Initial check
+  updateContainerVisibility();
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   initializeSwiper();
   addPriceFormListeners();
@@ -1445,36 +1478,3 @@ const startRandomPoundUpdates = () => {
   // Schedule subsequent updates
   scheduleNextUpdate();
 };
-
-function handlePriceContainerScroll() {
-  const priceContainer = document.querySelector('#choose-price-container');
-  const priceSection = document.querySelector('#choose-your-price');
-  
-  if (!priceContainer || !priceSection) return;
-
-  // Set initial state
-  let isVisible = true;
-  
-  function updateContainerVisibility() {
-    const sectionRect = priceSection.getBoundingClientRect();
-    const isInPriceSection = sectionRect.top <= window.innerHeight && sectionRect.bottom >= 0;
-    
-    // Only update if state needs to change
-    if (isInPriceSection && isVisible) {
-      priceContainer.style.transform = 'translateY(100%)';
-      isVisible = false;
-    } else if (!isInPriceSection && !isVisible) {
-      priceContainer.style.transform = 'translateY(0)';
-      isVisible = true;
-    }
-  }
-
-  // Add smooth transition
-  priceContainer.style.transition = 'transform 0.3s ease-in-out';
-  
-  // Listen for scroll events
-  window.addEventListener('scroll', updateContainerVisibility, { passive: true });
-  
-  // Initial check
-  updateContainerVisibility();
-}
