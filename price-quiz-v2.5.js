@@ -63,6 +63,35 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (error) {
       console.error("Error parsing quiz answers from localStorage:", error);
     }
+
+    try {
+      const quizAnswers = JSON.parse(localStorage.getItem("quizAnswers") || "{}");
+      
+      // Update state
+      const stateElement = document.querySelector('#approved_state');
+      if (stateElement && quizAnswers['State']) {
+        stateElement.textContent = quizAnswers['State'];
+      }
+  
+      // Update name (first name only)
+      const nameElement = document.querySelector('#approved_name');
+      if (nameElement && quizAnswers['Full-name']) {
+        // Split the full name and take the first part
+        const firstName = quizAnswers['Full-name'].split(' ')[0];
+        nameElement.textContent = firstName;
+      }
+    } catch (error) {
+      console.error('Error updating approved state and name:', error);
+    }
+
+
+  // Start initial animation if we're on the plans page
+  if (window.location.href.includes("#plan")) {
+    animateLostPounds(100000); // Start from 242,402
+    setTimeout(() => {
+      startRandomPoundUpdates();
+    }, 6000); // Start random updates after initial animation completes
+  }
   }
 
   // try pre-populate email and phone
@@ -80,34 +109,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   } catch (error) {
     console.error("Error accessing localStorage:", error);
-  }
-
-  try {
-    const quizAnswers = JSON.parse(localStorage.getItem("quizAnswers") || "{}");
-    
-    // Update state
-    const stateElement = document.querySelector('#approved_state');
-    if (stateElement && quizAnswers['State']) {
-      stateElement.textContent = quizAnswers['State'];
-    }
-
-    // Update name (first name only)
-    const nameElement = document.querySelector('#approved_name');
-    if (nameElement && quizAnswers['Full-name']) {
-      // Split the full name and take the first part
-      const firstName = quizAnswers['Full-name'].split(' ')[0];
-      nameElement.textContent = firstName;
-    }
-  } catch (error) {
-    console.error('Error updating approved state and name:', error);
-  }
-
-  // Start initial animation if we're on the plans page
-  if (window.location.href.includes("#plan")) {
-    animateLostPounds(100000); // Start from 242,402
-    setTimeout(() => {
-      startRandomPoundUpdates();
-    }, 6000); // Start random updates after initial animation completes
   }
 
   // Add scroll handler for price container
