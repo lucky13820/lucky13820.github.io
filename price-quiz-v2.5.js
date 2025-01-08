@@ -1237,7 +1237,7 @@ function createWeightChart() {
     if (!ctx) return;
 
     // Create gradient
-    const gradient = ctx.getContext("2d").createLinearGradient(0, 0, 0, 100);
+    const gradient = ctx.getContext("2d").createLinearGradient(0, 0, 0, 300);
     gradient.addColorStop(0, "rgba(26, 51, 142, 0.3)");
     gradient.addColorStop(1, "rgba(26, 51, 142, 0)");
 
