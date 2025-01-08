@@ -613,6 +613,12 @@ quizForm.addEventListener("submit", (e) => {
     // Add name and state update here
     const quizAnswers = JSON.parse(localStorage.getItem("quizAnswers") || "{}");
 
+    // Update state
+    const stateElement = document.querySelector("#approved_state");
+    if (stateElement) {
+      stateElement.textContent = quizAnswers["State"];
+    }
+
     // Update name (first name only)
     const nameElement = document.querySelector("#approved_name");
     if (nameElement && quizAnswers["Full-name"]) {
@@ -620,10 +626,6 @@ quizForm.addEventListener("submit", (e) => {
       const firstName = quizAnswers["Full-name"].split(" ")[0];
       nameElement.textContent = firstName;
     }
-
-    // Update state
-    const stateElement = document.querySelector("#approved_state");
-    stateElement.textContent = quizAnswers["state"];
   } catch (error) {
     console.error("Error creating chart or updating approved info:", error);
   }
@@ -1237,7 +1239,7 @@ function createWeightChart() {
     if (!ctx) return;
 
     // Create gradient
-    const gradient = ctx.getContext("2d").createLinearGradient(0, 0, 0, 300);
+    const gradient = ctx.getContext("2d").createLinearGradient(0, 0, 0, 400);
     gradient.addColorStop(0, "rgba(26, 51, 142, 0.3)");
     gradient.addColorStop(1, "rgba(26, 51, 142, 0)");
 
