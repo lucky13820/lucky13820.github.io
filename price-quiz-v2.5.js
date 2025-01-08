@@ -4,34 +4,37 @@ let APPROVED_INSURANCES;
 let eligibleStates;
 
 function handlePriceContainerScroll() {
-  const priceContainer = document.querySelector('#choose-price-container');
-  const priceSection = document.querySelector('#choose-your-price');
-  
+  const priceContainer = document.querySelector("#choose-price-container");
+  const priceSection = document.querySelector("#choose-your-price");
+
   if (!priceContainer || !priceSection) return;
 
   // Set initial state
   let isVisible = true;
-  
+
   function updateContainerVisibility() {
     const sectionRect = priceSection.getBoundingClientRect();
-    const isInPriceSection = sectionRect.top <= window.innerHeight && sectionRect.bottom >= 0;
-    
+    const isInPriceSection =
+      sectionRect.top <= window.innerHeight && sectionRect.bottom >= 0;
+
     // Only update if state needs to change
     if (isInPriceSection && isVisible) {
-      priceContainer.style.transform = 'translateY(100%)';
+      priceContainer.style.transform = "translateY(100%)";
       isVisible = false;
     } else if (!isInPriceSection && !isVisible) {
-      priceContainer.style.transform = 'translateY(0)';
+      priceContainer.style.transform = "translateY(0)";
       isVisible = true;
     }
   }
 
   // Add smooth transition
-  priceContainer.style.transition = 'transform 0.3s ease-in-out';
-  
+  priceContainer.style.transition = "transform 0.3s ease-in-out";
+
   // Listen for scroll events
-  window.addEventListener('scroll', updateContainerVisibility, { passive: true });
-  
+  window.addEventListener("scroll", updateContainerVisibility, {
+    passive: true,
+  });
+
   // Initial check
   updateContainerVisibility();
 }
@@ -65,33 +68,32 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      const quizAnswers = JSON.parse(localStorage.getItem("quizAnswers") || "{}");
-      
+      const quizAnswers = JSON.parse(
+        localStorage.getItem("quizAnswers") || "{}"
+      );
+
       // Update state
-      const stateElement = document.querySelector('#approved_state');
-      if (stateElement && quizAnswers['State']) {
-        stateElement.textContent = quizAnswers['State'];
-      }
-  
+      const stateElement = document.querySelector("#approved_state");
+      stateElement.textContent = quizAnswers["State"];
+
       // Update name (first name only)
-      const nameElement = document.querySelector('#approved_name');
-      if (nameElement && quizAnswers['Full-name']) {
+      const nameElement = document.querySelector("#approved_name");
+      if (nameElement && quizAnswers["Full-name"]) {
         // Split the full name and take the first part
-        const firstName = quizAnswers['Full-name'].split(' ')[0];
+        const firstName = quizAnswers["Full-name"].split(" ")[0];
         nameElement.textContent = firstName;
       }
     } catch (error) {
-      console.error('Error updating approved state and name:', error);
+      console.error("Error updating approved state and name:", error);
     }
 
-
-  // Start initial animation if we're on the plans page
-  if (window.location.href.includes("#plan")) {
-    animateLostPounds(100000); // Start from 242,402
-    setTimeout(() => {
-      startRandomPoundUpdates();
-    }, 6000); // Start random updates after initial animation completes
-  }
+    // Start initial animation if we're on the plans page
+    if (window.location.href.includes("#plan")) {
+      animateLostPounds(100000); // Start from 242,402
+      setTimeout(() => {
+        startRandomPoundUpdates();
+      }, 6000); // Start random updates after initial animation completes
+    }
   }
 
   // try pre-populate email and phone
@@ -602,7 +604,7 @@ quizForm.addEventListener("submit", (e) => {
 
   try {
     createWeightChart();
-    
+
     animateLostPounds(100000);
     setTimeout(() => {
       startRandomPoundUpdates();
@@ -610,20 +612,18 @@ quizForm.addEventListener("submit", (e) => {
 
     // Add name and state update here
     const quizAnswers = JSON.parse(localStorage.getItem("quizAnswers") || "{}");
-    
-    // Update state
-    const stateElement = document.querySelector('#approved_state');
-    if (stateElement && quizAnswers['state']) {
-      stateElement.textContent = quizAnswers['state'];
-    }
 
     // Update name (first name only)
-    const nameElement = document.querySelector('#approved_name');
-    if (nameElement && quizAnswers['Full-name']) {
+    const nameElement = document.querySelector("#approved_name");
+    if (nameElement && quizAnswers["Full-name"]) {
       // Split the full name and take the first part
-      const firstName = quizAnswers['Full-name'].split(' ')[0];
+      const firstName = quizAnswers["Full-name"].split(" ")[0];
       nameElement.textContent = firstName;
     }
+
+    // Update state
+    const stateElement = document.querySelector("#approved_state");
+    stateElement.textContent = quizAnswers["state"];
   } catch (error) {
     console.error("Error creating chart or updating approved info:", error);
   }
@@ -1237,8 +1237,8 @@ function createWeightChart() {
     if (!ctx) return;
 
     // Create gradient
-    const gradient = ctx.getContext("2d").createLinearGradient(0, 0, 0, 400);
-    gradient.addColorStop(0, "rgba(26, 51, 142, 0.4)");
+    const gradient = ctx.getContext("2d").createLinearGradient(0, 0, 0, 100);
+    gradient.addColorStop(0, "rgba(26, 51, 142, 0.3)");
     gradient.addColorStop(1, "rgba(26, 51, 142, 0)");
 
     new Chart(ctx, {
@@ -1316,51 +1316,51 @@ function createWeightChart() {
           afterDraw: (chart) => {
             const ctx = chart.ctx;
             const meta = chart.getDatasetMeta(0);
-            
+
             ctx.save();
-            ctx.textAlign = 'center';
-            
+            ctx.textAlign = "center";
+
             meta.data.forEach((point, index) => {
               const value = chart.data.datasets[0].data[index];
               const x = point.x;
               const y = point.y - (index === meta.data.length - 1 ? 30 : 20);
-              
+
               if (index === meta.data.length - 1) {
                 // Draw the label first
-                ctx.font = 'bold 20px Abcdiatype';
-                ctx.fillStyle = '#000';
+                ctx.font = "bold 20px Abcdiatype";
+                ctx.fillStyle = "#000";
                 ctx.fillText(`${Math.round(value)} lbs`, x, y);
-                
+
                 // Then draw the semi-circle aligned to the right
                 ctx.beginPath();
-                ctx.fillStyle = 'rgba(23, 92, 211, 0.12)';
+                ctx.fillStyle = "rgba(23, 92, 211, 0.12)";
                 ctx.arc(x, y, 16, Math.PI, 0, false); // Smaller radius and shifted right
                 ctx.fill();
-                
+
                 // Draw the decorative lines
                 ctx.beginPath();
                 ctx.lineWidth = 3;
-                ctx.strokeStyle = '#0066FF';
-                ctx.lineCap = 'round';
-                
+                ctx.strokeStyle = "#0066FF";
+                ctx.lineCap = "round";
+
                 // First line
                 ctx.moveTo(x - 22, y + 10);
                 ctx.lineTo(x + 22, y + 10);
-                
+
                 // Second line (slightly shorter)
                 ctx.moveTo(x - 13, y + 17);
                 ctx.lineTo(x + 13, y + 17);
-                
+
                 ctx.stroke();
               } else {
                 // Regular labels for other points
-                ctx.font = '16px Abcdiatype';
-                ctx.fillStyle = '#000';
+                ctx.font = "16px Abcdiatype";
+                ctx.fillStyle = "#000";
                 ctx.fillText(`${Math.round(value)} lbs`, x, y);
               }
             });
             ctx.restore();
-          }
+          },
         },
       ],
     });
@@ -1371,7 +1371,7 @@ function createWeightChart() {
 
 // Add this function near other animation functions
 const animateLostPounds = (startValue) => {
-  const lostPoundElement = document.querySelector('#lost-pound');
+  const lostPoundElement = document.querySelector("#lost-pound");
   if (!lostPoundElement) return;
 
   const options = {
@@ -1385,62 +1385,63 @@ const animateLostPounds = (startValue) => {
 
   const numAnim = new countUp.CountUp(lostPoundElement, startValue, {
     ...options,
-    formattingFn: (value) => value.toLocaleString()
+    formattingFn: (value) => value.toLocaleString(),
   });
   numAnim.start();
 };
 
-
 const startRandomPoundUpdates = () => {
-  const lostPoundElement = document.querySelector('#lost-pound');
+  const lostPoundElement = document.querySelector("#lost-pound");
   if (!lostPoundElement) return;
 
   const createDigitReel = (from, to) => {
-    const reel = document.createElement('div');
-    reel.className = 'digit-reel';
-    
-    const wrapper = document.createElement('div');
-    wrapper.className = 'digit-wrapper';
-    
+    const reel = document.createElement("div");
+    reel.className = "digit-reel";
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "digit-wrapper";
+
     const sequence = [];
-    
+
     // Add initial number a few times for a smoother start
     for (let i = 0; i < 3; i++) {
       sequence.push(from);
     }
-    
+
     // Add main sequence
     let current = from;
     while (current !== to) {
       sequence.push(current);
       current = (current + 1) % 10;
     }
-    
+
     // Add the final number
     sequence.push(to);
-    
-    sequence.forEach(num => {
-      const digit = document.createElement('div');
-      digit.className = 'digit';
+
+    sequence.forEach((num) => {
+      const digit = document.createElement("div");
+      digit.className = "digit";
       digit.textContent = num;
       wrapper.appendChild(digit);
     });
-    
+
     reel.appendChild(wrapper);
     return reel;
   };
 
   // Initialize the current value immediately
-  let currentDisplayValue = parseInt(lostPoundElement.textContent.replace(/,/g, ''));
-  
+  let currentDisplayValue = parseInt(
+    lostPoundElement.textContent.replace(/,/g, "")
+  );
+
   // Perform the first update immediately
   const updateValue = () => {
     const randomIncrease = Math.floor(Math.random() * 5) + 2;
     const newValue = currentDisplayValue + randomIncrease;
-    
+
     const oldStr = currentDisplayValue.toLocaleString();
     const newStr = newValue.toLocaleString();
-    
+
     let i = 0;
     while (i < oldStr.length && i < newStr.length && oldStr[i] === newStr[i]) {
       i++;
@@ -1449,22 +1450,22 @@ const startRandomPoundUpdates = () => {
     const unchangedPart = newStr.slice(0, i);
     const changedPart = newStr.slice(i);
     const oldChangedPart = oldStr.slice(i);
-    
-    const oldDigits = oldChangedPart.split('');
-    const newDigits = changedPart.split('');
-    
+
+    const oldDigits = oldChangedPart.split("");
+    const newDigits = changedPart.split("");
+
     const reels = newDigits.map((newDigit, index) => {
-      const oldDigit = oldDigits[index] || '0';
+      const oldDigit = oldDigits[index] || "0";
       return createDigitReel(parseInt(oldDigit), parseInt(newDigit));
     });
-    
+
     lostPoundElement.innerHTML = unchangedPart;
-    reels.forEach(reel => lostPoundElement.appendChild(reel));
-    
+    reels.forEach((reel) => lostPoundElement.appendChild(reel));
+
     currentDisplayValue = newValue;
   };
 
-  const getRandomInterval = () => (Math.random() * 1000) + 3000;
+  const getRandomInterval = () => Math.random() * 1000 + 3000;
 
   // Execute first update immediately
   updateValue();
