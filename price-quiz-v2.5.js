@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Start initial animation if we're on the plans page
   if (window.location.href.includes("#plan")) {
-    animateLostPounds(242402); // Start from 242,402
+    animateLostPounds(100000); // Start from 242,402
     setTimeout(() => {
       startRandomPoundUpdates();
     }, 6000); // Start random updates after initial animation completes
@@ -525,7 +525,7 @@ quizForm.addEventListener("submit", (e) => {
   try {
     createWeightChart();
     
-    animateLostPounds(242402);
+    animateLostPounds(100000);
     setTimeout(() => {
       startRandomPoundUpdates();
     }, 6000);
@@ -601,7 +601,7 @@ quizForm.addEventListener("submit", (e) => {
 
   try {
     // Add the lost pounds animation
-    animateLostPounds(242402);
+    animateLostPounds(100000);
     setTimeout(() => {
       startRandomPoundUpdates();
     }, 6000);
@@ -1277,8 +1277,8 @@ function createWeightChart() {
           },
           y: {
             display: false,
-            min: Math.min(targetWeight - 10, targetWeight * 0.72),
-            max: Math.max(currentWeight + 10, currentWeight * 1.05),
+            min: Math.min(targetWeight - 10, targetWeight * 0.82),
+            max: Math.max(currentWeight + 10, currentWeight * 1.1),
           },
         },
       },
@@ -1362,7 +1362,6 @@ const animateLostPounds = (startValue) => {
   numAnim.start();
 };
 
-// ... existing code ...
 
 const startRandomPoundUpdates = () => {
   const lostPoundElement = document.querySelector('#lost-pound');
@@ -1372,11 +1371,9 @@ const startRandomPoundUpdates = () => {
     const reel = document.createElement('div');
     reel.className = 'digit-reel';
     
-    // Create wrapper for animation
     const wrapper = document.createElement('div');
     wrapper.className = 'digit-wrapper';
     
-    // Create sequence of numbers
     const sequence = [];
     
     // Add initial number a few times for a smoother start
@@ -1394,7 +1391,6 @@ const startRandomPoundUpdates = () => {
     // Add the final number
     sequence.push(to);
     
-    // Add numbers to wrapper
     sequence.forEach(num => {
       const digit = document.createElement('div');
       digit.className = 'digit';
@@ -1406,28 +1402,26 @@ const startRandomPoundUpdates = () => {
     return reel;
   };
 
+  // Initialize the current value immediately
   let currentDisplayValue = parseInt(lostPoundElement.textContent.replace(/,/g, ''));
-
+  
+  // Perform the first update immediately
   const updateValue = () => {
     const randomIncrease = Math.floor(Math.random() * 5) + 2;
     const newValue = currentDisplayValue + randomIncrease;
     
-    // Format both numbers with commas
     const oldStr = currentDisplayValue.toLocaleString();
     const newStr = newValue.toLocaleString();
     
-    // Find the position where the numbers start to differ
     let i = 0;
     while (i < oldStr.length && i < newStr.length && oldStr[i] === newStr[i]) {
       i++;
     }
 
-    // Create a number that only shows the changed part
     const unchangedPart = newStr.slice(0, i);
     const changedPart = newStr.slice(i);
     const oldChangedPart = oldStr.slice(i);
     
-    // Create reels for each changed digit
     const oldDigits = oldChangedPart.split('');
     const newDigits = changedPart.split('');
     
@@ -1436,15 +1430,16 @@ const startRandomPoundUpdates = () => {
       return createDigitReel(parseInt(oldDigit), parseInt(newDigit));
     });
     
-    // Update the display
     lostPoundElement.innerHTML = unchangedPart;
     reels.forEach(reel => lostPoundElement.appendChild(reel));
     
-    // Update the current value for next iteration
     currentDisplayValue = newValue;
   };
 
   const getRandomInterval = () => (Math.random() * 1000) + 3000;
+
+  // Execute first update immediately
+  updateValue();
 
   const scheduleNextUpdate = () => {
     setTimeout(() => {
@@ -1453,5 +1448,6 @@ const startRandomPoundUpdates = () => {
     }, getRandomInterval());
   };
 
+  // Schedule subsequent updates
   scheduleNextUpdate();
 };
