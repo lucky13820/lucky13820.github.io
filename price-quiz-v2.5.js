@@ -54,8 +54,8 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // Update state
     const stateElement = document.querySelector('#approved_state');
-    if (stateElement && quizAnswers['state']) {
-      stateElement.textContent = quizAnswers['state'];
+    if (stateElement && quizAnswers['State']) {
+      stateElement.textContent = quizAnswers['State'];
     }
 
     // Update name (first name only)
@@ -76,6 +76,9 @@ document.addEventListener("DOMContentLoaded", () => {
       startRandomPoundUpdates();
     }, 6000); // Start random updates after initial animation completes
   }
+
+  // Add scroll handler for price container
+  handlePriceContainerScroll();
 });
 
 const nextButton = document.querySelector("#quiz-next-button");
@@ -517,38 +520,7 @@ quizForm.addEventListener("submit", (e) => {
     console.log(e);
   }
 
-  animatePredictionValue(prediction);
-
-  displayPaymentForm();
   window.location.hash = "plans";
-
-  try {
-    createWeightChart();
-    
-    animateLostPounds(100000);
-    setTimeout(() => {
-      startRandomPoundUpdates();
-    }, 6000);
-
-    // Add name and state update here
-    const quizAnswers = JSON.parse(localStorage.getItem("quizAnswers") || "{}");
-    
-    // Update state
-    const stateElement = document.querySelector('#approved_state');
-    if (stateElement && quizAnswers['state']) {
-      stateElement.textContent = quizAnswers['state'];
-    }
-
-    // Update name (first name only)
-    const nameElement = document.querySelector('#approved_name');
-    if (nameElement && quizAnswers['Full-name']) {
-      // Split the full name and take the first part
-      const firstName = quizAnswers['Full-name'].split(' ')[0];
-      nameElement.textContent = firstName;
-    }
-  } catch (error) {
-    console.error("Error creating chart or updating approved info:", error);
-  }
 
   const formDataInstance = new FormData(
     document.getElementById("prediction-form")
@@ -590,6 +562,38 @@ quizForm.addEventListener("submit", (e) => {
     console.log(error);
   }
 
+  animatePredictionValue(prediction);
+
+  displayPaymentForm();
+
+  try {
+    createWeightChart();
+    
+    animateLostPounds(100000);
+    setTimeout(() => {
+      startRandomPoundUpdates();
+    }, 6000);
+
+    // Add name and state update here
+    const quizAnswers = JSON.parse(localStorage.getItem("quizAnswers") || "{}");
+    
+    // Update state
+    const stateElement = document.querySelector('#approved_state');
+    if (stateElement && quizAnswers['state']) {
+      stateElement.textContent = quizAnswers['state'];
+    }
+
+    // Update name (first name only)
+    const nameElement = document.querySelector('#approved_name');
+    if (nameElement && quizAnswers['Full-name']) {
+      // Split the full name and take the first part
+      const firstName = quizAnswers['Full-name'].split(' ')[0];
+      nameElement.textContent = firstName;
+    }
+  } catch (error) {
+    console.error("Error creating chart or updating approved info:", error);
+  }
+
   try {
     trackToGTM(formData);
     createBrazeUser(formData);
@@ -597,16 +601,6 @@ quizForm.addEventListener("submit", (e) => {
     trackSurveyCompleteToSimplifi();
   } catch (error) {
     console.error("Error in checkout tracking:", error);
-  }
-
-  try {
-    // Add the lost pounds animation
-    animateLostPounds(100000);
-    setTimeout(() => {
-      startRandomPoundUpdates();
-    }, 6000);
-  } catch (error) {
-    console.error("Error in form submission:", error);
   }
 });
 
@@ -1451,3 +1445,36 @@ const startRandomPoundUpdates = () => {
   // Schedule subsequent updates
   scheduleNextUpdate();
 };
+
+function handlePriceContainerScroll() {
+  const priceContainer = document.querySelector('#choose-price-container');
+  const priceSection = document.querySelector('#choose-your-price');
+  
+  if (!priceContainer || !priceSection) return;
+
+  // Set initial state
+  let isVisible = true;
+  
+  function updateContainerVisibility() {
+    const sectionRect = priceSection.getBoundingClientRect();
+    const isInPriceSection = sectionRect.top <= window.innerHeight && sectionRect.bottom >= 0;
+    
+    // Only update if state needs to change
+    if (isInPriceSection && isVisible) {
+      priceContainer.style.transform = 'translateY(100%)';
+      isVisible = false;
+    } else if (!isInPriceSection && !isVisible) {
+      priceContainer.style.transform = 'translateY(0)';
+      isVisible = true;
+    }
+  }
+
+  // Add smooth transition
+  priceContainer.style.transition = 'transform 0.3s ease-in-out';
+  
+  // Listen for scroll events
+  window.addEventListener('scroll', updateContainerVisibility, { passive: true });
+  
+  // Initial check
+  updateContainerVisibility();
+}
