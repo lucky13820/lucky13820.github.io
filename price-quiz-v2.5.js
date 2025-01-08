@@ -1376,9 +1376,10 @@ const startRandomPoundUpdates = () => {
     const wrapper = document.createElement('div');
     wrapper.className = 'digit-wrapper';
     
-    // Add more numbers to create a smoother loop
+    // Create sequence of numbers
     const sequence = [];
-    // Add some extra numbers before the sequence for a smoother start
+    
+    // Add initial number a few times for a smoother start
     for (let i = 0; i < 3; i++) {
       sequence.push(from);
     }
@@ -1389,10 +1390,9 @@ const startRandomPoundUpdates = () => {
       sequence.push(current);
       current = (current + 1) % 10;
     }
-    // Add the final number multiple times to create a slower end
-    for (let i = 0; i < 5; i++) {
-      sequence.push(to);
-    }
+    
+    // Add the final number (important: this will be visible when animation ends)
+    sequence.push(to);
     
     // Add numbers to wrapper
     sequence.forEach(num => {
@@ -1437,11 +1437,8 @@ const startRandomPoundUpdates = () => {
     // Update the display
     lostPoundElement.innerHTML = unchangedPart;
     reels.forEach(reel => lostPoundElement.appendChild(reel));
-
-    // After animation completes, update with the final number
-    setTimeout(() => {
-      lostPoundElement.textContent = newValue.toLocaleString();
-    }, 500); // Match this with CSS animation duration
+    
+    // Remove the setTimeout since we don't need to replace the content anymore
   };
 
   const getRandomInterval = () => (Math.random() * 1000) + 3000;
