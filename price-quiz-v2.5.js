@@ -1362,7 +1362,8 @@ const animateLostPounds = (startValue) => {
   numAnim.start();
 };
 
-// Add this function to handle the random updates
+// ... existing code ...
+
 const startRandomPoundUpdates = () => {
   const lostPoundElement = document.querySelector('#lost-pound');
   if (!lostPoundElement) return;
@@ -1375,14 +1376,23 @@ const startRandomPoundUpdates = () => {
     const wrapper = document.createElement('div');
     wrapper.className = 'digit-wrapper';
     
-    // Add all numbers in sequence
+    // Add more numbers to create a smoother loop
     const sequence = [];
+    // Add some extra numbers before the sequence for a smoother start
+    for (let i = 0; i < 3; i++) {
+      sequence.push(from);
+    }
+    
+    // Add main sequence
     let current = from;
     while (current !== to) {
       sequence.push(current);
       current = (current + 1) % 10;
     }
-    sequence.push(to);
+    // Add the final number multiple times to create a slower end
+    for (let i = 0; i < 5; i++) {
+      sequence.push(to);
+    }
     
     // Add numbers to wrapper
     sequence.forEach(num => {
