@@ -615,8 +615,11 @@ quizForm.addEventListener("submit", (e) => {
 
     // Update state
     const stateElement = document.querySelector("#approved_state");
+    console.log(quizAnswers["State"]);
     if (stateElement) {
       stateElement.textContent = quizAnswers["State"];
+    } else {
+      console.log("stateElement not found");
     }
 
     // Update name (first name only)
