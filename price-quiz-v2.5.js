@@ -1391,7 +1391,7 @@ const startRandomPoundUpdates = () => {
       current = (current + 1) % 10;
     }
     
-    // Add the final number (important: this will be visible when animation ends)
+    // Add the final number
     sequence.push(to);
     
     // Add numbers to wrapper
@@ -1406,13 +1406,14 @@ const startRandomPoundUpdates = () => {
     return reel;
   };
 
+  let currentDisplayValue = parseInt(lostPoundElement.textContent.replace(/,/g, ''));
+
   const updateValue = () => {
-    const currentValue = parseInt(lostPoundElement.textContent.replace(/,/g, ''));
     const randomIncrease = Math.floor(Math.random() * 5) + 2;
-    const newValue = currentValue + randomIncrease;
+    const newValue = currentDisplayValue + randomIncrease;
     
     // Format both numbers with commas
-    const oldStr = currentValue.toLocaleString();
+    const oldStr = currentDisplayValue.toLocaleString();
     const newStr = newValue.toLocaleString();
     
     // Find the position where the numbers start to differ
@@ -1424,9 +1425,10 @@ const startRandomPoundUpdates = () => {
     // Create a number that only shows the changed part
     const unchangedPart = newStr.slice(0, i);
     const changedPart = newStr.slice(i);
+    const oldChangedPart = oldStr.slice(i);
     
     // Create reels for each changed digit
-    const oldDigits = oldStr.slice(i).split('');
+    const oldDigits = oldChangedPart.split('');
     const newDigits = changedPart.split('');
     
     const reels = newDigits.map((newDigit, index) => {
@@ -1438,7 +1440,8 @@ const startRandomPoundUpdates = () => {
     lostPoundElement.innerHTML = unchangedPart;
     reels.forEach(reel => lostPoundElement.appendChild(reel));
     
-    // Remove the setTimeout since we don't need to replace the content anymore
+    // Update the current value for next iteration
+    currentDisplayValue = newValue;
   };
 
   const getRandomInterval = () => (Math.random() * 1000) + 3000;
