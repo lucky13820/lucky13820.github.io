@@ -1375,12 +1375,11 @@ function createWeightChart() {
   }
 }
 
-// Add this function near other animation functions
 const animateLostPounds = (startValue) => {
   const lostPoundElement = document.querySelector("#lost-pound");
   if (!lostPoundElement) return;
 
-  // Set initial value without animation
+  // Set initial value
   lostPoundElement.textContent = startValue.toLocaleString();
 };
 
@@ -1395,24 +1394,16 @@ const startRandomPoundUpdates = () => {
     const wrapper = document.createElement("div");
     wrapper.className = "digit-wrapper";
 
-    // Generate sequence including all numbers between from and to
+    // Generate sequence for changing digits only
     const sequence = [];
     let current = from;
     
-    // Always include at least 3 numbers for smooth animation
-    if (from === to) {
-      // If numbers are the same, repeat it
-      for (let i = 0; i < 3; i++) {
-        sequence.push(from);
-      }
-    } else {
-      // Add numbers until we reach the target
-      while (current !== to) {
-        sequence.push(current);
-        current = (current + 1) % 10;
-      }
-      sequence.push(to); // Add final number
+    // Add numbers until we reach the target
+    while (current !== to) {
+      sequence.push(current);
+      current = (current + 1) % 10;
     }
+    sequence.push(to); // Add final number
 
     sequence.forEach((num) => {
       const digit = document.createElement("div");
@@ -1427,6 +1418,7 @@ const startRandomPoundUpdates = () => {
 
   // Initialize with a proper starting value
   let currentDisplayValue = 100000; // Starting value
+  let isFirstUpdate = true;
   
   const updateValue = () => {
     const randomIncrease = Math.floor(Math.random() * 5) + 2;
@@ -1449,25 +1441,28 @@ const startRandomPoundUpdates = () => {
         const comma = document.createElement('span');
         comma.textContent = ',';
         lostPoundElement.appendChild(comma);
-      } else {
-        // Create reel for digits
-        const reel = createDigitReel(
-          parseInt(oldChar),
-          parseInt(newChar)
-        );
+      } else if (oldChar !== newChar || isFirstUpdate) {
+        // Create reel only for changing digits or on first update
+        const reel = createDigitReel(parseInt(oldChar), parseInt(newChar));
         lostPoundElement.appendChild(reel);
+      } else {
+        // Static digit
+        const staticDigit = document.createElement('div');
+        staticDigit.className = 'digit-static';
+        staticDigit.textContent = oldChar;
+        lostPoundElement.appendChild(staticDigit);
       }
     }
 
     currentDisplayValue = newValue;
+    isFirstUpdate = false;
   };
 
   const getRandomInterval = () => Math.random() * 1000 + 3000;
 
-  // Set initial value
-  lostPoundElement.textContent = currentDisplayValue.toLocaleString();
+  // Start the update cycle immediately
+  updateValue();
   
-  // Start the update cycle
   const scheduleNextUpdate = () => {
     setTimeout(() => {
       updateValue();
