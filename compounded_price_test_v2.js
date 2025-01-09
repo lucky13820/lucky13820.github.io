@@ -1102,23 +1102,39 @@ function handlePriceContainerScroll() {
 }
 
 function handleNoneCheckbox() {
-  const noneCheckbox = document.querySelector('input[name="None-of-the-below"]');
-  const otherCheckboxes = document.querySelectorAll('input[name="Medical-History"]');
+  // Only select checkboxes within the specific slide
+  const slideContainer = document.querySelector(
+    '[data-slide-event="apply_to_you"]'
+  );
+  if (!slideContainer) return;
 
-  if (!noneCheckbox || !otherCheckboxes.length) return;
+  const checkboxes = slideContainer.querySelectorAll('input[type="checkbox"]');
 
-  noneCheckbox.addEventListener("change", function () {
-    if (this.checked) {
-      otherCheckboxes.forEach((checkbox) => {
-        checkbox.checked = false;
-      });
-    }
-  });
+  checkboxes.forEach((checkbox) => {
+    checkbox.addEventListener("change", (e) => {
+      const isNoneOption = e.target.getAttribute("data-id") === "none";
+      const isChecked = e.target.checked;
 
-  otherCheckboxes.forEach((checkbox) => {
-    checkbox.addEventListener("change", function () {
-      if (this.checked) {
-        noneCheckbox.checked = false;
+      if (isNoneOption && isChecked) {
+        // If "none" is selected, uncheck all other checkboxes
+        checkboxes.forEach((cb) => {
+          if (
+            cb !== e.target &&
+            cb.getAttribute("data-id") === "multiple" &&
+            cb.checked
+          ) {
+            cb.click(); // Trigger click instead of setting checked
+            console.log("none selected");
+          }
+        });
+      } else if (!isNoneOption && isChecked) {
+        // If any other option is selected, uncheck the "none" option
+        checkboxes.forEach((cb) => {
+          if (cb.getAttribute("data-id") === "none" && cb.checked) {
+            cb.click(); // Trigger click instead of setting checked
+            console.log("other selected");
+          }
+        });
       }
     });
   });
