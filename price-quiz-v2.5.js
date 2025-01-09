@@ -1380,20 +1380,8 @@ const animateLostPounds = (startValue) => {
   const lostPoundElement = document.querySelector("#lost-pound");
   if (!lostPoundElement) return;
 
-  const options = {
-    duration: 6,
-    easingFn(t, b, c, d) {
-      let ts = (t /= d) * t;
-      let tc = ts * t;
-      return b + c * (tc + -3 * ts + 3 * t);
-    },
-  };
-
-  const numAnim = new countUp.CountUp(lostPoundElement, startValue, {
-    ...options,
-    formattingFn: (value) => value.toLocaleString(),
-  });
-  numAnim.start();
+  // Set initial value without animation
+  lostPoundElement.textContent = startValue.toLocaleString();
 };
 
 const startRandomPoundUpdates = () => {
@@ -1407,22 +1395,24 @@ const startRandomPoundUpdates = () => {
     const wrapper = document.createElement("div");
     wrapper.className = "digit-wrapper";
 
+    // Generate sequence including all numbers between from and to
     const sequence = [];
-
-    // Add initial number a few times for a smoother start
-    for (let i = 0; i < 3; i++) {
-      sequence.push(from);
-    }
-
-    // Add main sequence
     let current = from;
-    while (current !== to) {
-      sequence.push(current);
-      current = (current + 1) % 10;
+    
+    // Always include at least 3 numbers for smooth animation
+    if (from === to) {
+      // If numbers are the same, repeat it
+      for (let i = 0; i < 3; i++) {
+        sequence.push(from);
+      }
+    } else {
+      // Add numbers until we reach the target
+      while (current !== to) {
+        sequence.push(current);
+        current = (current + 1) % 10;
+      }
+      sequence.push(to); // Add final number
     }
-
-    // Add the final number
-    sequence.push(to);
 
     sequence.forEach((num) => {
       const digit = document.createElement("div");
@@ -1435,12 +1425,9 @@ const startRandomPoundUpdates = () => {
     return reel;
   };
 
-  // Initialize the current value immediately
-  let currentDisplayValue = parseInt(
-    lostPoundElement.textContent.replace(/,/g, "")
-  );
-
-  // Perform the first update immediately
+  // Initialize with a proper starting value
+  let currentDisplayValue = 100000; // Starting value
+  
   const updateValue = () => {
     const randomIncrease = Math.floor(Math.random() * 5) + 2;
     const newValue = currentDisplayValue + randomIncrease;
@@ -1448,34 +1435,39 @@ const startRandomPoundUpdates = () => {
     const oldStr = currentDisplayValue.toLocaleString();
     const newStr = newValue.toLocaleString();
 
-    let i = 0;
-    while (i < oldStr.length && i < newStr.length && oldStr[i] === newStr[i]) {
-      i++;
+    // Clear previous content
+    lostPoundElement.innerHTML = '';
+
+    // Process each digit position
+    const maxLength = Math.max(oldStr.length, newStr.length);
+    for (let i = 0; i < maxLength; i++) {
+      const oldChar = oldStr[i] || '0';
+      const newChar = newStr[i] || '0';
+
+      if (oldChar === ',') {
+        // Handle commas
+        const comma = document.createElement('span');
+        comma.textContent = ',';
+        lostPoundElement.appendChild(comma);
+      } else {
+        // Create reel for digits
+        const reel = createDigitReel(
+          parseInt(oldChar),
+          parseInt(newChar)
+        );
+        lostPoundElement.appendChild(reel);
+      }
     }
-
-    const unchangedPart = newStr.slice(0, i);
-    const changedPart = newStr.slice(i);
-    const oldChangedPart = oldStr.slice(i);
-
-    const oldDigits = oldChangedPart.split("");
-    const newDigits = changedPart.split("");
-
-    const reels = newDigits.map((newDigit, index) => {
-      const oldDigit = oldDigits[index] || "0";
-      return createDigitReel(parseInt(oldDigit), parseInt(newDigit));
-    });
-
-    lostPoundElement.innerHTML = unchangedPart;
-    reels.forEach((reel) => lostPoundElement.appendChild(reel));
 
     currentDisplayValue = newValue;
   };
 
   const getRandomInterval = () => Math.random() * 1000 + 3000;
 
-  // Execute first update immediately
-  updateValue();
-
+  // Set initial value
+  lostPoundElement.textContent = currentDisplayValue.toLocaleString();
+  
+  // Start the update cycle
   const scheduleNextUpdate = () => {
     setTimeout(() => {
       updateValue();
@@ -1483,6 +1475,5 @@ const startRandomPoundUpdates = () => {
     }, getRandomInterval());
   };
 
-  // Schedule subsequent updates
   scheduleNextUpdate();
 };
