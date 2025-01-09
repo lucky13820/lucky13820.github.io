@@ -1146,17 +1146,23 @@ function createWeightChart() {
     const currentWeight = Number(quizAnswers.Weight);
     const targetWeight = currentWeight - Number(quizAnswers.prediction);
 
-    const month4Weight = Math.round(currentWeight - quizAnswers.prediction * 0.4);
-    const month8Weight = Math.round(currentWeight - quizAnswers.prediction * 0.8);
+    // Calculate intermediate points
+    const month4Weight = Math.round(
+      currentWeight - quizAnswers.prediction * 0.4
+    );
+    const month8Weight = Math.round(
+      currentWeight - quizAnswers.prediction * 0.8
+    );
     const finalWeight = Math.round(targetWeight);
 
     const ctx = document.getElementById("weightChart");
     if (!ctx) return;
 
+    // Create gradient
     const gradient = ctx.getContext("2d").createLinearGradient(0, 0, 0, 400);
-    gradient.addColorStop(0, "rgba(26, 51, 142, 0.3)");
-    gradient.addColorStop(0.8, "rgba(26, 51, 142, 0.1)");
-    gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
+    gradient.addColorStop(0, "rgba(26, 51, 142, 0.3)"); // Start with 30% opacity
+    gradient.addColorStop(0.8, "rgba(26, 51, 142, 0.1)"); // Add a middle stop with very low opacity
+    gradient.addColorStop(1, "rgba(255, 255, 255, 0)"); // End with complete transparency
 
     new Chart(ctx, {
       type: "line",
@@ -1174,7 +1180,112 @@ function createWeightChart() {
           },
         ],
       },
-      // ... rest of chart configuration
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: {
+          duration: 2000,
+          easing: "easeInOutQuart",
+        },
+        animations: {
+          tension: {
+            duration: 2000,
+            easing: "linear",
+            from: 0,
+            to: 0.4,
+          },
+        },
+        transitions: {
+          active: {
+            animation: {
+              duration: 2000,
+            },
+          },
+        },
+        plugins: {
+          legend: {
+            display: false,
+          },
+          tooltip: {
+            enabled: false,
+          },
+        },
+        scales: {
+          x: {
+            grid: {
+              display: false,
+            },
+            border: {
+              display: false, // This removes the x-axis line
+            },
+            ticks: {
+              font: {
+                size: 16,
+                family: "'Abcdiatype', 'Helvetica', 'Arial', sans-serif",
+              },
+              color: "#666",
+            },
+          },
+          y: {
+            display: false,
+            min: Math.min(targetWeight - 10, targetWeight * 0.82),
+            max: Math.max(currentWeight + 10, currentWeight * 1.1),
+          },
+        },
+      },
+      plugins: [
+        {
+          id: "weightLabels",
+          afterDraw: (chart) => {
+            const ctx = chart.ctx;
+            const meta = chart.getDatasetMeta(0);
+
+            ctx.save();
+            ctx.textAlign = "center";
+
+            meta.data.forEach((point, index) => {
+              const value = chart.data.datasets[0].data[index];
+              const x = point.x;
+              const y = point.y - (index === meta.data.length - 1 ? 30 : 20);
+
+              if (index === meta.data.length - 1) {
+                // Draw the label first
+                ctx.font = "bold 20px Abcdiatype";
+                ctx.fillStyle = "#000";
+                ctx.fillText(`${Math.round(value)} lbs`, x, y);
+
+                // Then draw the semi-circle aligned to the right
+                ctx.beginPath();
+                ctx.fillStyle = "rgba(23, 92, 211, 0.12)";
+                ctx.arc(x, y, 16, Math.PI, 0, false); // Smaller radius and shifted right
+                ctx.fill();
+
+                // Draw the decorative lines
+                ctx.beginPath();
+                ctx.lineWidth = 3;
+                ctx.strokeStyle = "#0066FF";
+                ctx.lineCap = "round";
+
+                // First line
+                ctx.moveTo(x - 22, y + 10);
+                ctx.lineTo(x + 22, y + 10);
+
+                // Second line (slightly shorter)
+                ctx.moveTo(x - 13, y + 17);
+                ctx.lineTo(x + 13, y + 17);
+
+                ctx.stroke();
+              } else {
+                // Regular labels for other points
+                ctx.font = "16px Abcdiatype";
+                ctx.fillStyle = "#000";
+                ctx.fillText(`${Math.round(value)} lbs`, x, y);
+              }
+            });
+            ctx.restore();
+          },
+        },
+      ],
     });
   } catch (error) {
     console.error("Error creating weight chart:", error);
