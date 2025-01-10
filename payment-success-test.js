@@ -230,7 +230,7 @@ async function performConversion() {
     }
     */
     // Clean up stored payment info
-    // sessionStorage.removeItem('stripePaymentInfo');
+    sessionStorage.removeItem('stripePaymentInfo');
   }
 }
 
