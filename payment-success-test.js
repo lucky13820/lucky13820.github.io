@@ -220,11 +220,11 @@ async function performConversion() {
 
   } catch (error) {
     console.error("❌ An error occurred:", error);
-    if (REDIRECT_URL) {
-      window.location.href = REDIRECT_URL;
-    } else {
-      showAlertAndRedirect(ERROR_MESSAGE);
-    }
+    // if (REDIRECT_URL) {
+    //   window.location.href = REDIRECT_URL;
+    // } else {
+    //   showAlertAndRedirect(ERROR_MESSAGE);
+    // }
       // Clean up stored payment info
   sessionStorage.removeItem('stripePaymentInfo');
   }
