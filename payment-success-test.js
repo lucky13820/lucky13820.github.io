@@ -208,12 +208,12 @@ async function performConversion() {
     await Promise.race([trackingPromise, timeoutPromise]);
     console.log('ℹ️ Proceeding with redirect...');
 
-    if (REDIRECT_URL) {
-      window.location.href = REDIRECT_URL;
-    } else {
-      console.warn("❌ Redirect URL is not defined");
-      showAlertAndRedirect(ERROR_MESSAGE);
-    }
+    // if (REDIRECT_URL) {
+    //   window.location.href = REDIRECT_URL;
+    // } else {
+    //   console.warn("❌ Redirect URL is not defined");
+    //   showAlertAndRedirect(ERROR_MESSAGE);
+    // }
   
       // Clean up stored payment info
   sessionStorage.removeItem('stripePaymentInfo');
