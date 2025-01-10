@@ -208,25 +208,29 @@ async function performConversion() {
     await Promise.race([trackingPromise, timeoutPromise]);
     console.log('ℹ️ Proceeding with redirect...');
 
-    // if (REDIRECT_URL) {
-    //   window.location.href = REDIRECT_URL;
-    // } else {
-    //   console.warn("❌ Redirect URL is not defined");
-    //   showAlertAndRedirect(ERROR_MESSAGE);
-    // }
+    /* Commenting out redirect code
+    if (REDIRECT_URL) {
+      window.location.href = REDIRECT_URL;
+    } else {
+      console.warn("❌ Redirect URL is not defined");
+      showAlertAndRedirect(ERROR_MESSAGE);
+    }
+    */
   
-      // Clean up stored payment info
-  sessionStorage.removeItem('stripePaymentInfo');
+    // Clean up stored payment info
+    sessionStorage.removeItem('stripePaymentInfo');
 
   } catch (error) {
     console.error("❌ An error occurred:", error);
-    // if (REDIRECT_URL) {
-    //   window.location.href = REDIRECT_URL;
-    // } else {
-    //   showAlertAndRedirect(ERROR_MESSAGE);
-    // }
-      // Clean up stored payment info
-  sessionStorage.removeItem('stripePaymentInfo');
+    /* Commenting out redirect code
+    if (REDIRECT_URL) {
+      window.location.href = REDIRECT_URL;
+    } else {
+      showAlertAndRedirect(ERROR_MESSAGE);
+    }
+    */
+    // Clean up stored payment info
+    sessionStorage.removeItem('stripePaymentInfo');
   }
 }
 
