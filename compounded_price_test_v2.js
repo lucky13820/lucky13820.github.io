@@ -1104,7 +1104,7 @@ function handlePriceContainerScroll() {
 function handleNoneCheckbox() {
   // Only select checkboxes within the specific slide
   const slideContainer = document.querySelector(
-    '[data-slide-event="apply_to_you"]'
+    '[data-slide-event="are_you_concerned"]'
   );
   if (!slideContainer) return;
 
