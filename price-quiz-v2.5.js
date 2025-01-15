@@ -87,6 +87,12 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Error updating approved state and name:", error);
     }
 
+    // Add this new code to change footer position
+    const footer = document.querySelector('.footer_component.white');
+    if (footer) {
+      footer.style.position = 'relative';
+    }
+
     // Start initial animation if we're on the plans page
     if (window.location.href.includes("#plan")) {
       animateLostPounds(100000); // Start from 242,402
@@ -557,6 +563,11 @@ quizForm.addEventListener("submit", (e) => {
   }
 
   window.location.hash = "plans";
+  // Add this new code to change footer position
+  const footer = document.querySelector('.footer_component.white');
+  if (footer) {
+    footer.style.position = 'relative';
+  }
 
   const formDataInstance = new FormData(
     document.getElementById("prediction-form")

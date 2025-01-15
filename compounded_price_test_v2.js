@@ -60,6 +60,12 @@ document.addEventListener("DOMContentLoaded", () => {
         startRandomPoundUpdates();
       }, 6000);
 
+        // Add this new code to change footer position
+  const footer = document.querySelector('.footer_component.white');
+  if (footer) {
+    footer.style.position = 'relative';
+  }
+
   }
 
   try {
@@ -523,6 +529,11 @@ quizForm.addEventListener("submit", (e) => {
 
   displayPaymentForm();
   window.location.hash = "plans";
+  // Add this new code to change footer position
+  const footer = document.querySelector('.footer_component.white');
+  if (footer) {
+    footer.style.position = 'relative';
+  }
 
 
   const formDataInstance = new FormData(
