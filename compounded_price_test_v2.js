@@ -55,10 +55,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
       updateUserInfo();
       createWeightChart();
+      // Add check for mobile screen before triggering animation
+    if (window.innerWidth > 768) { // 768px is a common breakpoint for mobile devices
       animateLostPounds(100000);
       setTimeout(() => {
         startRandomPoundUpdates();
       }, 6000);
+    }
 
         // Add this new code to change footer position
   const footer = document.querySelector('.footer_component.white');
@@ -607,10 +610,13 @@ quizForm.addEventListener("submit", (e) => {
 
   try {
     createWeightChart();
-    animateLostPounds(100000);
-    setTimeout(() => {
-      startRandomPoundUpdates();
-    }, 6000);
+    // Add check for mobile screen before triggering animation
+    if (window.innerWidth > 768) { // 768px is a common breakpoint for mobile devices
+      animateLostPounds(100000);
+      setTimeout(() => {
+        startRandomPoundUpdates();
+      }, 6000);
+    }
   } catch (error) {
     console.error("Error creating chart or starting animations:", error);
   }

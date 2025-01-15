@@ -56,6 +56,14 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("quizPredictionHeading").style.display = "none";
     }
 
+    // Add check for mobile screen before triggering animation
+    if (window.innerWidth > 768) { // 768px is a common breakpoint for mobile devices
+      animateLostPounds(100000);
+      setTimeout(() => {
+        startRandomPoundUpdates();
+      }, 6000);
+    }
+
     try {
       const quizAnswers = JSON.parse(
         localStorage.getItem("quizAnswers") || "{}"
@@ -91,14 +99,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const footer = document.querySelector('.footer_component.white');
     if (footer) {
       footer.style.position = 'relative';
-    }
-
-    // Start initial animation if we're on the plans page
-    if (window.location.href.includes("#plan")) {
-      animateLostPounds(100000); // Start from 242,402
-      setTimeout(() => {
-        startRandomPoundUpdates();
-      }, 6000); // Start random updates after initial animation completes
     }
   }
 
@@ -616,10 +616,13 @@ quizForm.addEventListener("submit", (e) => {
   try {
     createWeightChart();
 
-    animateLostPounds(100000);
-    setTimeout(() => {
-      startRandomPoundUpdates();
-    }, 6000);
+    // Add check for mobile screen before triggering animation
+    if (window.innerWidth > 768) { // 768px is a common breakpoint for mobile devices
+      animateLostPounds(100000);
+      setTimeout(() => {
+        startRandomPoundUpdates();
+      }, 6000);
+    }
 
     // Add name and state update here
     const quizAnswers = JSON.parse(localStorage.getItem("quizAnswers") || "{}");
