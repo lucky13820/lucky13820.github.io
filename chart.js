@@ -94,9 +94,9 @@ const isMobile = window.innerWidth <= 768;
 // Set chart height based on device
 const chartCanvas = document.getElementById('predictChart');
 if (isMobile) {
-    chartCanvas.style.height = '400px';
+    chartCanvas.style.height = '420px';
 } else {
-    chartCanvas.style.height = '300px';
+    chartCanvas.style.height = '500px';
 }
 
 const data = {
@@ -249,8 +249,8 @@ function updateChart(chart, initialWeight) {
     );
     
     // Calculate max and min for y-axis
-    const maxWeight = initialWeight * 1.04;
-    const minWeight = lowestMonth6Weight * 0.96;
+    const maxWeight = initialWeight * 1.02;
+    const minWeight = lowestMonth6Weight * 0.97;
     
     // Round to nearest 10 for cleaner numbers
     chart.options.scales.y.max = Math.ceil(maxWeight / 10) * 10;
