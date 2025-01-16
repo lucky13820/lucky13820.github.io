@@ -170,6 +170,13 @@ const swiperInstanceInitialized = (swiper) => {
 
 const swiperSlideChanged = (swiper) => {
   console.log("Swiper slide Changed", swiper.activeIndex);
+  
+  // Add smooth scroll to top
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+  
   trackSlideChange(swiper.slides[swiper.activeIndex]);
   toggleNextButtonAndSubmitDisplay(swiper);
   togglePrevButton(swiper);
