@@ -218,9 +218,9 @@ async function handleSubmit(e) {
   setLoading(true);
 
   const fullName = document.querySelector("#full-name").value;
-  const { firstName, lastName } = splitFullName(fullName);
-
+  
   try {
+    const { firstName, lastName } = splitFullName(fullName);
     const { error } = await elements.submit();
     if (error) {
       return showMessage(error?.message ?? "An unexpected error occurred.");
@@ -295,12 +295,9 @@ async function handleSubmit(e) {
       );
     }
   } catch (error) {
-    showMessage(
-      error?.message ??
-        "An unexpected error occurred. Please contact support@findsunrise.com"
-    );
-  } finally {
+    showMessage(error.message);
     setLoading(false);
+    return;
   }
 }
 
@@ -353,13 +350,26 @@ function setLoading(isLoading) {
 }
 
 function splitFullName(fullName) {
-  const nameParts = fullName.trim().split(" ");
-  const firstName = nameParts[0];
-  let lastName = nameParts.slice(1).join(" ");
-  // Check if lastName is blank and set a default value
-  if (lastName.trim() === "") {
-    lastName = "(No Last Name)";
+  // Remove extra spaces and trim
+  const cleanName = fullName.trim().replace(/\s+/g, ' ');
+  const nameParts = cleanName.split(' ');
+  
+  // Validate name parts
+  if (nameParts.length < 2) {
+    throw new Error('Please enter both your first and last name');
   }
+  
+  const firstName = nameParts[0];
+  const lastName = nameParts.slice(1).join(' ');
+  
+  // Validate name lengths and check for initials
+  if (firstName.length < 2) {
+    throw new Error('First name must be at least 2 characters long');
+  }
+  if (lastName.length < 2) {
+    throw new Error('Last name must be at least 2 characters long');
+  }
+  
   return { firstName, lastName };
 }
 
@@ -429,5 +439,24 @@ async function fetchPrice() {
     return { originalPrice, priceOff, finalPrice };
   } catch (err) {
     console.error(err);
+  }
+}
+
+// Add event listener for the full name input
+document.querySelector("#full-name").addEventListener("blur", validateFullName);
+
+function validateFullName(e) {
+  const fullName = e.target.value;
+  const messageContainer = document.querySelector("#payment-message");
+  const submitButton = document.querySelector("#submit-payment");
+  
+  try {
+    const { firstName, lastName } = splitFullName(fullName);
+    messageContainer.classList.add("hidden");
+    submitButton.disabled = false;
+  } catch (error) {
+    messageContainer.classList.remove("hidden");
+    messageContainer.textContent = error.message;
+    submitButton.disabled = true;
   }
 }

@@ -234,6 +234,10 @@ async function handleSubmit(e) {
     return showMessage("Please enter your full last name.");
   }
 
+  if (lastName.trim() === "") {
+    lastName = "(No Last Name)";
+  }
+
   try {
     const { error } = await elements.submit();
     if (error) {
