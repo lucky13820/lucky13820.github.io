@@ -94,9 +94,9 @@ const isMobile = window.innerWidth <= 768;
 // Set chart height based on device
 const chartCanvas = document.getElementById('predictChart');
 if (isMobile) {
-    chartCanvas.style.height = '420px';
+    chartCanvas.style.height = '430px';
 } else {
-    chartCanvas.style.height = '500px';
+    chartCanvas.style.height = '490px';
 }
 
 const data = {
