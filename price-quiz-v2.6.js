@@ -4,18 +4,12 @@ let APPROVED_INSURANCES;
 let eligibleStates;
 
 document.addEventListener("DOMContentLoaded", () => {
-  console.log('DOM Content Loaded');
-  
-  
   initializeSwiper();
   addPriceFormListeners();
   trackSurveyStartToSimplifi();
   initializeBraze();
   handleNoneCheckbox();
-
-  if (window.innerWidth <= 991) {
-    handleQuizNavigation();
-  }
+  handleQuizNavigation();
 
   if (window.location.href.includes("#plan")) {
     displayPaymentForm();
@@ -332,13 +326,13 @@ function toggleGovtPriceAvailability() {
     priceOptions.classList.add("is-govt");
   }
 
-  // const specificPriceOption = document.querySelector('[data-price="9"]');
-  // if (specificPriceOption) {
-  //   specificPriceOption.remove();
-  // }
-  // setTimeout(function () {
-  //   document.querySelector('[data-price="19"]')?.click();
-  // }, 50);
+  const specificPriceOption = document.querySelector('[data-price="9"]');
+  if (specificPriceOption) {
+    specificPriceOption.remove();
+  }
+  setTimeout(function () {
+    document.querySelector('[data-price="19"]')?.click();
+  }, 50);
 }
 
 const animatePredictionValue = (prediction) => {
@@ -946,7 +940,7 @@ function trackToShareASale() {
 function addPriceFormListeners() {
   var form = document.querySelector("#wf-form-Price-Options-Form");
 
-  // document.querySelector('[data-price="9"]').click();
+  document.querySelector('[data-price="9"]').click();
 
   // Check if the form exists to prevent errors
   if (form) {
@@ -1135,13 +1129,16 @@ function handleQuizNavigation() {
   function toggleNavVisibility() {
     if (window.innerWidth <= 991) {
       const quizRect = quizSection.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
       
       // Add debug logs
       console.log('Window width:', window.innerWidth);
       console.log('Quiz section position:', quizRect);
       
-      // Check if quiz section is in viewport
-      if (quizRect.top <= 0 && quizRect.bottom >= 0) {
+      // Show wrapper if any part of the quiz section is in viewport
+      // quizRect.top < windowHeight checks if the top of section is above the bottom of viewport
+      // quizRect.bottom > 0 checks if the bottom of section is below the top of viewport
+      if (quizRect.top < windowHeight && quizRect.bottom > 0) {
         console.log('Adding is-visible class');
         navWrapper.classList.add('is-visible');
       } else {
