@@ -4,12 +4,18 @@ let APPROVED_INSURANCES;
 let eligibleStates;
 
 document.addEventListener("DOMContentLoaded", () => {
+  console.log('DOM Content Loaded');
+  
+  
   initializeSwiper();
   addPriceFormListeners();
   trackSurveyStartToSimplifi();
   initializeBraze();
   handleNoneCheckbox();
-  handleQuizNavigation();
+
+  if (window.innerWidth <= 991) {
+    handleQuizNavigation();
+  }
 
   if (window.location.href.includes("#plan")) {
     displayPaymentForm();
@@ -1112,6 +1118,8 @@ function handleNoneCheckbox() {
 }
 
 function handleQuizNavigation() {
+  console.log('handleQuizNavigation called');
+  
   const quizSection = document.getElementById('full-quiz');
   const navWrapper = document.querySelector('.quiz-navigation-wrapper');
   
