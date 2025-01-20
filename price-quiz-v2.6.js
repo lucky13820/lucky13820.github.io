@@ -1115,26 +1115,54 @@ function handleQuizNavigation() {
   const quizSection = document.getElementById('full-quiz');
   const navWrapper = document.querySelector('.quiz-navigation-wrapper');
   
-  if (!quizSection || !navWrapper) return;
+  // Add debug logs
+  console.log('Quiz Section:', quizSection);
+  console.log('Nav Wrapper:', navWrapper);
+  
+  if (!quizSection || !navWrapper) {
+    console.log('Missing elements - Quiz Section or Nav Wrapper not found');
+    return;
+  }
   
   function toggleNavVisibility() {
     if (window.innerWidth <= 991) {
       const quizRect = quizSection.getBoundingClientRect();
       
+      // Add debug logs
+      console.log('Window width:', window.innerWidth);
+      console.log('Quiz section position:', quizRect);
+      
       // Check if quiz section is in viewport
       if (quizRect.top <= 0 && quizRect.bottom >= 0) {
+        console.log('Adding is-visible class');
         navWrapper.classList.add('is-visible');
       } else {
+        console.log('Removing is-visible class');
         navWrapper.classList.remove('is-visible');
       }
+    } else {
+      console.log('Window width > 991, not toggling visibility');
     }
   }
   
-  // Add scroll event listener
-  window.addEventListener('scroll', toggleNavVisibility);
+  // Add scroll event listener with throttling to prevent too many calls
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        toggleNavVisibility();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
   
-  // Also check on resize
-  window.addEventListener('resize', toggleNavVisibility);
+  // Also check on resize with debouncing
+  let resizeTimeout;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(toggleNavVisibility, 100);
+  });
   
   // Initial check
   toggleNavVisibility();
