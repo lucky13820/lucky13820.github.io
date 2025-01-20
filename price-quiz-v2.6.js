@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   trackSurveyStartToSimplifi();
   initializeBraze();
   handleNoneCheckbox();
+  handleQuizNavigation();
 
   if (window.location.href.includes("#plan")) {
     displayPaymentForm();
@@ -1108,4 +1109,33 @@ function handleNoneCheckbox() {
       }
     });
   });
+}
+
+function handleQuizNavigation() {
+  const quizSection = document.getElementById('full-quiz');
+  const navWrapper = document.querySelector('.quiz-navigation-wrapper');
+  
+  if (!quizSection || !navWrapper) return;
+  
+  function toggleNavVisibility() {
+    if (window.innerWidth <= 991) {
+      const quizRect = quizSection.getBoundingClientRect();
+      
+      // Check if quiz section is in viewport
+      if (quizRect.top <= 0 && quizRect.bottom >= 0) {
+        navWrapper.classList.add('is-visible');
+      } else {
+        navWrapper.classList.remove('is-visible');
+      }
+    }
+  }
+  
+  // Add scroll event listener
+  window.addEventListener('scroll', toggleNavVisibility);
+  
+  // Also check on resize
+  window.addEventListener('resize', toggleNavVisibility);
+  
+  // Initial check
+  toggleNavVisibility();
 }
