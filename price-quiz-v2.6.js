@@ -125,6 +125,10 @@ const togglePrevButton = (swiper) => {
 const swiperNavigationNextClicked = (swiper) => {
   console.log("Next Clicked");
   console.log("Allow Slide Next", swiper.allowSlideNext);
+  
+  // Prevent default scroll behavior
+  event.preventDefault();
+  
   if (!swiper.allowSlideNext) {
     validateSlide(swiper, true);
   }
@@ -212,6 +216,7 @@ const attachInputChangeListeners = (swiper) => {
       if (targetElement.type === "radio" && targetElement.checked) {
         // Don't auto-advance if it's a motivation radio button
         if (targetElement.name !== "Motivation") {
+          e.preventDefault(); // Prevent default behavior
           setTimeout(() => {
             swiper.slideNext();
           }, 500);
