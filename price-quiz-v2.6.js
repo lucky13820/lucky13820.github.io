@@ -67,11 +67,7 @@ function initializeSwiper() {
     },
     allowTouchMove: false,
     allowSlideNext: false,
-    /*   speed: 150, */
     autoHeight: true,
-    hashNavigation: {
-      watchState: false,
-    },
     on: {
       afterInit: swiperInstanceInitialized,
       slideChange: swiperSlideChanged,
@@ -96,10 +92,13 @@ const swiperInstanceInitialized = (swiper) => {
 };
 
 const swiperSlideChanged = (swiper) => {
+  if (event) event.preventDefault();
+  
   console.log("Swiper slide Changed", swiper.activeIndex);
   trackSlideChange(swiper.slides[swiper.activeIndex]);
   toggleNextButtonAndSubmitDisplay(swiper);
   togglePrevButton(swiper);
+  
   setTimeout(() => {
     swiper.allowSlideNext = validateSlide(swiper);
   }, 1);
