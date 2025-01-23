@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Add check for mobile screen before triggering animation
     if (window.innerWidth > 768) { // 768px is a common breakpoint for mobile devices
-      animateLostPounds(100000);
+      animateLostPounds(102685);
       setTimeout(() => {
         startRandomPoundUpdates();
       }, 6000);
@@ -625,7 +625,7 @@ quizForm.addEventListener("submit", (e) => {
 
     // Add check for mobile screen before triggering animation
     if (window.innerWidth > 768) { // 768px is a common breakpoint for mobile devices
-      animateLostPounds(100000);
+      animateLostPounds(102685);
       setTimeout(() => {
         startRandomPoundUpdates();
       }, 6000);
