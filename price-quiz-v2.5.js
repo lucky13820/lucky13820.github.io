@@ -703,9 +703,6 @@ function createBrazeUser(data) {
     return;
   }
 
-  const user = braze.getUser();
-  if (!user) return;
-
   const subscriptions = isStaging
     ? {
         emailMktg: "dc158ade-c631-4b8f-a0c9-e5a4d20584bd",
@@ -718,21 +715,34 @@ function createBrazeUser(data) {
         smsMktg: "033501a5-3110-4d95-90c8-b453c3123308",
       };
 
-  // Fix: Normalize field names to match v2.2
+  // Add this normalization at the start of the function
   const normalizedData = {
     ...data,
-    email: data.Email || data.email, // Handle both capitalized and lowercase
-    phone: data.Phone || data.phone, // Handle both capitalized and lowercase
+    email: data.Email || data.email,
+    phone: data.Phone || data.phone,
+    fullName: data["Full-name"] || data["full-name"] // Handle both cases
   };
 
-  const { phone, email, sms_mktg_opt_in: smsOptIn = false, ...rest } = normalizedData;
+  const { phone, email, fullName, sms_mktg_opt_in: smsOptIn = false, ...rest } = normalizedData;
+
+  const user = braze.getUser();
+  if (!user) return;
+
+  if (fullName) {
+    const [firstName, ...lastNameParts] = fullName.trim().split(/\s+/);
+    const lastName = lastNameParts.join(' ');
+    
+    user.setFirstName(firstName);
+    if (lastName) {
+      user.setLastName(lastName);
+    }
+  }
 
   if (email) {
     const sanitizedEmail = email.trim().toLowerCase();
     user.setEmail(sanitizedEmail);
-    user.addAlias(sanitizedEmail, "email"); // Also add as an alias for merging purposes
+    user.addAlias(sanitizedEmail, "email");
 
-    // Add the user to email sub group by default (they can unsub later)
     user.addToSubscriptionGroup(subscriptions.emailMktg);
   }
 
