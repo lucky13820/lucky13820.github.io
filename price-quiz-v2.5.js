@@ -720,10 +720,12 @@ function createBrazeUser(data) {
     ...data,
     email: data.Email || data.email,
     phone: data.Phone || data.phone,
-    fullName: data["Full-name"] || data["full-name"] // Handle both cases
+    fullName: data["Full-name"] || data["full-name"], // Handle both cases
+    gender: data.Gender || data.gender,
+    ageRange: data["Age-Range"] || data["age-range"]
   };
 
-  const { phone, email, fullName, sms_mktg_opt_in: smsOptIn = false, ...rest } = normalizedData;
+  const { phone, email, fullName, gender, ageRange, sms_mktg_opt_in: smsOptIn = false, ...rest } = normalizedData;
 
   const user = braze.getUser();
   if (!user) return;
@@ -736,6 +738,25 @@ function createBrazeUser(data) {
     if (lastName) {
       user.setLastName(lastName);
     }
+  }
+
+  // Set gender (Braze accepts 'm', 'f', 'o', 'n', 'p' for male, female, other, not applicable, prefer not to say)
+  if (gender) {
+    const genderMap = {
+      'Male': 'm',
+      'Female': 'f',
+      'Non-binary': 'o',
+      'I prefer not to say': 'p'
+    };
+    const brazeGender = genderMap[gender];
+    if (brazeGender) {
+      user.setGender(brazeGender);
+    }
+  }
+
+  // Set age range using Braze's Age Group attribute
+  if (ageRange) {
+    user.setCustomUserAttribute('Age Group', ageRange);
   }
 
   if (email) {
