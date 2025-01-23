@@ -718,7 +718,15 @@ function createBrazeUser(data) {
         smsMktg: "033501a5-3110-4d95-90c8-b453c3123308",
       };
 
-  const { phone, email, sms_mktg_opt_in: smsOptIn = false, ...rest } = data;
+  // Fix: Normalize field names to match v2.2
+  const normalizedData = {
+    ...data,
+    email: data.Email || data.email, // Handle both capitalized and lowercase
+    phone: data.Phone || data.phone, // Handle both capitalized and lowercase
+  };
+
+  const { phone, email, sms_mktg_opt_in: smsOptIn = false, ...rest } = normalizedData;
+
   if (email) {
     const sanitizedEmail = email.trim().toLowerCase();
     user.setEmail(sanitizedEmail);
@@ -740,12 +748,20 @@ function createBrazeUser(data) {
     }
   }
 
-  Object.entries(rest).forEach(([key, value]) =>
+  // Fix: Normalize custom attributes before setting them
+  const customAttributes = Object.entries(rest).reduce((acc, [key, value]) => {
+    // Convert capitalized keys to lowercase for consistency
+    const normalizedKey = key.toLowerCase();
+    acc[normalizedKey] = value;
+    return acc;
+  }, {});
+
+  Object.entries(customAttributes).forEach(([key, value]) =>
     user.setCustomUserAttribute(key, value)
   );
 
   braze.logCustomEvent("Quiz_Flow_Complete", {
-    ...data,
+    ...normalizedData,
     questionnaire_id: "regular",
   });
 }
