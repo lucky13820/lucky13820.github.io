@@ -91,10 +91,9 @@ async function performConversion() {
         (async () => {
           try {
             if (typeof gtag === "function") {
-              const email = localStorage.getItem("email");
-              if (email) {
+              if (paymentEmail) {
                 gtag("event", "payment_success", {
-                  event_label: email,
+                  event_label: paymentEmail,
                 });
               } else {
                 gtag("event", "payment_success");
@@ -213,11 +212,12 @@ try {
 }
 
 const trackToRewardful = async () => {
+  const paymentInfo = JSON.parse(sessionStorage.getItem('stripePaymentInfo') || '{}');
+  const { paymentEmail} = paymentInfo;
   if (typeof rewardful !== "undefined") {
     try {
-      const email = localStorage.getItem("email");
-      if (email) {
-        rewardful("convert", { email: email });
+      if (paymentEmail) {
+        rewardful("convert", { email: paymentEmail });
       } else {
         console.log("Email not found in local storage");
       }
