@@ -61,48 +61,6 @@ async function performConversion() {
           }
         })(),
 
-        // GrowSurf tracking
-        (async () => {
-          const email = localStorage.getItem("email");
-          if (!email) {
-            console.log('ℹ️ GrowSurf tracking skipped - email not available');
-            return;
-          }
-
-          try {
-            // Wait for GrowSurf to be ready
-            await new Promise((resolve, reject) => {
-              if (window.growsurf) {
-                resolve();
-                return;
-              }
-
-              let attempts = 0;
-              const maxAttempts = 15; // 3 seconds total
-              const interval = setInterval(() => {
-                attempts++;
-                if (window.growsurf) {
-                  clearInterval(interval);
-                  resolve();
-                } else if (attempts >= maxAttempts) {
-                  clearInterval(interval);
-                  reject(new Error('GrowSurf failed to initialize after 3 seconds'));
-                }
-              }, 200);
-
-              // Also listen for the grsfReady event
-              window.addEventListener('grsfReady', () => {
-                clearInterval(interval);
-                resolve();
-              });
-            });
-
-          } catch (error) {
-            console.error('❌ GrowSurf tracking failed:', error);
-            // Don't rethrow - we want to continue with other tracking
-          }
-        })(),
-
         // Google Analytics tracking
         (async () => {
           try {
@@ -144,37 +102,6 @@ async function performConversion() {
             console.log('✅ VWO tracking completed');
           } catch (error) {
             console.error('❌ VWO tracking failed:', error);
-          }
-        })(),
-
-        // GrowSurf referral tracking
-        (async () => {
-          try {
-            // Wait for GrowSurf to be ready
-            await new Promise(resolve => {
-              if (window.growsurf) {
-                resolve();
-                return;
-              }
-              window.addEventListener('grsfReady', resolve);
-            });
-
-            // Proceed with referral tracking once GrowSurf is ready
-            if (window.growsurf && !!window.growsurf.getReferrerId()) {
-              const paymentInfo = JSON.parse(sessionStorage.getItem('stripePaymentInfo') || '{}');
-              const { paymentEmail } = paymentInfo;
-              
-              if (paymentEmail) {
-                window.growsurf.addParticipant(paymentEmail);
-                console.log('✅ GrowSurf referral triggered successfully for:', paymentEmail);
-              } else {
-                console.warn('⚠️ No payment email found in sessionStorage');
-              }
-            } else {
-              console.log('ℹ️ No GrowSurf referral ID found - skipping referral trigger');
-            }
-          } catch (error) {
-            console.error('❌ GrowSurf referral tracking failed:', error);
           }
         })(),
 
