@@ -536,6 +536,8 @@ quizForm.addEventListener("submit", (e) => {
   } catch (error) {
     console.error("Error in checkout tracking:", error);
   }
+
+  
 });
 
 function formDataToObject(formData) {
@@ -596,10 +598,15 @@ function createBrazeUser(data) {
   if (email) {
     const sanitizedEmail = email.trim().toLowerCase();
     user.setEmail(sanitizedEmail);
-    user.addAlias(sanitizedEmail, "email"); // Also add as an alias for merging purposes
-
-    // Add the user to email sub group by default (they can unsub later)
+    user.addAlias(sanitizedEmail, "email");
     user.addToSubscriptionGroup(subscriptions.emailMktg);
+
+    // Add GrowSurf tracking
+    try {
+      growsurf.addParticipant(sanitizedEmail);
+    } catch (error) {
+      console.error('Error adding participant to GrowSurf:', error);
+    }
   }
 
   if (phone) {

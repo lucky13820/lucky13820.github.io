@@ -582,6 +582,17 @@ function createBrazeUser(data) {
     return;
   }
 
+  const normalizedData = {
+    ...data,
+    email: data.Email || data.email,
+    phone: data.Phone || data.phone,
+    fullName: data["Full-name"] || data["full-name"],
+    gender: data.Gender || data.gender,
+    ageRange: data["Age-Range"] || data["age-range"]
+  };
+
+  const { phone, email, fullName, gender, ageRange, sms_mktg_opt_in: smsOptIn = false, ...rest } = normalizedData;
+
   const user = braze.getUser();
   if (!user) return;
 
@@ -597,14 +608,45 @@ function createBrazeUser(data) {
         smsMktg: "033501a5-3110-4d95-90c8-b453c3123308",
       };
 
-  const { phone, email, sms_mktg_opt_in: smsOptIn = false, ...rest } = data;
+  if (fullName) {
+    const [firstName, ...lastNameParts] = fullName.trim().split(/\s+/);
+    const lastName = lastNameParts.join(' ');
+    
+    user.setFirstName(firstName);
+    if (lastName) {
+      user.setLastName(lastName);
+    }
+  }
+
+  if (gender) {
+    const genderMap = {
+      'Male': 'm',
+      'Female': 'f',
+      'Non-binary': 'o',
+      'I prefer not to say': 'p'
+    };
+    const brazeGender = genderMap[gender];
+    if (brazeGender) {
+      user.setGender(brazeGender);
+    }
+  }
+
+  if (ageRange) {
+    user.setCustomUserAttribute('Age Group', ageRange);
+  }
+
   if (email) {
     const sanitizedEmail = email.trim().toLowerCase();
     user.setEmail(sanitizedEmail);
-    user.addAlias(sanitizedEmail, "email"); // Also add as an alias for merging purposes
-
-    // Add the user to email sub group by default (they can unsub later)
+    user.addAlias(sanitizedEmail, "email");
     user.addToSubscriptionGroup(subscriptions.emailMktg);
+
+    // Add GrowSurf tracking
+    try {
+      growsurf.addParticipant(sanitizedEmail);
+    } catch (error) {
+      console.error('Error adding participant to GrowSurf:', error);
+    }
   }
 
   if (phone) {
