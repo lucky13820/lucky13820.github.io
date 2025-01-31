@@ -50,15 +50,14 @@ function sendVWOPurchaseEvent(textValue) {
 async function performConversion() {
   // Get order details from storage
   const paymentInfo = JSON.parse(sessionStorage.getItem('stripePaymentInfo') || '{}');
-  const { order_id, sale_amount, promo_code } = paymentInfo;
-  const email = localStorage.getItem("email") || "";
+  const { order_id, sale_amount, promo_code, paymentEmail } = paymentInfo;
 
   // Create AddShoppers conversion object
   window.AddShoppersConversion = {
     order_id: order_id,
     value: sale_amount,
     currency: "USD",
-    email: email,
+    email: paymentEmail,
     offer_code: promo_code || ""
   };
 
