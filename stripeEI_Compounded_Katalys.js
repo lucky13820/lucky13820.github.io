@@ -272,6 +272,7 @@ async function handleSubmit(e) {
       ...existingData,
       order_id,
       paymentEmail,
+      promo_code: promoCode || DEFAULT_PROMO
     }));
 
     // first send customer info to backend

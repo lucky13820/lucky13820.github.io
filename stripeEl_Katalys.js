@@ -238,11 +238,12 @@ async function handleSubmit(e) {
     // Get existing data from sessionStorage
     const existingData = JSON.parse(sessionStorage.getItem('stripePaymentInfo') || '{}');
     
-    // Merge existing data with new data
+    // Merge existing data with new data including promo code
     sessionStorage.setItem('stripePaymentInfo', JSON.stringify({
       ...existingData,
       order_id,
       paymentEmail,
+      promo_code: promoCode || DEFAULT_PROMO
     }));
 
     // first send customer info to backend

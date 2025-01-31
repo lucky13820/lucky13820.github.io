@@ -365,7 +365,8 @@ async function handleSubmit(e) {
       order_id,
       paymentEmail,
       customerName: fullName,
-      address: address
+      address: address,
+      promo_code: promoCode || DEFAULT_PROMO
     }));
 
     // Send customer info

@@ -48,6 +48,33 @@ function sendVWOPurchaseEvent(textValue) {
 }
 
 async function performConversion() {
+  // Get order details from storage
+  const paymentInfo = JSON.parse(sessionStorage.getItem('stripePaymentInfo') || '{}');
+  const { order_id, sale_amount, promo_code } = paymentInfo;
+  const email = localStorage.getItem("email") || "";
+
+  // Create AddShoppers conversion object
+  window.AddShoppersConversion = {
+    order_id: order_id,
+    value: sale_amount,
+    currency: "USD",
+    email: email,
+    offer_code: promo_code || ""
+  };
+
+  // Set widget options
+  window.AddShoppersWidgetOptions = { 'loadCss': false, 'pushResponse': false };
+
+  // Inject the AddShoppers script
+  const script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.id = 'AddShoppers';
+  script.src = "https://shop.pe/widget/widget_async.js#679c9246f25ace45ac4009f0";
+  script.async = true;
+  
+  // Add to body before closing tag
+  document.body.appendChild(script);
+
   const trackingPromise = (async () => {
     try {
       await Promise.all([
@@ -58,48 +85,6 @@ async function performConversion() {
             console.log('✅ EF tracking completed successfully');
           } catch (error) {
             console.error('❌ EF tracking failed:', error);
-          }
-        })(),
-
-        // GrowSurf tracking
-        (async () => {
-          const email = localStorage.getItem("email");
-          if (!email) {
-            console.log('ℹ️ GrowSurf tracking skipped - email not available');
-            return;
-          }
-
-          try {
-            // Wait for GrowSurf to be ready
-            await new Promise((resolve, reject) => {
-              if (window.growsurf) {
-                resolve();
-                return;
-              }
-
-              let attempts = 0;
-              const maxAttempts = 15; // 3 seconds total
-              const interval = setInterval(() => {
-                attempts++;
-                if (window.growsurf) {
-                  clearInterval(interval);
-                  resolve();
-                } else if (attempts >= maxAttempts) {
-                  clearInterval(interval);
-                  reject(new Error('GrowSurf failed to initialize after 3 seconds'));
-                }
-              }, 200);
-
-              // Also listen for the grsfReady event
-              window.addEventListener('grsfReady', () => {
-                clearInterval(interval);
-                resolve();
-              });
-            });
-
-          } catch (error) {
-            console.error('❌ GrowSurf tracking failed:', error);
-            // Don't rethrow - we want to continue with other tracking
           }
         })(),
 
@@ -147,37 +132,6 @@ async function performConversion() {
           }
         })(),
 
-        // GrowSurf referral tracking
-        (async () => {
-          try {
-            // Wait for GrowSurf to be ready
-            await new Promise(resolve => {
-              if (window.growsurf) {
-                resolve();
-                return;
-              }
-              window.addEventListener('grsfReady', resolve);
-            });
-
-            // Proceed with referral tracking once GrowSurf is ready
-            if (window.growsurf && !!window.growsurf.getReferrerId()) {
-              const paymentInfo = JSON.parse(sessionStorage.getItem('stripePaymentInfo') || '{}');
-              const { paymentEmail } = paymentInfo;
-              
-              if (paymentEmail) {
-                window.growsurf.addParticipant(paymentEmail);
-                console.log('✅ GrowSurf referral triggered successfully for:', paymentEmail);
-              } else {
-                console.warn('⚠️ No payment email found in sessionStorage');
-              }
-            } else {
-              console.log('ℹ️ No GrowSurf referral ID found - skipping referral trigger');
-            }
-          } catch (error) {
-            console.error('❌ GrowSurf referral tracking failed:', error);
-          }
-        })(),
-
         // Katalys tracking
         (async () => {
           try {
@@ -208,29 +162,25 @@ async function performConversion() {
     await Promise.race([trackingPromise, timeoutPromise]);
     console.log('ℹ️ Proceeding with redirect...');
 
-    /* Commenting out redirect code
     if (REDIRECT_URL) {
       window.location.href = REDIRECT_URL;
     } else {
       console.warn("❌ Redirect URL is not defined");
       showAlertAndRedirect(ERROR_MESSAGE);
     }
-    */
   
-    // Clean up stored payment info
-    // sessionStorage.removeItem('stripePaymentInfo');
+      // Clean up stored payment info
+   // sessionStorage.removeItem('stripePaymentInfo');
 
   } catch (error) {
     console.error("❌ An error occurred:", error);
-    /* Commenting out redirect code
     if (REDIRECT_URL) {
       window.location.href = REDIRECT_URL;
     } else {
       showAlertAndRedirect(ERROR_MESSAGE);
     }
-    */
-    // Clean up stored payment info
-    sessionStorage.removeItem('stripePaymentInfo');
+      // Clean up stored payment info
+   // sessionStorage.removeItem('stripePaymentInfo');
   }
 }
 
