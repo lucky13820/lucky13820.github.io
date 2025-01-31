@@ -641,9 +641,11 @@ function createBrazeUser(data) {
     user.addAlias(sanitizedEmail, "email");
     user.addToSubscriptionGroup(subscriptions.emailMktg);
 
-    // Add GrowSurf tracking
-    try {
-      growsurf.addParticipant(sanitizedEmail);
+     // Add GrowSurf tracking with availability and referrer checks
+     try {
+      if (window.growsurf && !!window.growsurf.getReferrerId()) {
+        growsurf.addParticipant(sanitizedEmail);
+      }
     } catch (error) {
       console.error('Error adding participant to GrowSurf:', error);
     }

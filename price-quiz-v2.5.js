@@ -740,6 +740,7 @@ function createBrazeUser(data) {
     }
   }
 
+  // Set gender (Braze accepts 'm', 'f', 'o', 'n', 'p' for male, female, other, not applicable, prefer not to say)
   if (gender) {
     const genderMap = {
       'Male': 'm',
@@ -753,6 +754,7 @@ function createBrazeUser(data) {
     }
   }
 
+  // Set age range using Braze's Age Group attribute
   if (ageRange) {
     user.setCustomUserAttribute('Age Group', ageRange);
   }
@@ -763,9 +765,11 @@ function createBrazeUser(data) {
     user.addAlias(sanitizedEmail, "email");
     user.addToSubscriptionGroup(subscriptions.emailMktg);
 
-    // Add GrowSurf tracking
+    // Add GrowSurf tracking with availability and referrer checks
     try {
-      growsurf.addParticipant(sanitizedEmail);
+      if (window.growsurf && !!window.growsurf.getReferrerId()) {
+        growsurf.addParticipant(sanitizedEmail);
+      }
     } catch (error) {
       console.error('Error adding participant to GrowSurf:', error);
     }
