@@ -48,6 +48,32 @@ function sendVWOPurchaseEvent(textValue) {
 }
 
 async function performConversion() {
+  // Get order details from storage
+  const paymentInfo = JSON.parse(sessionStorage.getItem('stripePaymentInfo') || '{}');
+  const { order_id, sale_amount, promo_code, paymentEmail } = paymentInfo;
+
+   // Create AddShoppers conversion object
+   window.AddShoppersConversion = {
+    order_id: order_id,
+    value: sale_amount,
+    currency: "USD",
+    email: paymentEmail,
+    offer_code: promo_code || ""
+  };
+
+  // Set widget options
+  window.AddShoppersWidgetOptions = { 'loadCss': false, 'pushResponse': false };
+
+  // Inject the AddShoppers script
+  const script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.id = 'AddShoppers';
+  script.src = "https://shop.pe/widget/widget_async.js#679c9246f25ace45ac4009f0";
+  script.async = true;
+  
+  // Add to body before closing tag
+  document.body.appendChild(script);
+
   const trackingPromise = (async () => {
     try {
       await Promise.all([
