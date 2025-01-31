@@ -616,6 +616,21 @@ function createBrazeUser(data) {
     if (lastName) {
       user.setLastName(lastName);
     }
+
+    // Add GrowSurf tracking with availability, referrer checks, and name data
+    if (email) {
+      const sanitizedEmail = email.trim().toLowerCase();
+      try {
+        if (window.growsurf && !!window.growsurf.getReferrerId()) {
+          growsurf.addParticipant(sanitizedEmail, {
+            firstName: firstName,
+            lastName: lastName
+          });
+        }
+      } catch (error) {
+        console.error('Error adding participant to GrowSurf:', error);
+      }
+    }
   }
 
   if (gender) {
@@ -640,15 +655,6 @@ function createBrazeUser(data) {
     user.setEmail(sanitizedEmail);
     user.addAlias(sanitizedEmail, "email");
     user.addToSubscriptionGroup(subscriptions.emailMktg);
-
-     // Add GrowSurf tracking with availability and referrer checks
-     try {
-      if (window.growsurf && !!window.growsurf.getReferrerId()) {
-        growsurf.addParticipant(sanitizedEmail);
-      }
-    } catch (error) {
-      console.error('Error adding participant to GrowSurf:', error);
-    }
   }
 
   if (phone) {
