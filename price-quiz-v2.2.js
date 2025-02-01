@@ -534,6 +534,7 @@ quizForm.addEventListener("submit", (e) => {
     createBrazeUser(formData);
     trackToShareASale();
     trackSurveyCompleteToSimplifi();
+    trackToGrowSurf(email);
   } catch (error) {
     console.error("Error in checkout tracking:", error);
   }
@@ -608,7 +609,6 @@ function createBrazeUser(data) {
     user.setEmail(sanitizedEmail);
     user.addAlias(sanitizedEmail, "email");
     user.addToSubscriptionGroup(subscriptions.emailMktg);
-    trackToGrowSurf(sanitizedEmail);
   }
 
   if (phone) {
