@@ -3,10 +3,6 @@ const isStaging = window.location.hostname.includes("webflow.io");
 let APPROVED_INSURANCES;
 let eligibleStates;
 
-// Add these constants at the top of the file with other constants
-const PRODUCTIONGS = 'eheb11';
-const AFFILIATEGS = 'nqt012';
-
 document.addEventListener("DOMContentLoaded", () => {
   initializeSwiper();
   addPriceFormListeners();
