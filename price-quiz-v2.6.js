@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeBraze();
   handleNoneCheckbox();
   handleQuizNavigation();
-  initializeGrowSurf();
 
   if (window.location.href.includes("#plan")) {
     displayPaymentForm();
@@ -674,24 +673,16 @@ function createBrazeUser(data) {
 function trackToGrowSurf(email, firstName, lastName) {
   const sanitizedEmail = email.trim().toLowerCase();
   try {
-    // Initialize GrowSurf with appropriate campaign if needed
-    initializeGrowSurf();
-
-    // Check if there's a referrer ID before tracking
-    if (window.growsurf && window.growsurf.getReferrerId()) {
-      const participantData = {
-        firstName: firstName,
-        lastName: lastName
-      };
-      
-      growsurf.addParticipant(sanitizedEmail, participantData);
-      console.log('Participant added to GrowSurf campaign');
-      
-      // Clear the affiliate source after successful tracking
-      localStorage.removeItem('cameFromAffiliate');
+    if (window.growsurf) {
+      if (window.growsurf.getReferrerId()) {
+        growsurf.addParticipant(sanitizedEmail, { firstName, lastName });
+        console.log('Participant added to GrowSurf campaign');
+        localStorage.removeItem('cameFromAffiliate');
+      }
     }
   } catch (error) {
-    console.error('Error adding participant to GrowSurf:', error);
+    console.error('Error tracking participant:', error);
+    // Consider retry logic or fallback behavior
   }
 }
 
@@ -1243,23 +1234,36 @@ function handleQuizNavigation() {
   toggleNavVisibility();
 }
 
-// New function to handle GrowSurf initialization
 function initializeGrowSurf() {
-  const cameFromAffiliate = localStorage.getItem('cameFromAffiliate') === 'true';
+  const isAffiliatePath = window.location.pathname.includes('/affiliate');
+  const cameFromAffiliate = localStorage.getItem('cameFromAffiliate');
   
-  if (cameFromAffiliate) {
-    try {
-      if (window.growsurf) {
-        growsurf.init({ campaignId: AFFILIATEGS });
-        console.log('GrowSurf initialized with affiliate campaign');
-      }
-    } catch (error) {
-      console.error('Error initializing GrowSurf for affiliate:', error);
-    }
-  } else {
-    if (window.growsurf) {
-      growsurf.init({ campaignId: PRODUCTIONGS });
-      console.log('GrowSurf initialized with production campaign');
-    }
+  const campaignId = (isAffiliatePath || cameFromAffiliate === 'true') 
+    ? AFFILIATEGS 
+    : PRODUCTIONGS;
+
+  try {
+    growsurf.init({ campaignId });
+    console.log('GrowSurf initialized with campaign:', campaignId);
+  } catch (error) {
+    console.error('Error initializing GrowSurf:', error);
   }
 }
+
+// Poll for GrowSurf availability
+let retryCount = 0;
+const maxRetries = 30; // 3 seconds at 100ms intervals
+
+function waitForGrowSurf() {
+  if (typeof growsurf !== 'undefined') {
+    initializeGrowSurf();
+  } else if (retryCount < maxRetries) {
+    retryCount++;
+    setTimeout(waitForGrowSurf, 100);
+  } else {
+    console.error('GrowSurf failed to load after maximum retries');
+  }
+}
+
+// Start polling
+waitForGrowSurf();
