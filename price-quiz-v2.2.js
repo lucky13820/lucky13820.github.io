@@ -638,6 +638,7 @@ function trackToGrowSurf(email) {
   try {
     if (window.growsurf && !!window.growsurf.getReferrerId()) {
       growsurf.addParticipant(sanitizedEmail);
+      localStorage.removeItem('cameFromAffiliate');
     }
   } catch (error) {
     console.error('Error adding participant to GrowSurf:', error);
