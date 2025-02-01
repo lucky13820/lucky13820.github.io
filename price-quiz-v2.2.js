@@ -1148,11 +1148,17 @@ function initializeGrowSurf() {
 }
 
 // Poll for GrowSurf availability
+let retryCount = 0;
+const maxRetries = 30; // 3 seconds at 100ms intervals
+
 function waitForGrowSurf() {
   if (typeof growsurf !== 'undefined') {
     initializeGrowSurf();
+  } else if (retryCount < maxRetries) {
+    retryCount++;
+    setTimeout(waitForGrowSurf, 100);
   } else {
-    setTimeout(waitForGrowSurf, 100); // Check again in 100ms
+    console.error('GrowSurf failed to load after maximum retries');
   }
 }
 
