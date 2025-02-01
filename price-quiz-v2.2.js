@@ -1141,7 +1141,7 @@ function initializeGrowSurf() {
   if (isAffiliatePath || cameFromAffiliate) {
     try {
       if (window.growsurf) {
-        window.growsurf.init({ campaignId: AFFILIATEGS });
+        window.growsurf.init({ campaignId: 'nqt012' });
         console.log('GrowSurf initialized with affiliate campaign');
       }
     } catch (error) {
@@ -1149,7 +1149,7 @@ function initializeGrowSurf() {
     }
   } else {
     if (window.growsurf) {
-      window.growsurf.init({ campaignId: PRODUCTIONGS });
+      window.growsurf.init({ campaignId: 'eheb11' });
       console.log('GrowSurf initialized with production campaign');
     }
   }
