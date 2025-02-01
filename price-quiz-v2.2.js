@@ -1134,6 +1134,7 @@ function handleNoneCheckbox() {
 
 // New function to handle GrowSurf initialization
 function initializeGrowSurf() {
+  console.log('initializeGrowSurf called');
   const cameFromAffiliate = localStorage.getItem('cameFromAffiliate');
   
   if (cameFromAffiliate === 'true') {
