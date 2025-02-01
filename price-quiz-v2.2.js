@@ -1130,33 +1130,30 @@ function handleNoneCheckbox() {
   });
 }
 
-document.addEventListener('grsfReady', initializeGrowSurf);
-// New function to handle GrowSurf initialization
 function initializeGrowSurf() {
   const isAffiliatePath = window.location.pathname.includes('/affiliate');
   const cameFromAffiliate = localStorage.getItem('cameFromAffiliate');
   
-  console.log('Initializing GrowSurf...');
-  console.log('Is affiliate path:', isAffiliatePath);
-  console.log('Came from affiliate:', cameFromAffiliate);
-  
-  if (isAffiliatePath || cameFromAffiliate === 'true') {
-    try {
-      if (window.growsurf) {
-        growsurf.init({ campaignId: AFFILIATEGS });
-        console.log('GrowSurf initialized with affiliate campaign:', AFFILIATEGS);
-      }
-    } catch (error) {
-      console.error('Error initializing GrowSurf for affiliate:', error);
-    }
-  } else {
-    try {
-      if (window.growsurf) {
-        growsurf.init({ campaignId: PRODUCTIONGS });
-        console.log('GrowSurf initialized with production campaign:', PRODUCTIONGS);
-      }
-    } catch (error) {
-      console.error('Error initializing GrowSurf for production:', error);
-    }
+  const campaignId = (isAffiliatePath || cameFromAffiliate === 'true') 
+    ? AFFILIATEGS 
+    : PRODUCTIONGS;
+
+  try {
+    growsurf.init({ campaignId });
+    console.log('GrowSurf initialized with campaign:', campaignId);
+  } catch (error) {
+    console.error('Error initializing GrowSurf:', error);
   }
 }
+
+// Poll for GrowSurf availability
+function waitForGrowSurf() {
+  if (typeof growsurf !== 'undefined') {
+    initializeGrowSurf();
+  } else {
+    setTimeout(waitForGrowSurf, 100); // Check again in 100ms
+  }
+}
+
+// Start polling
+waitForGrowSurf();
