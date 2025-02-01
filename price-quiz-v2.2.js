@@ -3,12 +3,17 @@ const isStaging = window.location.hostname.includes("webflow.io");
 let APPROVED_INSURANCES;
 let eligibleStates;
 
+// Add these constants at the top of the file with other constants
+const PRODUCTIONGS = 'eheb11';
+const AFFILIATEGS = 'nqt012';
+
 document.addEventListener("DOMContentLoaded", () => {
   initializeSwiper();
   addPriceFormListeners();
   trackSurveyStartToSimplifi();
   initializeBraze();
   handleNoneCheckbox();
+  initializeGrowSurf();
 
   if (window.location.href.includes("#plan")) {
     displayPaymentForm();
@@ -579,6 +584,14 @@ function createBrazeUser(data) {
     return;
   }
 
+  const normalizedData = {
+    ...data,
+    email: data.Email || data.email,
+    phone: data.Phone || data.phone
+  };
+
+  const { phone, email, sms_mktg_opt_in: smsOptIn = false, ...rest } = normalizedData;
+
   const user = braze.getUser();
   if (!user) return;
 
@@ -594,21 +607,12 @@ function createBrazeUser(data) {
         smsMktg: "033501a5-3110-4d95-90c8-b453c3123308",
       };
 
-  const { phone, email, sms_mktg_opt_in: smsOptIn = false, ...rest } = data;
   if (email) {
     const sanitizedEmail = email.trim().toLowerCase();
     user.setEmail(sanitizedEmail);
     user.addAlias(sanitizedEmail, "email");
     user.addToSubscriptionGroup(subscriptions.emailMktg);
-
-     // Add GrowSurf tracking with availability and referrer checks
-     try {
-      if (window.growsurf && !!window.growsurf.getReferrerId()) {
-        growsurf.addParticipant(sanitizedEmail);
-      }
-    } catch (error) {
-      console.error('Error adding participant to GrowSurf:', error);
-    }
+    trackToGrowSurf(sanitizedEmail);
   }
 
   if (phone) {
@@ -631,6 +635,19 @@ function createBrazeUser(data) {
     ...data,
     questionnaire_id: "regular",
   });
+}
+
+// New separate function for GrowSurf tracking
+function trackToGrowSurf(email) {
+  const sanitizedEmail = email.trim().toLowerCase();
+  try {
+    initializeGrowSurf();
+    if (window.growsurf && !!window.growsurf.getReferrerId()) {
+      growsurf.addParticipant(sanitizedEmail);
+    }
+  } catch (error) {
+    console.error('Error adding participant to GrowSurf:', error);
+  }
 }
 
 // Fetch discount and update prices
@@ -1117,4 +1134,27 @@ function handleNoneCheckbox() {
       }
     });
   });
+}
+
+
+// New function to handle GrowSurf initialization
+function initializeGrowSurf() {
+  const isAffiliatePath = window.location.pathname.includes('/affiliate');
+  const cameFromAffiliate = document.referrer.includes('/affiliate');
+  
+  if (isAffiliatePath || cameFromAffiliate) {
+    try {
+      if (window.growsurf) {
+        window.growsurf.init({ campaignId: AFFILIATEGS });
+        console.log('GrowSurf initialized with affiliate campaign');
+      }
+    } catch (error) {
+      console.error('Error initializing GrowSurf for affiliate:', error);
+    }
+  } else {
+    if (window.growsurf) {
+      window.growsurf.init({ campaignId: PRODUCTIONGS });
+      console.log('GrowSurf initialized with production campaign');
+    }
+  }
 }

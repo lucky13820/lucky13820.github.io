@@ -3,6 +3,10 @@ const isStaging = window.location.hostname.includes("webflow.io");
 let APPROVED_INSURANCES;
 let eligibleStates;
 
+// Add these constants at the top of the file with other constants
+const PRODUCTIONGS = 'eheb11';
+const AFFILIATEGS = 'nqt012';
+
 function handlePriceContainerScroll() {
   const priceContainer = document.querySelector("#choose-price-container");
   const priceSection = document.querySelector("#choose-your-price");
@@ -45,6 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
   trackSurveyStartToSimplifi();
   initializeBraze();
   handleNoneCheckbox();
+  initializeGrowSurf();
 
   if (window.location.href.includes("#plan")) {
     displayPaymentForm();
@@ -720,7 +725,7 @@ function createBrazeUser(data) {
     ...data,
     email: data.Email || data.email,
     phone: data.Phone || data.phone,
-    fullName: data["Full-name"] || data["full-name"], // Handle both cases
+    fullName: data["Full-name"] || data["full-name"],
     gender: data.Gender || data.gender,
     ageRange: data["Age-Range"] || data["age-range"]
   };
@@ -739,19 +744,9 @@ function createBrazeUser(data) {
       user.setLastName(lastName);
     }
 
-    // Add GrowSurf tracking with availability, referrer checks, and name data
+    // Track to GrowSurf if email is available
     if (email) {
-      const sanitizedEmail = email.trim().toLowerCase();
-      try {
-        if (window.growsurf && !!window.growsurf.getReferrerId()) {
-          growsurf.addParticipant(sanitizedEmail, {
-            firstName: firstName,
-            lastName: lastName
-          });
-        }
-      } catch (error) {
-        console.error('Error adding participant to GrowSurf:', error);
-      }
+      trackToGrowSurf(email, firstName, lastName);
     }
   }
 
@@ -809,6 +804,28 @@ function createBrazeUser(data) {
     ...normalizedData,
     questionnaire_id: "regular",
   });
+}
+
+// New separate function for GrowSurf tracking
+function trackToGrowSurf(email, firstName, lastName) {
+  const sanitizedEmail = email.trim().toLowerCase();
+  try {
+    // Initialize GrowSurf with appropriate campaign if needed
+    initializeGrowSurf();
+
+    // Check if there's a referrer ID before tracking
+    if (window.growsurf && window.growsurf.getReferrerId()) {
+      const participantData = {
+        firstName: firstName,
+        lastName: lastName
+      };
+      
+      growsurf.addParticipant(sanitizedEmail, participantData);
+      console.log('Participant added to GrowSurf campaign');
+    }
+  } catch (error) {
+    console.error('Error adding participant to GrowSurf:', error);
+  }
 }
 
 // Fetch discount and update prices
@@ -1554,3 +1571,24 @@ const startRandomPoundUpdates = () => {
 
   scheduleNextUpdate();
 };
+
+function initializeGrowSurf() {
+  const isAffiliatePath = window.location.pathname.includes('/affiliate');
+  const cameFromAffiliate = document.referrer.includes('/affiliate');
+  
+  if (isAffiliatePath || cameFromAffiliate) {
+    try {
+      if (window.growsurf) {
+        window.growsurf.init({ campaignId: AFFILIATEGS });
+        console.log('GrowSurf initialized with affiliate campaign');
+      }
+    } catch (error) {
+      console.error('Error initializing GrowSurf for affiliate:', error);
+    }
+  } else {
+    if (window.growsurf) {
+      window.growsurf.init({ campaignId: PRODUCTIONGS });
+      console.log('GrowSurf initialized with production campaign');
+    }
+  }
+}
