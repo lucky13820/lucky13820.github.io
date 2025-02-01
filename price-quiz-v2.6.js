@@ -686,6 +686,9 @@ function trackToGrowSurf(email, firstName, lastName) {
       
       growsurf.addParticipant(sanitizedEmail, participantData);
       console.log('Participant added to GrowSurf campaign');
+      
+      // Clear the affiliate source after successful tracking
+      localStorage.removeItem('cameFromAffiliate');
     }
   } catch (error) {
     console.error('Error adding participant to GrowSurf:', error);
@@ -1242,13 +1245,12 @@ function handleQuizNavigation() {
 
 // New function to handle GrowSurf initialization
 function initializeGrowSurf() {
-  const isAffiliatePath = window.location.pathname.includes('/affiliate');
-  const cameFromAffiliate = document.referrer.includes('/affiliate');
+  const cameFromAffiliate = localStorage.getItem('cameFromAffiliate') === 'true';
   
-  if (isAffiliatePath || cameFromAffiliate) {
+  if (cameFromAffiliate) {
     try {
       if (window.growsurf) {
-        window.growsurf.init({ campaignId: AFFILIATEGS });
+        growsurf.init({ campaignId: AFFILIATEGS });
         console.log('GrowSurf initialized with affiliate campaign');
       }
     } catch (error) {
@@ -1256,7 +1258,7 @@ function initializeGrowSurf() {
     }
   } else {
     if (window.growsurf) {
-      window.growsurf.init({ campaignId: PRODUCTIONGS });
+      growsurf.init({ campaignId: PRODUCTIONGS });
       console.log('GrowSurf initialized with production campaign');
     }
   }
