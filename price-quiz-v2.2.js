@@ -637,12 +637,38 @@ function createBrazeUser(data) {
 function trackToGrowSurf(email) {
   const sanitizedEmail = email.trim().toLowerCase();
   try {
-    initializeGrowSurf();
-    if (window.growsurf && !!window.growsurf.getReferrerId()) {
-      growsurf.addParticipant(sanitizedEmail);
-    }
+    // Wait for GrowSurf initialization
+    const waitForGrowSurf = new Promise((resolve, reject) => {
+      initializeGrowSurf();
+      
+      // Check every 100ms for up to 5 seconds
+      let attempts = 0;
+      const maxAttempts = 50;
+      
+      const checkGrowSurf = setInterval(() => {
+        attempts++;
+        if (window.growsurf && window.growsurf.getReferrerId()) {
+          clearInterval(checkGrowSurf);
+          resolve();
+        } else if (attempts >= maxAttempts) {
+          clearInterval(checkGrowSurf);
+          reject(new Error('GrowSurf initialization timeout'));
+        }
+      }, 100);
+    });
+
+    // Add participant after successful initialization
+    waitForGrowSurf
+      .then(() => {
+        growsurf.addParticipant(sanitizedEmail);
+        console.log('Successfully added participant to GrowSurf');
+      })
+      .catch((error) => {
+        console.error('Failed to initialize GrowSurf:', error);
+      });
+      
   } catch (error) {
-    console.error('Error adding participant to GrowSurf:', error);
+    console.error('Error in trackToGrowSurf:', error);
   }
 }
 
