@@ -1134,22 +1134,27 @@ function handleNoneCheckbox() {
 
 // New function to handle GrowSurf initialization
 function initializeGrowSurf() {
-  console.log('initializeGrowSurf called');
+  console.log('Initializing GrowSurf');
+  const isAffiliatePath = window.location.pathname.includes('/affiliate');
   const cameFromAffiliate = localStorage.getItem('cameFromAffiliate');
   
-  if (cameFromAffiliate === 'true') {
+  if (isAffiliatePath || cameFromAffiliate === 'true') {
     try {
       if (window.growsurf) {
-        growsurf.init({ campaignId: AFFILIATEGS });
+        window.growsurf.init({ campaignId: AFFILIATEGS });
         console.log('GrowSurf initialized with affiliate campaign');
       }
     } catch (error) {
       console.error('Error initializing GrowSurf for affiliate:', error);
     }
   } else {
-    if (window.growsurf) {
-      growsurf.init({ campaignId: PRODUCTIONGS });
-      console.log('GrowSurf initialized with production campaign');
+    try {
+      if (window.growsurf) {
+        window.growsurf.init({ campaignId: PRODUCTIONGS });
+        console.log('GrowSurf initialized with production campaign');
+      }
+    } catch (error) {
+      console.error('Error initializing GrowSurf for production:', error);
     }
   }
 }
