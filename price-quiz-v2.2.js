@@ -5,7 +5,6 @@ let eligibleStates;
 
 document.addEventListener("DOMContentLoaded", () => {
   initializeSwiper();
-  initializeGrowSurf();
   addPriceFormListeners();
   trackSurveyStartToSimplifi();
   initializeBraze();
@@ -1131,18 +1130,21 @@ function handleNoneCheckbox() {
   });
 }
 
-
+document.addEventListener('grsfReady', initializeGrowSurf);
 // New function to handle GrowSurf initialization
 function initializeGrowSurf() {
-  console.log('Initializing GrowSurf');
   const isAffiliatePath = window.location.pathname.includes('/affiliate');
   const cameFromAffiliate = localStorage.getItem('cameFromAffiliate');
+  
+  console.log('Initializing GrowSurf...');
+  console.log('Is affiliate path:', isAffiliatePath);
+  console.log('Came from affiliate:', cameFromAffiliate);
   
   if (isAffiliatePath || cameFromAffiliate === 'true') {
     try {
       if (window.growsurf) {
         growsurf.init({ campaignId: AFFILIATEGS });
-        console.log('GrowSurf initialized with affiliate campaign');
+        console.log('GrowSurf initialized with affiliate campaign:', AFFILIATEGS);
       }
     } catch (error) {
       console.error('Error initializing GrowSurf for affiliate:', error);
@@ -1151,7 +1153,7 @@ function initializeGrowSurf() {
     try {
       if (window.growsurf) {
         growsurf.init({ campaignId: PRODUCTIONGS });
-        console.log('GrowSurf initialized with production campaign');
+        console.log('GrowSurf initialized with production campaign:', PRODUCTIONGS);
       }
     } catch (error) {
       console.error('Error initializing GrowSurf for production:', error);
