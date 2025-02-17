@@ -31,22 +31,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Add to your form inputs
-const formInputs = document.querySelectorAll('input, select, textarea');
-formInputs.forEach(input => {
-  if (isAndroidChrome()) {
-    // Prevent default keyboard next behavior
-    input.addEventListener('keydown', (e) => {
-      if (e.keyCode === 13) {  // Enter key
-        e.preventDefault();
-      }
-    });
-    
-    // Optional: Set enterkeyhint to "done" instead of "next"
-    input.setAttribute('enterkeyhint', 'done');
-  }
-});
-
   // try pre-populate email and phone
   try {
     const { email, phone } = localStorage;
