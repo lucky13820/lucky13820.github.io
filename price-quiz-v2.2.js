@@ -1182,5 +1182,6 @@ function waitForGrowSurf() {
 waitForGrowSurf();
 
 function isAndroidChrome() {
-  return /android/i.test(navigator.userAgent) && /chrome/i.test(navigator.userAgent);
+  const userAgent = navigator.userAgent.toLowerCase();
+  return userAgent.includes('android') && userAgent.includes('chrome') && !userAgent.includes('firefox') && !userAgent.includes('edg') && !userAgent.includes('opr');
 }
