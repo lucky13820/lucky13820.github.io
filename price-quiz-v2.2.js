@@ -45,7 +45,7 @@ formInputs.forEach(input => {
     // Optional: Set enterkeyhint to "done" instead of "next"
     input.setAttribute('enterkeyhint', 'done');
   }
-});√
+});
 
   // try pre-populate email and phone
   try {
