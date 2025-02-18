@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   trackSurveyStartToSimplifi();
   initializeBraze();
   handleNoneCheckbox();
+  initializeFixedNavigation(); 
 
   if (window.location.href.includes("#plan")) {
     displayPaymentForm();
@@ -31,19 +32,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-// Add to your form inputs
-  const idealWeightInput = document.getElementById('ideal-weight');
-  const isChromeAndroid = /Chrome/.test(navigator.userAgent) && /Android/.test(navigator.userAgent);
-  const data = {
-    isChromeAndroid: isChromeAndroid,
-  };
-  if (isChromeAndroid) {
-    idealWeightInput.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter') {
-        event.preventDefault();
+  // Add to your form inputs
+const formInputs = document.querySelectorAll('input, select, textarea');
+formInputs.forEach(input => {
+  if (isAndroidChrome()) {
+    // Prevent default keyboard next behavior
+    input.addEventListener('keydown', (e) => {
+      if (e.keyCode === 13) {  // Enter key
+        e.preventDefault();
       }
     });
+    
+    // Optional: Set enterkeyhint to "done" instead of "next"
+    input.setAttribute('enterkeyhint', 'done');
   }
+});
 
   // try pre-populate email and phone
   try {
@@ -1182,4 +1185,53 @@ waitForGrowSurf();
 function isAndroidChrome() {
   const userAgent = navigator.userAgent.toLowerCase();
   return userAgent.includes('android') && userAgent.includes('chrome') && !userAgent.includes('firefox') && !userAgent.includes('edg') && !userAgent.includes('opr');
+}
+
+// Add this new function
+function initializeFixedNavigation() {
+  const navigationButtons = document.querySelector('.quiz-navigation-wrapper');
+  
+  if (!navigationButtons) return;
+
+  // Set initial styles
+  navigationButtons.style.position = 'fixed';
+  navigationButtons.style.bottom = '0';
+  navigationButtons.style.left = '0';
+  navigationButtons.style.right = '0';
+  navigationButtons.style.zIndex = '999';
+
+  let isKeyboardVisible = false;
+
+  function adjustPosition() {
+    if (!window.visualViewport) return;
+
+    const currentHeight = window.visualViewport.height;
+    const windowHeight = window.innerHeight;
+
+    // Check if keyboard is visible
+    isKeyboardVisible = currentHeight < windowHeight;
+
+    if (isKeyboardVisible) {
+      // Move navigation above keyboard
+      navigationButtons.style.position = 'absolute';
+      navigationButtons.style.bottom = 'auto';
+      navigationButtons.style.top = `${window.visualViewport.height - navigationButtons.offsetHeight}px`;
+    } else {
+      // Reset to default bottom position
+      navigationButtons.style.position = 'fixed';
+      navigationButtons.style.top = 'auto';
+      navigationButtons.style.bottom = '0';
+    }
+  }
+
+  // Listen to VisualViewport resize
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', adjustPosition);
+    window.visualViewport.addEventListener('scroll', adjustPosition);
+  }
+
+  // Handle orientation changes
+  window.addEventListener('orientationchange', () => {
+    setTimeout(adjustPosition, 100); // Small delay to ensure correct calculation after orientation change
+  });
 }
