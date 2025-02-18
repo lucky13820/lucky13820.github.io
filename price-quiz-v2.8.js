@@ -1189,6 +1189,9 @@ function isAndroidChrome() {
 
 // Add this new function
 function initializeFixedNavigation() {
+  
+  if (window.innerWidth >= 768) return;
+
   const navigationButtons = document.querySelector('.quiz-navigation-wrapper');
   
   if (!navigationButtons) return;
