@@ -1189,7 +1189,7 @@ function isAndroidChrome() {
 
 // Add this new function
 function initializeFixedNavigation() {
-  
+
   if (window.innerWidth >= 768) return;
 
   const navigationButtons = document.querySelector('.quiz-navigation-wrapper');
@@ -1217,12 +1217,15 @@ function initializeFixedNavigation() {
     if (isKeyboardVisible) {
       // Move navigation above keyboard
       navigationButtons.style.position = 'absolute';
+      navigationButtons.style.inset = 'auto';
       navigationButtons.style.bottom = 'auto';
+      navigationButtons.style.top = 'auto';
     } else {
       // Reset to default bottom position
       navigationButtons.style.position = 'fixed';
       navigationButtons.style.top = 'auto';
       navigationButtons.style.bottom = '0';
+      navigationButtons.style.inset = 'auto';
     }
   }
 
