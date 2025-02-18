@@ -2,6 +2,7 @@ const isStaging = window.location.hostname.includes("webflow.io");
 
 let APPROVED_INSURANCES;
 let eligibleStates;
+let riveInstance;
 
 document.addEventListener("DOMContentLoaded", () => {
   initializeSwiper();
@@ -14,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initialize Rive
   const riveCanvas = document.querySelector('#rive-animation');
   if (riveCanvas) {
-    const riveInstance = new rive.Rive({
+    riveInstance = new rive.Rive({
       src: 'https://cdn.prod.website-files.com/6357d4fbecfafa3f24d20445/67b4faedd4104e630f167109_untitled%20(1).riv',
       canvas: riveCanvas,
       autoplay: false,
