@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   trackSurveyStartToSimplifi();
   initializeBraze();
   handleNoneCheckbox();
+  initializeFixedNavigation(); 
 
   if (window.location.href.includes("#plan")) {
     displayPaymentForm();
@@ -1182,4 +1183,61 @@ waitForGrowSurf();
 function isAndroidChrome() {
   const userAgent = navigator.userAgent.toLowerCase();
   return userAgent.includes('android') && userAgent.includes('chrome') && !userAgent.includes('firefox') && !userAgent.includes('edg') && !userAgent.includes('opr');
+}
+
+
+function initializeFixedNavigation() {
+  if (window.innerWidth >= 768) return;
+
+  const navigationButtons = document.querySelector('.quiz-navigation');
+  if (!navigationButtons) return;
+
+  // Only proceed if it's iOS
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  if (!isIOS) return;
+
+  // Set initial styles for iOS
+  navigationButtons.style.position = 'fixed';
+  navigationButtons.style.bottom = '0';
+  navigationButtons.style.left = '0';
+  navigationButtons.style.right = '0';
+  navigationButtons.style.zIndex = '999';
+  navigationButtons.style.inset = 'auto';
+  navigationButtons.style.insetInlineStart = '0';
+  navigationButtons.style.insetInlineEnd = '0';
+
+  let isKeyboardVisible = false;
+
+  function adjustPosition() {
+    if (!window.visualViewport) return;
+
+    const currentHeight = window.visualViewport.height;
+    const windowHeight = window.innerHeight;
+
+    // Check if keyboard is visible
+    isKeyboardVisible = currentHeight < windowHeight;
+
+    if (isKeyboardVisible) {
+      // Move navigation above keyboard
+      navigationButtons.style.position = 'absolute';
+      navigationButtons.style.bottom = 'auto';
+      navigationButtons.style.top = 'auto';
+    } else {
+      // Reset to default bottom position
+      navigationButtons.style.position = 'fixed';
+      navigationButtons.style.top = 'auto';
+      navigationButtons.style.bottom = '0';
+    }
+  }
+
+  // Listen to VisualViewport resize
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', adjustPosition);
+    window.visualViewport.addEventListener('scroll', adjustPosition);
+  }
+
+  // Handle orientation changes
+  window.addEventListener('orientationchange', () => {
+    setTimeout(adjustPosition, 100);
+  });
 }

@@ -1235,7 +1235,7 @@ function initializeFixedNavigation() {
         // iOS keyboard handling
         navigationButtons.style.position = 'absolute';
         navigationButtons.style.bottom = 'auto';
-        navigationButtons.style.top = `${window.visualViewport.height - navigationButtons.offsetHeight}px`;
+        navigationButtons.style.top = 'auto';
       }
     } else {
       // Reset to default bottom position
