@@ -1215,7 +1215,6 @@ function initializeFixedNavigation() {
       // Move navigation above keyboard
       navigationButtons.style.position = 'absolute';
       navigationButtons.style.bottom = 'auto';
-      navigationButtons.style.top = `${window.visualViewport.height - navigationButtons.offsetHeight}px`;
     } else {
       // Reset to default bottom position
       navigationButtons.style.position = 'fixed';
