@@ -1189,12 +1189,16 @@ function isAndroidChrome() {
 
 // Add this new function
 function initializeFixedNavigation() {
-
   if (window.innerWidth >= 768) return;
 
-  const navigationButtons = document.querySelector('.quiz-navigation-wrapper');
-  
+  const navigationButtons = document.querySelector('.quiz-navigation');
   if (!navigationButtons) return;
+
+  // Detect iOS
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  
+  // Detect Android
+  const isAndroid = /Android/.test(navigator.userAgent);
 
   // Set initial styles
   navigationButtons.style.position = 'fixed';
@@ -1203,6 +1207,13 @@ function initializeFixedNavigation() {
   navigationButtons.style.right = '0';
   navigationButtons.style.zIndex = '999';
 
+  if (isIOS) {
+    // iOS specific reset
+    navigationButtons.style.inset = 'auto';
+    navigationButtons.style.insetInlineStart = '0';
+    navigationButtons.style.insetInlineEnd = '0';
+  }
+
   let isKeyboardVisible = false;
 
   function adjustPosition() {
@@ -1210,23 +1221,32 @@ function initializeFixedNavigation() {
 
     const currentHeight = window.visualViewport.height;
     const windowHeight = window.innerHeight;
+    const bottomOffset = windowHeight - (currentHeight + window.visualViewport.offsetTop);
 
     // Check if keyboard is visible
     isKeyboardVisible = currentHeight < windowHeight;
 
     if (isKeyboardVisible) {
-      // Move navigation above keyboard
-      navigationButtons.style.position = 'absolute';
-      navigationButtons.style.inset = 'auto';
-      navigationButtons.style.bottom = 'auto';
-      navigationButtons.style.top = 'auto';
+      if (isAndroid) {
+        // Android keyboard handling
+        navigationButtons.style.position = 'fixed';
+        navigationButtons.style.bottom = `${bottomOffset}px`;
+      } else {
+        // iOS keyboard handling
+        navigationButtons.style.position = 'absolute';
+        navigationButtons.style.bottom = 'auto';
+        navigationButtons.style.top = `${window.visualViewport.height - navigationButtons.offsetHeight}px`;
+      }
     } else {
       // Reset to default bottom position
       navigationButtons.style.position = 'fixed';
       navigationButtons.style.top = 'auto';
       navigationButtons.style.bottom = '0';
-      navigationButtons.style.inset = 'auto';
     }
+
+    // Ensure left and right positioning
+    navigationButtons.style.left = '0';
+    navigationButtons.style.right = '0';
   }
 
   // Listen to VisualViewport resize
@@ -1237,6 +1257,9 @@ function initializeFixedNavigation() {
 
   // Handle orientation changes
   window.addEventListener('orientationchange', () => {
-    setTimeout(adjustPosition, 100); // Small delay to ensure correct calculation after orientation change
+    setTimeout(adjustPosition, 100);
   });
+
+  // Initial position
+  adjustPosition();
 }
