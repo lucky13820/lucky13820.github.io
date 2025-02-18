@@ -2,6 +2,8 @@ const isStaging = window.location.hostname.includes("webflow.io");
 
 let APPROVED_INSURANCES;
 let eligibleStates;
+// At the top of your file, add:
+let riveInstance = null;
 
 document.addEventListener("DOMContentLoaded", () => {
   initializeSwiper();
@@ -43,6 +45,17 @@ document.addEventListener("DOMContentLoaded", () => {
       if (event.key === 'Enter') {
         event.preventDefault();
       }
+    });
+  }
+
+  // Initialize Rive
+  const riveCanvas = document.querySelector('#rive-animation');
+  if (riveCanvas) {
+    riveInstance = new rive.Rive({
+      src: 'path/to/your/animation.riv',
+      canvas: riveCanvas,
+      autoplay: false,
+      stateMachines: 'State Machine 1'
     });
   }
 
@@ -115,14 +128,11 @@ const swiperSlideChanged = (swiper) => {
   toggleNextButtonAndSubmitDisplay(swiper);
   togglePrevButton(swiper);
   
-  // Add check for GLP-1 about page slide
   const currentSlide = swiper.slides[swiper.activeIndex];
   if (currentSlide.getAttribute('data-slide-event') === 'GLP-1_about_page') {
-    // Play Rive animation if it exists
     try {
-      const riveAnimation = document.querySelector('#rive-animation');
-      if (riveAnimation && riveAnimation.play) {
-        riveAnimation.play();
+      if (riveInstance) {
+        riveInstance.play();
       }
     } catch (error) {
       console.error('Error playing Rive animation:', error);
