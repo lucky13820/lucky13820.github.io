@@ -114,6 +114,21 @@ const swiperSlideChanged = (swiper) => {
   trackSlideChange(swiper.slides[swiper.activeIndex]);
   toggleNextButtonAndSubmitDisplay(swiper);
   togglePrevButton(swiper);
+  
+  // Add check for GLP-1 about page slide
+  const currentSlide = swiper.slides[swiper.activeIndex];
+  if (currentSlide.getAttribute('data-slide-event') === 'GLP-1_about_page') {
+    // Play Rive animation if it exists
+    try {
+      const riveAnimation = document.querySelector('#rive-animation');
+      if (riveAnimation && riveAnimation.play) {
+        riveAnimation.play();
+      }
+    } catch (error) {
+      console.error('Error playing Rive animation:', error);
+    }
+  }
+
   setTimeout(() => {
     swiper.allowSlideNext = validateSlide(swiper);
   }, 1);
