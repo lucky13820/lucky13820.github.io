@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const riveCanvas = document.querySelector('#rive-animation');
   if (riveCanvas) {
     riveInstance = new rive.Rive({
-      src: 'path/to/your/animation.riv',
+      src: 'https://cdn.prod.website-files.com/6357d4fbecfafa3f24d20445/67b4faedd4104e630f167109_untitled%20(1).riv',
       canvas: riveCanvas,
       autoplay: false,
       stateMachines: 'State Machine 1'
