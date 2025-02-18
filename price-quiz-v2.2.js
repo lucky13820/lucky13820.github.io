@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
   trackSurveyStartToSimplifi();
   initializeBraze();
   handleNoneCheckbox();
-  initializeFixedNavigation(); 
 
   if (window.location.href.includes("#plan")) {
     displayPaymentForm();
@@ -1183,34 +1182,4 @@ waitForGrowSurf();
 function isAndroidChrome() {
   const userAgent = navigator.userAgent.toLowerCase();
   return userAgent.includes('android') && userAgent.includes('chrome') && !userAgent.includes('firefox') && !userAgent.includes('edg') && !userAgent.includes('opr');
-}
-
-// Add this new function
-function initializeFixedNavigation() {
-  const navigationButtons = document.querySelector('.quiz-navigation-wrapper');
-  
-  if (!navigationButtons) return;
-
-  function adjustPosition() {
-    if (window.visualViewport) {
-      const bottomOffset = window.visualViewport.height - window.visualViewport.offsetTop;
-      navigationButtons.style.bottom = `${bottomOffset}px`;
-    } else {
-      // Fallback for browsers without VisualViewport API
-      navigationButtons.style.bottom = '0px';
-    }
-  }
-
-  // Listen to VisualViewport resize
-  if (window.visualViewport) {
-    window.visualViewport.addEventListener('resize', adjustPosition);
-    window.visualViewport.addEventListener('scroll', adjustPosition);
-  }
-
-  // Fallback listeners
-  window.addEventListener('resize', adjustPosition);
-  window.addEventListener('orientationchange', adjustPosition);
-
-  // Initial position
-  adjustPosition();
 }
