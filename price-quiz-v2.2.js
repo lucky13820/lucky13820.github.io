@@ -120,7 +120,7 @@ const swiperSlideChanged = (swiper) => {
     console.log('glp1 animation')
     try {
       if (riveInstance) {
-        riveInstance.play();
+        riveInstance.play("State Machine 1");
       }
     } catch (error) {
       console.error('Error playing Rive animation:', error);
