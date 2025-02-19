@@ -1217,7 +1217,7 @@ function isAndroidChrome() {
 function initializeFixedNavigation() {
   if (window.innerWidth >= 768) return;
 
-  const navigationButtons = document.querySelector('.quiz-navigation');
+  const navigationButtons = document.querySelector('.quiz-navigation-wrapper');
   if (!navigationButtons) return;
 
   // Only proceed if it's iOS
