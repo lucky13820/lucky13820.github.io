@@ -132,6 +132,9 @@ const swiperSlideChanged = (swiper) => {
     console.log('glp1 animation')
     try {
       if (riveInstance) {
+        // Reset the animation state
+        riveInstance.reset();
+        // Play the animation again
         riveInstance.play("State Machine 1");
       }
     } catch (error) {
