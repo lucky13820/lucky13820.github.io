@@ -229,6 +229,7 @@ async function handleSubmit(e) {
   try {
     const { firstName, lastName } = splitFullName(fullName);
     const { error } = await elements.submit();
+    
     if (error) {
       return showMessage(error?.message ?? "An unexpected error occurred.");
     }
@@ -364,6 +365,7 @@ function splitFullName(fullName) {
   
   // Validate name parts
   if (nameParts.length < 2) {
+    isNameValid = false;
     throw new Error('Please enter both your first and last name');
   }
   
@@ -372,12 +374,15 @@ function splitFullName(fullName) {
   
   // Validate name lengths and check for initials
   if (firstName.length < 2) {
+    isNameValid = false;
     throw new Error('First name must be at least 2 characters long');
   }
   if (lastName.length < 2) {
+    isNameValid = false;
     throw new Error('Last name must be at least 2 characters long');
   }
   
+  isNameValid = true;
   return { firstName, lastName };
 }
 
@@ -452,15 +457,6 @@ async function fetchPrice() {
 
 
 function validateFullName() {
-  const fullName = document.querySelector("#full-name").value;
-  
-  try {
-    const { firstName, lastName } = splitFullName(fullName);
-    isNameValid = true;
-  } catch (error) {
-    isNameValid = false;
-    showMessage(error.message);
-  }
   
   // If name is valid but email has .con error, keep showing email error
   if (isNameValid && !isEmailValid) {
