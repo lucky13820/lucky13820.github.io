@@ -451,7 +451,14 @@ async function fetchPrice() {
 }
 
 // Add event listener for the full name input
-document.querySelector("#full-name").addEventListener("blur", validateFullName);
+document.querySelector("#full-name").addEventListener("input", (e) => {
+  if (e.target.value.trim()) {  // Only validate if there's a non-empty value
+    validateFullName(e);
+  } else {
+    isNameValid = false;
+    updateSubmitButton();
+  }
+});
 
 function validateFullName(e) {
   const fullName = e.target.value;
