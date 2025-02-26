@@ -191,6 +191,15 @@ function createLinkAuthenticationElement(elements) {
     handleLinkAuthenticationChange(event);
     validateEmail(event.value.email);
   });
+
+  // Add blur event listener to maintain error state
+  linkAuthenticationElement.on("blur", (event) => {
+    if (!isEmailValid) {
+      const email = event.value.email;
+      const suggestedEmail = email.slice(0, -3) + 'com';
+      showMessage(`Do you mean ${suggestedEmail}?`, false);
+    }
+  });
 }
 
 function handleLinkAuthenticationChange(event) {
