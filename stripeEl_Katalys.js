@@ -483,7 +483,7 @@ function validateEmail(email) {
 
   if (email.toLowerCase().endsWith('.con')) {
     const suggestedEmail = email.slice(0, -3) + 'com';
-    showMessage(`Do you mean ${suggestedEmail}?`, false); 
+    showMessage(`Did you mean ${suggestedEmail}?`, false); 
     isEmailValid = false;
   } else {
     isEmailValid = true;
