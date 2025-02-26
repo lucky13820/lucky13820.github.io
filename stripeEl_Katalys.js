@@ -471,7 +471,7 @@ function validateEmail(email) {
   
   if (email && email.toLowerCase().endsWith('.con')) {
     messageContainer.classList.remove("hidden");
-    messageContainer.textContent = `You might entered the wrong email`;
+    messageContainer.textContent = `Please make sure you entered the correct email`;
     submitButton.disabled = true;
     return false;
   } else {
