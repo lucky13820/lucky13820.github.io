@@ -451,8 +451,8 @@ async function fetchPrice() {
 }
 
 
-function validateFullName(e) {
-  const fullName = e.target.value;
+function validateFullName() {
+  const fullName = document.querySelector("#full-name").value;
   
   try {
     const { firstName, lastName } = splitFullName(fullName);
