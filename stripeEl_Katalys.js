@@ -189,12 +189,21 @@ function createLinkAuthenticationElement(elements) {
 
   linkAuthenticationElement.on("change", (event) => {
     handleLinkAuthenticationChange(event);
-  });
-
-  // Add blur event listener to maintain error state
-  linkAuthenticationElement.on("blur", (event) => {
     validateEmail(event.value.email);
   });
+
+  // Wait for the input element to be mounted
+  setTimeout(() => {
+    const emailInput = document.querySelector("#link-authentication-element input");
+    if (emailInput) {
+      emailInput.addEventListener("blur", () => {
+        if (!isEmailValid && paymentEmail) {
+          const suggestedEmail = paymentEmail.slice(0, -3) + 'com';
+          showMessage(`Do you mean ${suggestedEmail}?`, false);
+        }
+      });
+    }
+  }, 1000); // Give time for Stripe to mount the element
 }
 
 function handleLinkAuthenticationChange(event) {
