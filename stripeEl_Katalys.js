@@ -10,6 +10,10 @@ const DEFAULT_PROMO_DEV = "GETSTARTED";
 const DEFAULT_PRICE_ID = STAGING ? PRICE_ID_DEV : PRICE_ID_PROD;
 const DEFAULT_PROMO = STAGING ? DEFAULT_PROMO_DEV : DEFAULT_PROMO_PROD;
 
+// Add these global variables at the top of the file
+let isEmailValid = true;  // Default to true if no email entered yet
+let isNameValid = false;  // Default to false until valid name entered
+
 const BASE_URLS = {
   staging: "https://api.staging.findsunrise.com/api/signup/",
   prod: "https://api.findsunrise.com/api/signup/",
@@ -457,28 +461,34 @@ function validateFullName(e) {
   try {
     const { firstName, lastName } = splitFullName(fullName);
     messageContainer.classList.add("hidden");
-    submitButton.disabled = false;
+    isNameValid = true;
+    updateSubmitButton();
   } catch (error) {
     messageContainer.classList.remove("hidden");
     messageContainer.textContent = error.message;
-    submitButton.disabled = true;
+    isNameValid = false;
+    updateSubmitButton();
   }
 }
 
 function validateEmail(email) {
-  const submitButton = document.querySelector("#submit-payment");
   const messageContainer = document.querySelector("#payment-message");
   
   if (email && email.toLowerCase().endsWith('.con')) {
     messageContainer.classList.remove("hidden");
     messageContainer.textContent = `Please make sure you entered the correct email`;
-    submitButton.disabled = true;
+    isEmailValid = false;
+    updateSubmitButton();
     return false;
   } else {
     messageContainer.classList.add("hidden");
-    // Only enable the button if there are no other validation errors
-    // You might need to check other validation states here
-    submitButton.disabled = false;
+    isEmailValid = true;
+    updateSubmitButton();
     return true;
   }
+}
+
+function updateSubmitButton() {
+  const submitButton = document.querySelector("#submit-payment");
+  submitButton.disabled = !(isEmailValid && isNameValid);
 }
