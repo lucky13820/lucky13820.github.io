@@ -455,40 +455,51 @@ document.querySelector("#full-name").addEventListener("blur", validateFullName);
 
 function validateFullName(e) {
   const fullName = e.target.value;
-  const messageContainer = document.querySelector("#payment-message");
-  const submitButton = document.querySelector("#submit-payment");
   
   try {
     const { firstName, lastName } = splitFullName(fullName);
-    messageContainer.classList.add("hidden");
     isNameValid = true;
-    updateSubmitButton();
+    // Only clear the message if email is also valid
+    if (isEmailValid) {
+      showMessage("");
+    }
   } catch (error) {
-    messageContainer.classList.remove("hidden");
-    messageContainer.textContent = error.message;
+    showMessage(error.message);
     isNameValid = false;
-    updateSubmitButton();
   }
+  updateSubmitButton();
 }
 
 function validateEmail(email) {
-  const messageContainer = document.querySelector("#payment-message");
-  
   if (email && email.toLowerCase().endsWith('.con')) {
-    messageContainer.classList.remove("hidden");
-    messageContainer.textContent = `Please make sure you entered the correct email`;
+    const suggestedEmail = email.slice(0, -3) + 'com';
+    showMessage(`Do you mean ${suggestedEmail}?`);
     isEmailValid = false;
-    updateSubmitButton();
-    return false;
   } else {
-    messageContainer.classList.add("hidden");
     isEmailValid = true;
-    updateSubmitButton();
-    return true;
+    // Only clear the message if name is also valid
+    if (isNameValid) {
+      showMessage("");
+    }
   }
+  updateSubmitButton();
+  return isEmailValid;
 }
 
 function updateSubmitButton() {
   const submitButton = document.querySelector("#submit-payment");
   submitButton.disabled = !(isEmailValid && isNameValid);
+  
+  // If name is invalid and we're not already showing an email error
+  if (!isNameValid && isEmailValid) {
+    showMessage("Please enter both your first and last name");
+  }
+  // If email is invalid with .con ending, keep showing that error
+  else if (!isEmailValid) {
+    const email = document.querySelector("#link-authentication-element input")?.value;
+    if (email && email.toLowerCase().endsWith('.con')) {
+      const suggestedEmail = email.slice(0, -3) + 'com';
+      showMessage(`Do you mean ${suggestedEmail}?`);
+    }
+  }
 }
