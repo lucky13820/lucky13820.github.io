@@ -450,15 +450,6 @@ async function fetchPrice() {
   }
 }
 
-// Add event listener for the full name input
-document.querySelector("#full-name").addEventListener("input", (e) => {
-  if (e.target.value.trim()) {  // Only validate if there's a non-empty value
-    validateFullName(e);
-  } else {
-    isNameValid = false;
-    updateSubmitButton();
-  }
-});
 
 function validateFullName(e) {
   const fullName = e.target.value;
@@ -466,29 +457,47 @@ function validateFullName(e) {
   try {
     const { firstName, lastName } = splitFullName(fullName);
     isNameValid = true;
-    // Only clear the message if email is also valid
-    if (isEmailValid) {
-      showMessage("");
-    }
   } catch (error) {
-    showMessage(error.message);
     isNameValid = false;
+    showMessage(error.message);
   }
+  
+  // If name is valid but email has .con error, keep showing email error
+  if (isNameValid && !isEmailValid) {
+    const email = document.querySelector("#link-authentication-element input")?.value;
+    if (email && email.toLowerCase().endsWith('.con')) {
+      const suggestedEmail = email.slice(0, -3) + 'com';
+      showMessage(`Do you mean ${suggestedEmail}?`);
+    }
+  }
+  
   updateSubmitButton();
 }
 
 function validateEmail(email) {
-  if (email && email.toLowerCase().endsWith('.con')) {
+  // Only validate if user has entered something
+  if (!email) {
+    isEmailValid = true;
+    showMessage("");
+    updateSubmitButton();
+    return true;
+  }
+
+  if (email.toLowerCase().endsWith('.con')) {
     const suggestedEmail = email.slice(0, -3) + 'com';
     showMessage(`Do you mean ${suggestedEmail}?`);
     isEmailValid = false;
   } else {
     isEmailValid = true;
-    // Only clear the message if name is also valid
+    // Clear message only if name is also valid
     if (isNameValid) {
       showMessage("");
+    } else if (document.querySelector("#full-name").value) {
+      // If name is invalid and user has attempted to enter it, show name error
+      showMessage("Please enter both your first and last name");
     }
   }
+  
   updateSubmitButton();
   return isEmailValid;
 }
@@ -496,17 +505,4 @@ function validateEmail(email) {
 function updateSubmitButton() {
   const submitButton = document.querySelector("#submit-payment");
   submitButton.disabled = !(isEmailValid && isNameValid);
-  
-  // If name is invalid and we're not already showing an email error
-  if (!isNameValid && isEmailValid) {
-    showMessage("Please enter both your first and last name");
-  }
-  // If email is invalid with .con ending, keep showing that error
-  else if (!isEmailValid) {
-    const email = document.querySelector("#link-authentication-element input")?.value;
-    if (email && email.toLowerCase().endsWith('.con')) {
-      const suggestedEmail = email.slice(0, -3) + 'com';
-      showMessage(`Do you mean ${suggestedEmail}?`);
-    }
-  }
 }
