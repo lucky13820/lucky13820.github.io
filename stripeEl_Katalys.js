@@ -12,7 +12,7 @@ const DEFAULT_PROMO = STAGING ? DEFAULT_PROMO_DEV : DEFAULT_PROMO_PROD;
 
 // Add these global variables at the top of the file
 let isEmailValid = true;  // Default to true if no email entered yet
-let isNameValid = false;  // Default to false until valid name entered
+let isNameValid = true;  // Default to false until valid name entered
 
 const BASE_URLS = {
   staging: "https://api.staging.findsunrise.com/api/signup/",
