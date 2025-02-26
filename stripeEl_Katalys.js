@@ -337,15 +337,17 @@ function handleMessage(status) {
   showMessage(message);
 }
 
-function showMessage(messageText) {
+function showMessage(messageText, temporary = true) {
   const messageContainer = document.querySelector("#payment-message");
   messageContainer.classList.remove("hidden");
   messageContainer.textContent = messageText;
 
-  setTimeout(() => {
-    messageContainer.classList.add("hidden");
-    messageText.textContent = "";
-  }, 4000);
+  if (temporary) {
+    setTimeout(() => {
+      messageContainer.classList.add("hidden");
+      messageText.textContent = "";
+    }, 4000);
+  }
 }
 
 function setLoading(isLoading) {
@@ -481,7 +483,7 @@ function validateEmail(email) {
 
   if (email.toLowerCase().endsWith('.con')) {
     const suggestedEmail = email.slice(0, -3) + 'com';
-    showMessage(`Do you mean ${suggestedEmail}?`);
+    showMessage(`Do you mean ${suggestedEmail}?`, false); 
     isEmailValid = false;
   } else {
     isEmailValid = true;
