@@ -470,9 +470,8 @@ function validateEmail(email) {
   const messageContainer = document.querySelector("#payment-message");
   
   if (email && email.toLowerCase().endsWith('.con')) {
-    const suggestedEmail = email.slice(0, -3) + 'com';
     messageContainer.classList.remove("hidden");
-    messageContainer.textContent = `Do you mean ${suggestedEmail}?`;
+    messageContainer.textContent = `You might entered the wrong email`;
     submitButton.disabled = true;
     return false;
   } else {
