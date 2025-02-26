@@ -183,7 +183,10 @@ function createLinkAuthenticationElement(elements) {
   const linkAuthenticationElement = elements.create("linkAuthentication");
   linkAuthenticationElement.mount("#link-authentication-element");
 
-  linkAuthenticationElement.on("change", handleLinkAuthenticationChange);
+  linkAuthenticationElement.on("change", (event) => {
+    handleLinkAuthenticationChange(event);
+    validateEmail(event.value.email);
+  });
 }
 
 function handleLinkAuthenticationChange(event) {
@@ -459,5 +462,24 @@ function validateFullName(e) {
     messageContainer.classList.remove("hidden");
     messageContainer.textContent = error.message;
     submitButton.disabled = true;
+  }
+}
+
+function validateEmail(email) {
+  const submitButton = document.querySelector("#submit-payment");
+  const messageContainer = document.querySelector("#payment-message");
+  
+  if (email && email.toLowerCase().endsWith('.con')) {
+    const suggestedEmail = email.slice(0, -3) + 'com';
+    messageContainer.classList.remove("hidden");
+    messageContainer.textContent = `Do you mean ${suggestedEmail}?`;
+    submitButton.disabled = true;
+    return false;
+  } else {
+    messageContainer.classList.add("hidden");
+    // Only enable the button if there are no other validation errors
+    // You might need to check other validation states here
+    submitButton.disabled = false;
+    return true;
   }
 }
