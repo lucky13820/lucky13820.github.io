@@ -187,23 +187,19 @@ function createLinkAuthenticationElement(elements) {
   const linkAuthenticationElement = elements.create("linkAuthentication");
   linkAuthenticationElement.mount("#link-authentication-element");
 
-  linkAuthenticationElement.on("change", (event) => {
-    handleLinkAuthenticationChange(event);
-    validateEmail(event.value.email);
+  let isFieldFocused = false;
+
+  linkAuthenticationElement.on("focus", () => {
+    isFieldFocused = true;
   });
 
-  // Wait for the input element to be mounted
-  setTimeout(() => {
-    const emailInput = document.querySelector("#link-authentication-element input");
-    if (emailInput) {
-      emailInput.addEventListener("blur", () => {
-        if (!isEmailValid && paymentEmail) {
-          const suggestedEmail = paymentEmail.slice(0, -3) + 'com';
-          showMessage(`Do you mean ${suggestedEmail}?`, false);
-        }
-      });
+  linkAuthenticationElement.on("change", (event) => {
+    handleLinkAuthenticationChange(event);
+    // Only validate if the field has been focused at least once
+    if (isFieldFocused) {
+      validateEmail(event.value.email);
     }
-  }, 1000); // Give time for Stripe to mount the element
+  });
 }
 
 function handleLinkAuthenticationChange(event) {
