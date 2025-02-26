@@ -194,11 +194,7 @@ function createLinkAuthenticationElement(elements) {
 
   // Add blur event listener to maintain error state
   linkAuthenticationElement.on("blur", (event) => {
-    if (!isEmailValid) {
-      const email = event.value.email;
-      const suggestedEmail = email.slice(0, -3) + 'com';
-      showMessage(`Do you mean ${suggestedEmail}?`, false);
-    }
+    validateEmail(event.value.email);
   });
 }
 
