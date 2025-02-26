@@ -189,7 +189,6 @@ function createLinkAuthenticationElement(elements) {
 
   linkAuthenticationElement.on("change", (event) => {
     handleLinkAuthenticationChange(event);
-    validateEmail(event.value.email);
   });
 
   // Add blur event listener to maintain error state
