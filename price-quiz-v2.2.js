@@ -1003,7 +1003,11 @@ function trackToShareASale() {
 function addPriceFormListeners() {
   var form = document.querySelector("#wf-form-Price-Options-Form");
 
-  document.querySelector('[data-price="9"]').click();
+  // Check if the element exists before attempting to click it
+  const priceNineElement = document.querySelector('[data-price="9"]');
+  if (priceNineElement) {
+    priceNineElement.click();
+  }
 
   // Check if the form exists to prevent errors
   if (form) {
